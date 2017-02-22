@@ -151,8 +151,20 @@ public class RideActivity extends AppCompatActivity implements
 	 */
 	public void StartRide(View v)
 		{
-			mDurationTextView.setBase((SystemClock.elapsedRealtime() + timeWhenStopped));
-			mDurationTextView.start();
+
+			if (mDurationTextView.isActivated() == false)
+			{
+				mDurationTextView.setBase((SystemClock.elapsedRealtime() + timeWhenStopped));
+				mDurationTextView.start();
+			}
+
+			if (!mRequestingLocationUpdates)
+			{
+
+
+				mRequestingLocationUpdates = true;
+				startLocationUpdates();
+			}
 		}
 
 	public void StopRide(View v)
@@ -174,6 +186,7 @@ public class RideActivity extends AppCompatActivity implements
 
 		}
 
+
 	/**
 	 * requests location updates from the FusedLocationAPI. Checks that the application has the
 	 * correct permission to ACCESS_FINE_LOCATION. If it does not, it will request it.
@@ -184,9 +197,11 @@ public class RideActivity extends AppCompatActivity implements
 			if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
 					    != PackageManager.PERMISSION_GRANTED)
 			{
+
 				ActivityCompat.requestPermissions(this,
 						new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
 						PERMISSION_ACCESS_FINE_LOCATION);
+
 			} else
 			{
 				mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
@@ -229,10 +244,10 @@ public class RideActivity extends AppCompatActivity implements
 					if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED)
 					{
 						startLocationUpdates();
-
 					} else
 					{
 						Toast.makeText(this, "Need your location!", Toast.LENGTH_SHORT).show();
+						stopLocationUpdates();
 					}
 					break;
 			}
@@ -256,7 +271,7 @@ public class RideActivity extends AppCompatActivity implements
 			super.onResume();
 			//when activity is paused, location updates are paused as well. We resume location
 			//updates here
-			if (mGoogleApiClient.isConnected() && mRequestingLocationUpdates)
+			if (mGoogleApiClient.isConnected() && !mRequestingLocationUpdates)
 			{
 				startLocationUpdates();
 			}
@@ -289,10 +304,10 @@ public class RideActivity extends AppCompatActivity implements
 	public void onConnected(@Nullable Bundle bundle)
 		{
 			Log.i(TAG, "Connected to Google Play Services!");
-			if (mRequestingLocationUpdates)
-			{
-				startLocationUpdates();
-			}
+//			if (mRequestingLocationUpdates)
+//			{
+//				startLocationUpdates();
+//			}
 
 		}
 

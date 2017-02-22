@@ -160,9 +160,6 @@ public class RideActivity extends AppCompatActivity implements
 
 			if (!mRequestingLocationUpdates)
 			{
-
-
-				mRequestingLocationUpdates = true;
 				startLocationUpdates();
 			}
 		}
@@ -171,7 +168,7 @@ public class RideActivity extends AppCompatActivity implements
 		{
 			timeWhenStopped = 0;
 			mDurationTextView.stop();
-			mRequestingLocationUpdates = false;
+			
 			stopLocationUpdates();
 		}
 
@@ -194,6 +191,7 @@ public class RideActivity extends AppCompatActivity implements
 	protected void startLocationUpdates()
 		{
 			Log.i(TAG, "startLocationUpdates");
+			
 			if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
 					    != PackageManager.PERMISSION_GRANTED)
 			{
@@ -204,6 +202,7 @@ public class RideActivity extends AppCompatActivity implements
 
 			} else
 			{
+				mRequestingLocationUpdates = true;
 				mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 				mPreviousLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 				LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
@@ -218,6 +217,7 @@ public class RideActivity extends AppCompatActivity implements
 	 */
 	protected void stopLocationUpdates()
 		{
+			mRequestingLocationUpdates = false;
 			LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
 		}
 

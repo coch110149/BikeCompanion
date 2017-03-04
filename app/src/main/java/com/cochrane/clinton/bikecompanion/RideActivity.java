@@ -1,14 +1,18 @@
 package com.cochrane.clinton.bikecompanion;
 
 import android.Manifest;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -26,9 +30,7 @@ import com.google.android.gms.location.LocationServices;
 public class RideActivity extends AppCompatActivity implements
 		GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
 				LocationListener
-
 	{
-
 	public static final long UPDATE_INTERVAL_IN_MS = 5000;
 	public static final long FASTEST_UPDATE_INTERVAL_IN_MS = UPDATE_INTERVAL_IN_MS / 2;
 	protected static final String TAG = "BC-riding-activity";
@@ -87,8 +89,10 @@ public class RideActivity extends AppCompatActivity implements
 			mElevationGainTextView = (TextView) findViewById(R.id.ElevationGain_Information);
 
 			mRequestingLocationUpdates = false;
-			mLastUpdateTime = "";
-			updateValuesFromBundle(savedInstanceState);
+			if (savedInstanceState != null)
+			{
+				updateValuesFromBundle(savedInstanceState);
+			}
 			//start process of building a GoogleApiClient and requesting LocationServices
 			buildGoogleApiClient();
 		}
@@ -151,7 +155,6 @@ public class RideActivity extends AppCompatActivity implements
 	 */
 	public void StartRide(View v)
 		{
-
 			if (mDurationTextView.isActivated() == false)
 			{
 				mDurationTextView.setBase((SystemClock.elapsedRealtime() + timeWhenStopped));
@@ -166,10 +169,32 @@ public class RideActivity extends AppCompatActivity implements
 
 	public void StopRide(View v)
 		{
-			timeWhenStopped = 0;
-			mDurationTextView.stop();
-			
-			stopLocationUpdates();
+			AlertDialog.Builder stopRideDialogBuilder = new AlertDialog.Builder(this);
+			stopRideDialogBuilder.setMessage(R.string.confirm_exit_ride);
+			stopRideDialogBuilder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
+				{
+					@Override
+					public void onClick(DialogInterface dialog, int which)
+						{
+							Intent intent = new Intent(RideActivity.this, RideSummaryActivity.class);
+							startActivity(intent);
+						}
+				});
+			stopRideDialogBuilder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
+				{
+					@Override
+					public void onClick(DialogInterface dialog, int which)
+						{
+							dialog.dismiss();
+						}
+				});
+			AlertDialog stopRideDialog = stopRideDialogBuilder.create();
+			stopRideDialog.show();
+//
+//			timeWhenStopped = 0;
+//			mDurationTextView.stop();
+//
+//			stopLocationUpdates();
 		}
 
 	public void PauseRide(View v)
@@ -191,15 +216,12 @@ public class RideActivity extends AppCompatActivity implements
 	protected void startLocationUpdates()
 		{
 			Log.i(TAG, "startLocationUpdates");
-			
 			if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
 					    != PackageManager.PERMISSION_GRANTED)
 			{
-
 				ActivityCompat.requestPermissions(this,
 						new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
 						PERMISSION_ACCESS_FINE_LOCATION);
-
 			} else
 			{
 				mRequestingLocationUpdates = true;
@@ -207,7 +229,6 @@ public class RideActivity extends AppCompatActivity implements
 				mPreviousLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 				LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
 						mLocationRequest, this);
-
 			}
 		}
 
@@ -304,11 +325,10 @@ public class RideActivity extends AppCompatActivity implements
 	public void onConnected(@Nullable Bundle bundle)
 		{
 			Log.i(TAG, "Connected to Google Play Services!");
-//			if (mRequestingLocationUpdates)
-//			{
-//				startLocationUpdates();
-//			}
-
+			if (mRequestingLocationUpdates)
+			{
+				startLocationUpdates();
+			}
 		}
 
 	/**
@@ -349,7 +369,6 @@ public class RideActivity extends AppCompatActivity implements
 		{
 			if (mCurrentLocation.getAltitude() != 0 && mPreviousLocation.getAltitude() != 0)
 			{
-
 				if (mCurrentLocation.getAltitude() > mPreviousLocation.getAltitude())
 				{
 					mElevationGain += mCurrentLocation.getAltitude() - mPreviousLocation.getAltitude();
@@ -394,10 +413,18 @@ public class RideActivity extends AppCompatActivity implements
 			Log.i(TAG, "Connection failed with errorCode: " + connectionResult.getErrorCode());
 		}
 
+
+	@Override
+	public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState)
+		{
+			super.onSaveInstanceState(outState, outPersistentState);
+		}
+
 	/**
 	 * Stores activity data in the bundle
 	 */
-	public void onSaveInstance(Bundle savedInstanceState)
+	@Override
+	public void onSaveInstanceState(Bundle savedInstanceState)
 		{
 			savedInstanceState.putBoolean(REQUESTING_LOCATION_UPDATES_KEY, mRequestingLocationUpdates);
 			savedInstanceState.putParcelable(LOCATION_KEY, mCurrentLocation);

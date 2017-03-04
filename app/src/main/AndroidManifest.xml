@@ -13,6 +13,7 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
+
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
@@ -21,6 +22,8 @@
         <activity android:name=".RidingBuddyActivity">
         </activity>
         <activity android:name=".BikeGarageActivity">
+        </activity>
+        <activity android:name=".RideSummaryActivity">
         </activity>
     </application>
 

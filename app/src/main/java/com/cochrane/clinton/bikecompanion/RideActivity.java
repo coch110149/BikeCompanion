@@ -27,16 +27,19 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import java.util.Date;
+import java.util.Locale;
+
 public class RideActivity extends AppCompatActivity implements
 		GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
 				LocationListener
 	{
+	public Ride ride;
 	public static final long UPDATE_INTERVAL_IN_MS = 5000;
 	public static final long FASTEST_UPDATE_INTERVAL_IN_MS = UPDATE_INTERVAL_IN_MS / 2;
 	protected static final String TAG = "BC-riding-activity";
 	//keys for storing activity state in bundle.
 	protected final static String REQUESTING_LOCATION_UPDATES_KEY = "requesting-location-updates-key";
-	protected final static String LAST_UPDATED_TIME_STRING_KEY = "last-updated-time-string-key";
 	protected final static String LOCATION_KEY = "location-key";
 	protected final static String STARTING_LOCATION = "starting-location";
 	private static final int PERMISSION_ACCESS_FINE_LOCATION = 1;
@@ -44,8 +47,6 @@ public class RideActivity extends AppCompatActivity implements
 	protected Location mCurrentLocation;
 	//entry point for Google Play Services
 	protected GoogleApiClient mGoogleApiClient;
-	//time when the location was last updated
-	protected String mLastUpdateTime;
 	//tracks status of the location updates request
 	protected Boolean mRequestingLocationUpdates;
 	//Stores parameters for requests to the FusedLocationProviderApi
@@ -76,7 +77,7 @@ public class RideActivity extends AppCompatActivity implements
 			Log.i(TAG, "On Create");
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.activity_riding);
-
+			ride = new Ride();
 			//Locate UI widgets
 			mStartRideButton = (Button) findViewById(R.id.StartRideButton);
 			mSpeedTextView = (TextView) findViewById(R.id.Speed_Information);
@@ -112,15 +113,11 @@ public class RideActivity extends AppCompatActivity implements
 					//Since LocationKey was found, we know that mCurrentLocation is not null
 					mCurrentLocation = savedInstanceState.getParcelable(LOCATION_KEY);
 				}
-				if (savedInstanceState.keySet().contains(LAST_UPDATED_TIME_STRING_KEY))
-				{
-					mLastUpdateTime = savedInstanceState.getString(LAST_UPDATED_TIME_STRING_KEY);
-				}
 				if (savedInstanceState.keySet().contains(STARTING_LOCATION))
 				{
 					mPreviousLocation = savedInstanceState.getParcelable(STARTING_LOCATION);
 				}
-				updateUI();
+				updateRideObjectAndUI();
 			}
 		}
 
@@ -155,7 +152,7 @@ public class RideActivity extends AppCompatActivity implements
 	 */
 	public void StartRide(View v)
 		{
-			if (mDurationTextView.isActivated() == false)
+			if (!mDurationTextView.isActivated())
 			{
 				mDurationTextView.setBase((SystemClock.elapsedRealtime() + timeWhenStopped));
 				mDurationTextView.start();
@@ -176,8 +173,12 @@ public class RideActivity extends AppCompatActivity implements
 					@Override
 					public void onClick(DialogInterface dialog, int which)
 						{
+							updateRideObjectAndUI();
 							Intent intent = new Intent(RideActivity.this, RideSummaryActivity.class);
+							intent.putExtra("CurrentRideObject", ride);
 							startActivity(intent);
+							stopLocationUpdates();
+							mGoogleApiClient.disconnect();
 						}
 				});
 			stopRideDialogBuilder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
@@ -199,6 +200,7 @@ public class RideActivity extends AppCompatActivity implements
 
 	public void PauseRide(View v)
 		{
+
 			if (mGoogleApiClient.isConnected())
 			{
 				stopLocationUpdates();
@@ -243,15 +245,28 @@ public class RideActivity extends AppCompatActivity implements
 		}
 
 
-	private void updateUI()
+	private void updateRideObjectAndUI()
 		{
-			mElevationTextView.setText(String.format("%f", mCurrentLocation.getAltitude()));
-			mDistanceTextView.setText(String.format("%.1f", mTotalDistance / 1000));
-			mSpeedTextView.setText(String.format("%.2f", mCurrentSpeed));
-			mMaxSpeedTextView.setText((String.format("%.2f%s", mMaxSpeed, "kph")));
-			mAvgSpeedTextView.setText(String.format("%.0f", mSpeedSum / mNumberOfLocationUpdates));
-			mElevationLossTextView.setText(String.format("%.1f", mElevationLoss));
-			mElevationGainTextView.setText(String.format("%.1f", mElevationGain));
+
+			ride.setAvgSpeed(mSpeedSum / mNumberOfLocationUpdates);
+			ride.setMaxSpeed(mMaxSpeed);
+			ride.setDistance(mTotalDistance/1000);
+			ride.setElevationLoss(mElevationLoss);
+			ride.setElevationGain(mElevationGain);
+			ride.setAvgPace("0");
+			ride.setBikeID(0);
+			ride.setDuration("0");
+			ride.setRideDate(new Date().toString());
+
+			mAvgSpeedTextView.setText(String.format(Locale.UK,"%.0f", ride.getAvgSpeed()));
+			mMaxSpeedTextView.setText((String.format(Locale.UK,"%.1f", mMaxSpeed)));
+			mDistanceTextView.setText(String.format(Locale.UK,"%.1f", ride.getDistance()));
+			mElevationLossTextView.setText(String.format(Locale.UK,"%.1f",ride.getElevationLoss()));
+			mElevationGainTextView.setText(String.format(Locale.UK,"%.1f", ride.getElevationGain()));
+
+			mElevationTextView.setText(String.format(Locale.UK,"%f", mCurrentLocation.getAltitude()));
+			mSpeedTextView.setText(String.format(Locale.UK,"%.2f", mCurrentSpeed));
+
 		}
 
 
@@ -314,7 +329,7 @@ public class RideActivity extends AppCompatActivity implements
 	protected void onStop()
 		{
 			Log.i(TAG, "On Stop");
-			mGoogleApiClient.disconnect();
+			//mGoogleApiClient.disconnect();
 			super.onStop();
 		}
 
@@ -344,7 +359,7 @@ public class RideActivity extends AppCompatActivity implements
 	private void calculateSpeed(Location location, float distanceCovered, float elapsedTime)
 		{
 			mCurrentSpeed = location.getSpeed();
-			if (location.hasSpeed() == false)
+			if (!location.hasSpeed())
 			{
 				mCurrentSpeed = (distanceCovered) / elapsedTime;
 			}
@@ -394,10 +409,9 @@ public class RideActivity extends AppCompatActivity implements
 
 			float distanceCovered = mCurrentLocation.distanceTo(mPreviousLocation);
 			mTotalDistance += distanceCovered;
-
 			calculateSpeed(location, distanceCovered, elapsedTime);
 			calculateElevation();
-			updateUI();
+			updateRideObjectAndUI();
 		}
 
 	@Override
@@ -429,7 +443,6 @@ public class RideActivity extends AppCompatActivity implements
 			savedInstanceState.putBoolean(REQUESTING_LOCATION_UPDATES_KEY, mRequestingLocationUpdates);
 			savedInstanceState.putParcelable(LOCATION_KEY, mCurrentLocation);
 			savedInstanceState.putParcelable(STARTING_LOCATION, mPreviousLocation);
-			savedInstanceState.putString(LAST_UPDATED_TIME_STRING_KEY, mLastUpdateTime);
 			super.onSaveInstanceState(savedInstanceState);
 		}
 	}

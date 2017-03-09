@@ -26,6 +26,7 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import java.util.Date;
 import java.util.Locale;
 
 
@@ -160,6 +161,7 @@ public class RideActivity extends AppCompatActivity implements
 					public void onClick(DialogInterface dialog, int which)
 						{
 							mGoogleApiClient.disconnect();
+							ride.setRideDate(new Date().toString());
 							Intent intent = new Intent(RideActivity.this, RideSummaryActivity.class);
 							intent.putExtra("CurrentRideObject", ride);
 							startActivity(intent);
@@ -231,18 +233,22 @@ public class RideActivity extends AppCompatActivity implements
 	@Override
 	public void onLocationChanged(Location location)
 		{
-			Location mPreviousLocation = mCurrentLocation;
-			mCurrentLocation = location;
-			float distanceCovered;
-			float currentSpeed;
-			float elapsedTime = mCurrentLocation.getElapsedRealtimeNanos() -
-					                    mPreviousLocation.getElapsedRealtimeNanos();
-			elapsedTime /= 1000000000.0;
-			distanceCovered = mCurrentLocation.distanceTo(mPreviousLocation);
-			ride.setDistance(ride.getDistance() + distanceCovered);
-			currentSpeed = calculateSpeed(distanceCovered, elapsedTime);
-			calculateElevationChange(mPreviousLocation);
-			updateUI(currentSpeed);
+			if (location.getAccuracy() <= 30.0)
+			{
+				Location mPreviousLocation = mCurrentLocation;
+				mCurrentLocation = location;
+				float distanceCovered;
+				float currentSpeed;
+				float elapsedTime = mCurrentLocation.getElapsedRealtimeNanos() -
+						                    mPreviousLocation.getElapsedRealtimeNanos();
+				elapsedTime /= 1000000000.0;
+				distanceCovered = mCurrentLocation.distanceTo(mPreviousLocation);
+				ride.setDistance((ride.getDistance() + distanceCovered) / 1000);
+				currentSpeed = calculateSpeed(distanceCovered, elapsedTime);
+				calculateElevationChange(mPreviousLocation);
+				updateUI(currentSpeed);
+			}
+
 		}
 
 	private float calculateSpeed(float distanceCovered, float elapsedTime)

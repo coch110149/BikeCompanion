@@ -1,11 +1,13 @@
 package com.cochrane.clinton.bikecompanion;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
-import java.util.List;
 import java.util.Locale;
 
 public class RideSummaryActivity extends AppCompatActivity
@@ -21,7 +23,6 @@ public class RideSummaryActivity extends AppCompatActivity
 			Bundle bundle = getIntent().getExtras();
 			ride = bundle.getParcelable("CurrentRideObject");
 
-			TextView avgPaceTextView = (TextView) findViewById(R.id.AvgPace_Information);
 			TextView durationTextView = (TextView) findViewById(R.id.Duration_Information);
 			TextView distanceTextView = (TextView) findViewById(R.id.Distance_Information);
 			TextView maxSpeedTextView = (TextView) findViewById(R.id.MaxSpeed_Information);
@@ -29,37 +30,53 @@ public class RideSummaryActivity extends AppCompatActivity
 			TextView elevLossTextView = (TextView) findViewById(R.id.ElevationLoss_Information);
 			TextView elevGainTextView = (TextView) findViewById(R.id.ElevationGain_Information);
 
-			avgPaceTextView.setText(ride.getAvgPace());
 			durationTextView.setText(ride.getDuration());
 			distanceTextView.setText(String.format(Locale.UK, "%.1f", ride.getDistance()));
 			maxSpeedTextView.setText((String.format(Locale.UK, "%.2f", ride.getMaxSpeed())));
 			avgSpeedTextView.setText(String.format(Locale.UK, "%.0f", ride.getAvgSpeed()));
 			elevLossTextView.setText(String.format(Locale.UK, "%.1f", ride.getElevationLoss()));
 			elevGainTextView.setText(String.format(Locale.UK, "%.1f", ride.getElevationGain()));
+		}
+
+	public void SaveRide(View view)
+		{
 
 			DatabaseHandler db = new DatabaseHandler(this);
-			//db.dropDB();
-			Log.d ("Insert:" , "Inserting...");
-
-
-
-			db.addRide(ride);
-
-			db.getRide(ride.getID());
-
-			Log.d("Reading: ", "Reading All Rides...");
-			List<Ride> rides = db.getAllRides();
-			for (Ride ride1 : rides)
+			if (db.getRide(ride.getID()) == null && !ride.getDuration().equals("not started"))
 			{
-				String log = "ID: " + ride1.getID() + " ,BikeID: " + ride1.getBikeID() +
-									 ", avgSpeed: " + ride1.getAvgSpeed() + ", maxSpeed: " +
-									 ride1.getMaxSpeed() + ", distance: " + ride1.getDistance() +
-									 ", elevationLoss: " + ride1.getElevationLoss() +
-						             ", elevationGain: " + ride1.getElevationGain() + ", AvgPace: " +
-									 ride1.getAvgPace() + ", duration: " +  ride1.getDuration() +
-									 ", rideDate: " + ride1.getRideDate();
-				Log.d("DBTest: ", log);
+				db.addRide(ride);
 			}
+
+			Intent intent = new Intent(RideSummaryActivity.this, RideHistoryActivity.class);
+			startActivity(intent);
+			//Log.d("long ride" ,Double.toString(db.getRide(0).getDistance()));
+		}
+
+	public void DeleteRide(View view)
+		{
+			AlertDialog.Builder stopRideDialogBuilder = new AlertDialog.Builder(this);
+			stopRideDialogBuilder.setMessage(R.string.confirm_delete_ride);
+			stopRideDialogBuilder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
+				{
+					@Override
+					public void onClick(DialogInterface dialog, int which)
+						{
+							DatabaseHandler db = new DatabaseHandler(RideSummaryActivity.this);
+							db.deleteRide(ride);
+							Intent intent = new Intent(RideSummaryActivity.this, RideHistoryActivity.class);
+							startActivity(intent);
+						}
+				});
+			stopRideDialogBuilder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
+				{
+					@Override
+					public void onClick(DialogInterface dialog, int which)
+						{
+							dialog.dismiss();
+						}
+				});
+			AlertDialog stopRideDialog = stopRideDialogBuilder.create();
+			stopRideDialog.show();
 
 
 		}

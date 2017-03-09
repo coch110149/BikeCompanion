@@ -3,4 +3,5 @@
     <string name="confirm_exit_ride">Are you sure you want to stop this ride?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="confirm_delete_ride">Are you sure you want to delete this ride?</string>
 </resources>

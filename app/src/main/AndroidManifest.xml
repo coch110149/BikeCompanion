@@ -19,11 +19,9 @@
         </activity>
         <activity android:name=".RideActivity">
         </activity>
-        <activity android:name=".RidingBuddyActivity">
-        </activity>
-        <activity android:name=".BikeGarageActivity">
-        </activity>
         <activity android:name=".RideSummaryActivity">
+        </activity>
+        <activity android:name=".RideHistoryActivity">
         </activity>
     </application>
 

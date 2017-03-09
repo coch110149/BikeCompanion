@@ -3,11 +3,7 @@ package com.cochrane.clinton.bikecompanion;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/**
- * Created by Clint on 04/03/2017.
- */
-
-public class Ride implements Parcelable
+class Ride implements Parcelable
 	{
 	/**
 	 * This field is needed for Android to be able to create new objects, individually or as arrays
@@ -32,17 +28,16 @@ public class Ride implements Parcelable
 	private double _distance;
 	private double _elevation_loss;
 	private double _elevation_gain;
-	private String _avg_pace;
 	private String _duration;
 	private String _ride_date;
 
-	public Ride()
+	Ride()
 		{
+			this(0, 0, 0, 0, 0, 0, 0, "not started", "not started");
 		}
 
-	public Ride(int id, int bikeID, double avgSpeed, double maxSpeed, double distance,
-	            double elevationGain, double elevationLoss, String avgPace,
-	            String duration, String rideDate)
+	Ride(int id, int bikeID, double avgSpeed, double maxSpeed, double distance,
+	     double elevationGain, double elevationLoss, String duration, String rideDate)
 		{
 			this._id = id;
 			this._bike_id = bikeID;
@@ -51,7 +46,6 @@ public class Ride implements Parcelable
 			this._distance = distance;
 			this._elevation_gain = elevationGain;
 			this._elevation_loss = elevationLoss;
-			this._avg_pace = avgPace;
 			this._duration = duration;
 			this._ride_date = rideDate;
 		}
@@ -61,7 +55,7 @@ public class Ride implements Parcelable
 	 *
 	 * @param incomingParcel a parcel used to read this object
 	 */
-	public Ride(Parcel incomingParcel)
+	private Ride(Parcel incomingParcel)
 		{
 			this._id = incomingParcel.readInt();
 			this._bike_id = incomingParcel.readInt();
@@ -70,108 +64,96 @@ public class Ride implements Parcelable
 			this._distance = incomingParcel.readDouble();
 			this._elevation_gain = incomingParcel.readDouble();
 			this._elevation_loss = incomingParcel.readDouble();
-			this._avg_pace = incomingParcel.readString();
 			this._duration = incomingParcel.readString();
 			this._ride_date = incomingParcel.readString();
-
 		}
 
-	public int getID()
+	int getID()
 		{
 			return this._id;
 		}
 
-	public void setID(int id)
+	void setID(int id)
 		{
 			this._id = id;
 		}
 
-	public int getBikeID()
+	int getBikeID()
 		{
 			return this._bike_id;
 		}
 
-	public void setBikeID(int bikeID)
+	void setBikeID(int bikeID)
 		{
 			this._bike_id = bikeID;
 		}
 
-	public double getAvgSpeed()
+	double getAvgSpeed()
 		{
 			return this._avg_speed;
 		}
 
-	public void setAvgSpeed(double avgSpeed)
+	void setAvgSpeed(double avgSpeed)
 		{
 			this._avg_speed = avgSpeed;
 		}
 
-	public double getMaxSpeed()
+	double getMaxSpeed()
 		{
 			return this._max_speed;
 		}
 
-	public void setMaxSpeed(double maxSpeed)
+	void setMaxSpeed(double maxSpeed)
 		{
 			this._max_speed = maxSpeed;
 		}
 
-	public double getDistance()
+	double getDistance()
 		{
 			return this._distance;
 		}
 
-	public void setDistance(double distance)
+	void setDistance(double distance)
 		{
 			this._distance = distance;
 		}
 
-	public double getElevationLoss()
+	double getElevationLoss()
 		{
 			return this._elevation_loss;
 		}
 
-	public void setElevationLoss(double elevationLoss)
+	void setElevationLoss(double elevationLoss)
 		{
 			this._elevation_loss = elevationLoss;
 		}
 
-	public double getElevationGain()
+	double getElevationGain()
 		{
 			return this._elevation_gain;
 		}
 
-	public void setElevationGain(double elevationGain)
+	void setElevationGain(double elevationGain)
 		{
 			this._elevation_gain = elevationGain;
 		}
 
-	public String getAvgPace()
-		{
-			return this._avg_pace;
-		}
-
-	public void setAvgPace(String avgPace)
-		{
-			this._avg_pace = avgPace;
-		}
-
-	public String getDuration()
+	String getDuration()
 		{
 			return this._duration;
 		}
 
-	public void setDuration(String duration)
+	void setDuration(String duration)
 		{
 			this._duration = duration;
 		}
 
-	public String getRideDate()
+	String getRideDate()
 		{
 			return this._ride_date;
 		}
 
-	public void setRideDate(String rideDate)
+	void setRideDate(String rideDate)
 		{
 			this._ride_date = rideDate;
 		}
@@ -199,7 +181,6 @@ public class Ride implements Parcelable
 			dest.writeDouble(_distance);
 			dest.writeDouble(_elevation_gain);
 			dest.writeDouble(_elevation_loss);
-			dest.writeString(_avg_pace);
 			dest.writeString(_duration);
 			dest.writeString(_ride_date);
 		}
@@ -208,13 +189,7 @@ public class Ride implements Parcelable
 	public boolean equals(Object obj)
 		{
 			Boolean isEqual;
-			if (obj instanceof Ride)
-			{
-				isEqual = this._id == ((Ride) obj)._id;
-			} else
-			{
-				isEqual = false;
-			}
+			isEqual = obj instanceof Ride && this._id == ((Ride) obj)._id;
 			return isEqual;
 		}
 	}

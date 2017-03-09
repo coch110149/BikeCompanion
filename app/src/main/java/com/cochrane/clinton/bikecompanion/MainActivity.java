@@ -13,13 +13,6 @@ public class MainActivity extends AppCompatActivity
 		{
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.activity_main);
-			/**
-			 *  populate bike name, alerts
-			 *      if list is empty prompt user to fill in information
-			 *  populate groups that are activated
-			 *      if list is empty prompt user to fill in information
-			 *  set up buttons (bike info, riding buddy, and fab)
-			 */
 		}
 
 	public void ShowRideActivity(View view)

@@ -9,11 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Clint on 04/03/2017.
- */
-
-public class DatabaseHandler extends SQLiteOpenHelper
+class DatabaseHandler extends SQLiteOpenHelper
 	{
 	private static final int DATABASE_VERSION = 1;
 	private static final String DATABASE_NAME = "rideManager";
@@ -24,14 +20,13 @@ public class DatabaseHandler extends SQLiteOpenHelper
 	private static final String KEY_BIKE_ID = "bike_id";
 	private static final String KEY_AVG_SPEED = "Average_Speed";
 	private static final String KEY_MAX_SPEED = "Max_Speed";
-	private static final String KEY_AVG_PACE = "Average_Pace";
 	private static final String KEY_DURATION = "Ride_Duration";
 	private static final String KEY_DISTANCE = "Ride_Distance";
 	private static final String KEY_ELE_LOSS = "Elevation_Loss";
 	private static final String KEY_ELE_GAIN = "Elevation_Gain";
 	private static final String KEY_RIDE_DATE = "Ride_Date";
 
-	public DatabaseHandler(Context context)
+	DatabaseHandler(Context context)
 		{
 			super(context, DATABASE_NAME, null, DATABASE_VERSION);
 		}
@@ -45,11 +40,10 @@ public class DatabaseHandler extends SQLiteOpenHelper
 					                            + KEY_BIKE_ID + " TEXT, "
 					                            + KEY_AVG_SPEED + " TEXT, "
 					                            + KEY_MAX_SPEED + " TEXT, "
-					                            + KEY_AVG_PACE + " TEXT, "
-					                            + KEY_DURATION + " TEXT, "
 					                            + KEY_DISTANCE + " TEXT, "
-					                            + KEY_ELE_LOSS + " TEXT, "
 					                            + KEY_ELE_GAIN + " TEXT, "
+					                            + KEY_ELE_LOSS + " TEXT, "
+					                            + KEY_DURATION + " TEXT, "
 					                            + KEY_RIDE_DATE + " TEXT);";
 			db.execSQL(CREATE_RIDES_TABLE);
 		}
@@ -62,55 +56,53 @@ public class DatabaseHandler extends SQLiteOpenHelper
 			onCreate(db);
 		}
 
-	public void addRide(Ride ride)
+	void addRide(Ride ride)
 		{
 			SQLiteDatabase db = this.getWritableDatabase();
 			ContentValues values = new ContentValues();
 			values.put(KEY_BIKE_ID, ride.getBikeID());
 			values.put(KEY_AVG_SPEED, ride.getAvgSpeed());
 			values.put(KEY_MAX_SPEED, ride.getMaxSpeed());
-			values.put(KEY_AVG_PACE, ride.getAvgPace());
 			values.put(KEY_DURATION, ride.getDuration());
 			values.put(KEY_DISTANCE, ride.getDistance());
 			values.put(KEY_ELE_LOSS, ride.getElevationLoss());
 			values.put(KEY_ELE_GAIN, ride.getElevationGain());
 			values.put(KEY_RIDE_DATE, ride.getRideDate());
-
 			db.insert(TABLE_RIDES, null, values);
 			db.close();
 		}
 
-	public Ride getRide(int id)
+	Ride getRide(int id)
 		{
 			SQLiteDatabase db = this.getReadableDatabase();
 
 			Cursor cursor = db.query(TABLE_RIDES, new String[]{KEY_ID, KEY_BIKE_ID, KEY_AVG_SPEED,
-							KEY_MAX_SPEED, KEY_AVG_PACE, KEY_DURATION, KEY_DISTANCE, KEY_ELE_LOSS,
-							KEY_ELE_GAIN, KEY_RIDE_DATE}, KEY_ID + "=?", new String[]{String.valueOf(id)},
+							KEY_MAX_SPEED, KEY_DISTANCE, KEY_ELE_GAIN, KEY_ELE_LOSS, KEY_DURATION,
+							KEY_RIDE_DATE}, KEY_ID + "=?", new String[]{String.valueOf(id)},
 					null, null, null, null);
 			Ride ride = null;
 			if (cursor != null)
 			{
-				if(cursor.moveToFirst())
+				if (cursor.moveToFirst())
 				{
+
 					ride = new Ride(
-							               Integer.parseInt(cursor.getString(0)),          //id
+							               Integer.parseInt(cursor.getString(0)),   //id
 							               Integer.parseInt(cursor.getString(1)),   //bike id
 							               Double.parseDouble(cursor.getString(2)), //avgSpeed
 							               Double.parseDouble(cursor.getString(3)), //MaxSpeed
 							               Double.parseDouble(cursor.getString(4)), //Distance
 							               Double.parseDouble(cursor.getString(5)), //EleGain
 							               Double.parseDouble(cursor.getString(6)), //EleLoss
-							               cursor.getString(7), cursor.getString(8),//AvgPace, Duration
-							               cursor.getString(9));                    //Date
+							               cursor.getString(7),                     // Duration
+							               cursor.getString(8));                    //Date
 				}
-
+				cursor.close();
 			}
 			return ride;
-
 		}
 
-	public List<Ride> getAllRides()
+	List<Ride> getAllRides()
 		{
 			List<Ride> rideList = new ArrayList<>();
 			String selectQuery = "SELECT * FROM " + TABLE_RIDES;
@@ -121,6 +113,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 			{
 				do
 				{
+
 					Ride ride = new Ride();
 					ride.setID(Integer.parseInt(cursor.getString(0)));
 					ride.setBikeID(Integer.parseInt(cursor.getString(1)));
@@ -129,14 +122,12 @@ public class DatabaseHandler extends SQLiteOpenHelper
 					ride.setDistance(Double.parseDouble(cursor.getString(4)));
 					ride.setElevationGain(Double.parseDouble(cursor.getString(5)));
 					ride.setElevationLoss(Double.parseDouble(cursor.getString(6)));
-					ride.setAvgPace(cursor.getString(7));
-					ride.setDuration(cursor.getString(8));
-					ride.setRideDate(cursor.getString(9));
-
+					ride.setDuration(cursor.getString(7));
+					ride.setRideDate(cursor.getString(8));
 					rideList.add(ride);
 				} while (cursor.moveToNext());
 			}
-
+			cursor.close();
 			return rideList;
 		}
 
@@ -157,7 +148,6 @@ public class DatabaseHandler extends SQLiteOpenHelper
 			values.put(KEY_BIKE_ID, ride.getBikeID());
 			values.put(KEY_AVG_SPEED, ride.getAvgSpeed());
 			values.put(KEY_MAX_SPEED, ride.getMaxSpeed());
-			values.put(KEY_AVG_PACE, ride.getAvgPace());
 			values.put(KEY_DURATION, ride.getDuration());
 			values.put(KEY_DISTANCE, ride.getDistance());
 			values.put(KEY_ELE_LOSS, ride.getElevationLoss());
@@ -168,21 +158,10 @@ public class DatabaseHandler extends SQLiteOpenHelper
 					new String[]{String.valueOf(ride.getID())});
 		}
 
-	public void deleteRide (Ride ride)
+	void deleteRide(Ride ride)
 		{
 			SQLiteDatabase db = this.getWritableDatabase();
-			db.delete(TABLE_RIDES, KEY_ID + "=?", new String [] {String.valueOf(ride.getID())} );
+			db.delete(TABLE_RIDES, KEY_ID + "=?", new String[]{String.valueOf(ride.getID())});
 			db.close();
 		}
-
-
-	/**
-	 * each ride save will update year, month, and week currant tables
-	 * month
-	 *      On the first on each month, copy current month to previous month
-	 *
-	 *
-	 *
-	 */
-
 	}

@@ -21,10 +21,10 @@ public class RideHistoryActivity extends AppCompatActivity
 			DatabaseHandler db = new DatabaseHandler(this);
 			final ArrayList<Ride> rides = (ArrayList<Ride>) db.getAllRides();
 
-			RidesAdapter ridesAdapter = new RidesAdapter(this, rides);
+			RideAdapter rideAdapter = new RideAdapter(this, rides);
 
 			ListView listView = (ListView) findViewById(R.id.listview_ride_history);
-			listView.setAdapter(ridesAdapter);
+			listView.setAdapter(rideAdapter);
 
 			listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
 				{

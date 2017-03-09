@@ -11,9 +11,9 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-class RidesAdapter extends ArrayAdapter<Ride>
+class RideAdapter extends ArrayAdapter<Ride>
 	{
-	RidesAdapter(Activity context, ArrayList<Ride> rides)
+	RideAdapter(Activity context, ArrayList<Ride> rides)
 		{
 			super(context, 0, rides);
 		}

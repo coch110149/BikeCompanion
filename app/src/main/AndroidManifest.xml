@@ -25,6 +25,10 @@
         </activity>
         <activity android:name=".BikeGarage">
         </activity>
+        <activity android:name=".BikeConfigurationActivity">
+        </activity>
+        <activity android:name=".BikeChooserActivity">
+        </activity>
     </application>
 
 </manifest>

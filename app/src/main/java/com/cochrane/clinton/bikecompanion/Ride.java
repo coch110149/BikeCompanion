@@ -3,6 +3,7 @@ package com.cochrane.clinton.bikecompanion;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+
 class Ride implements Parcelable
 	{
 	/**
@@ -21,6 +22,7 @@ class Ride implements Parcelable
 				}
 		};
 	//private variables
+
 	private int _id;
 	private int _bike_id;
 	private double _avg_speed;
@@ -33,7 +35,7 @@ class Ride implements Parcelable
 
 	Ride()
 		{
-			this(0, 0, 0, 0, 0, 0, 0, "not started", "not started");
+			this(-1, -1, 0, 0, 0, 0, 0, "not started", "not started");
 		}
 
 	Ride(int id, int bikeID, double avgSpeed, double maxSpeed, double distance,
@@ -72,11 +74,10 @@ class Ride implements Parcelable
 		{
 			return this._id;
 		}
-
-	void setID(int id)
-		{
-			this._id = id;
-		}
+//	public void setID(int id)
+//		{
+//			this._id = id;
+//		}
 
 	int getBikeID()
 		{
@@ -108,12 +109,14 @@ class Ride implements Parcelable
 			this._max_speed = maxSpeed;
 		}
 
-	double getDistance()
+
+	public double getDistance()
 		{
 			return this._distance;
 		}
 
-	void setDistance(double distance)
+
+	public void setDistance( double distance )
 		{
 			this._distance = distance;
 		}

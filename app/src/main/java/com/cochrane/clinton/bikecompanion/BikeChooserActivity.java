@@ -1,9 +1,9 @@
 package com.cochrane.clinton.bikecompanion;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
@@ -11,36 +11,29 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 
-public class BikeGarage extends AppCompatActivity
+public class BikeChooserActivity extends AppCompatActivity
 	{
 	@Override
 	protected void onCreate( Bundle savedInstanceState )
 		{
-			Log.i("BikeGarage", "onCreate");
 			super.onCreate(savedInstanceState);
-			setContentView(R.layout.activity_bike_garage);
+			setContentView(R.layout.activity_bike_chooser);
 			DatabaseHandler db = new DatabaseHandler(this);
 			final ArrayList<Bike> bikes = (ArrayList<Bike>) db.getAllBikes();
-			BikeGarageAdapter bikeGarageAdapter = new BikeGarageAdapter(this, bikes);
+			BikeChooserAdapter bikeChooserAdapter = new BikeChooserAdapter(this, bikes);
 			ListView listView = (ListView) findViewById(R.id.list_view_bike);
-			listView.setAdapter(bikeGarageAdapter);
+			listView.setAdapter(bikeChooserAdapter);
 			listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
 				{
 					@Override
 					public void onItemClick( AdapterView<?> parent, View view, int position, long id )
 						{
+							Intent intent = new Intent();
 							Bike bike = bikes.get(position);
-							Intent intent = new Intent(BikeGarage.this, BikeConfigurationActivity.class);
-							intent.putExtra("SelectedBikeObject", bike);
-							startActivity(intent);
+							intent.setData(Uri.parse(Integer.toString(bike.getID())));
+							setResult(RESULT_OK, intent);
+							finish();
 						}
 				});
-		}
-
-
-	public void AddNewBike( View view )
-		{
-			Intent intent = new Intent(BikeGarage.this, BikeConfigurationActivity.class);
-			startActivity(intent);
 		}
 	}

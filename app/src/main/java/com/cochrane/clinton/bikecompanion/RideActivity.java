@@ -30,19 +30,22 @@ import java.util.Date;
 import java.util.Locale;
 
 
-public class RideActivity extends AppCompatActivity implements
-		GoogleApiClient.ConnectionCallbacks,
-				GoogleApiClient.OnConnectionFailedListener, LocationListener
+//CHECKSTYLE:OFF: checkstyle:magicnumber
+public class RideActivity extends AppCompatActivity
+		implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
+				           LocationListener
 	{
+	public static final int REQUEST_CODE = 666;
+	public static final double ACCURACY_IN_METERS = 30.0;
 	protected static final String TAG = "BC-riding-activity";
 	private static final long UPDATE_INTERVAL_IN_MS = 5000;
 	private static final long FASTEST_UPDATE_INTERVAL_IN_MS = UPDATE_INTERVAL_IN_MS / 2;
-
 	public Ride ride = new Ride();
 	private long mTimeWhenPaused = 0;
 	private Location mCurrentLocation;
 	private GoogleApiClient mGoogleApiClient;
 	private int mNumberOfLocationUpdates = 0;
+	private float mSpeedSum = 0;
 	private LocationRequest mLocationRequest;
 	//ui widgets
 	private Button mStartRideButton;
@@ -58,12 +61,12 @@ public class RideActivity extends AppCompatActivity implements
 	private TextView mSpeedTextView;
 
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState)
+	@Override protected void onCreate( Bundle savedInstanceState )
 		{
+			Intent intent = getIntent();
+			ride.setBikeID(intent.getIntExtra("SelectableBikeID", -1));
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.activity_ride);
-			buildGoogleApiClient();
 			mStopRideButton = (Button) findViewById(R.id.StopRideButton);
 			mStartRideButton = (Button) findViewById(R.id.StartRideButton);
 			mPauseRideButton = (Button) findViewById(R.id.PauseRideButton);
@@ -75,11 +78,9 @@ public class RideActivity extends AppCompatActivity implements
 			mDurationTextView = (Chronometer) findViewById(R.id.Duration_Information);
 			mElevationLossTextView = (TextView) findViewById(R.id.ElevationLoss_Information);
 			mElevationGainTextView = (TextView) findViewById(R.id.ElevationGain_Information);
-
 			mStopRideButton.setVisibility(View.GONE);
 			mPauseRideButton.setVisibility(View.GONE);
 			mStartRideButton.setVisibility(View.GONE);
-
 		}
 
 
@@ -88,8 +89,7 @@ public class RideActivity extends AppCompatActivity implements
 			mGoogleApiClient = new GoogleApiClient.Builder(this)
 					                   .addConnectionCallbacks(this)
 					                   .addOnConnectionFailedListener(this)
-					                   .addApi(LocationServices.API)
-					                   .build();
+					                   .addApi(LocationServices.API).build();
 			createLocationRequest();
 		}
 
@@ -103,43 +103,43 @@ public class RideActivity extends AppCompatActivity implements
 		}
 
 
-	@Override
-	public void onConnectionSuspended(int i)
+	@Override public void onConnectionSuspended( int i )
 		{
 			mGoogleApiClient.connect();
 		}
 
 
-	@Override
-	public void onConnectionFailed(@NonNull ConnectionResult connectionResult)
+	@Override public void onConnectionFailed( @NonNull ConnectionResult connectionResult )
 		{
-			String msg = "ConnectionFailed with errorCode: " + connectionResult.getErrorCode() +
-					             "\n errorMessage: " + connectionResult.getErrorMessage();
+			String msg = "ConnectionFailed with errorCode: " +
+					             connectionResult.getErrorCode() +
+					             "\n errorMessage: " +
+					             connectionResult.getErrorMessage();
 			Log.i(TAG, msg);
 		}
 
 
-	@Override
-	public void onConnected(@Nullable Bundle bundle)
+	@Override public void onConnected( @Nullable Bundle bundle )
 		{
 			mStartRideButton.setVisibility(View.VISIBLE);
 		}
 
 
-	public void StartRide(View v)
+	public void StartRide( View v )
 		{
 			mDurationTextView.setBase(SystemClock.elapsedRealtime() + mTimeWhenPaused);
 			mDurationTextView.start();
 			mPauseRideButton.setVisibility(View.VISIBLE);
 			mStartRideButton.setVisibility(View.GONE);
 			mStopRideButton.setVisibility(View.GONE);
-			if (runtimePermissions())
+			if(runtimePermissions())
 			{
 				startLocationUpdates();
 			}
 		}
 
-	public void PauseRide(View v)
+
+	public void PauseRide( View v )
 		{
 			mTimeWhenPaused = (mDurationTextView.getBase() - SystemClock.elapsedRealtime());
 			ride.setDuration(mDurationTextView.getText().toString());
@@ -151,14 +151,13 @@ public class RideActivity extends AppCompatActivity implements
 		}
 
 
-	public void StopRide(View v)
+	public void StopRide( View v )
 		{
 			AlertDialog.Builder stopRideDialogBuilder = new AlertDialog.Builder(this);
 			stopRideDialogBuilder.setMessage(R.string.confirm_exit_ride);
 			stopRideDialogBuilder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
 				{
-					@Override
-					public void onClick(DialogInterface dialog, int which)
+					@Override public void onClick( DialogInterface dialog, int which )
 						{
 							mGoogleApiClient.disconnect();
 							ride.setRideDate(new Date().toString());
@@ -169,26 +168,25 @@ public class RideActivity extends AppCompatActivity implements
 				});
 			stopRideDialogBuilder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
 				{
-					@Override
-					public void onClick(DialogInterface dialog, int which)
+					@Override public void onClick( DialogInterface dialog, int which )
 						{
 							dialog.dismiss();
 						}
 				});
 			AlertDialog stopRideDialog = stopRideDialogBuilder.create();
 			stopRideDialog.show();
-
 		}
 
 
 	private boolean runtimePermissions()
 		{
 			boolean response;
-			if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-					    != PackageManager.PERMISSION_GRANTED)
+			if(ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) !=
+					   PackageManager.PERMISSION_GRANTED)
 			{
 				ActivityCompat.requestPermissions(this,
-						new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 666);
+						new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+						REQUEST_CODE);
 				response = false;
 			} else
 			{
@@ -197,13 +195,14 @@ public class RideActivity extends AppCompatActivity implements
 			return response;
 		}
 
+
 	@Override
-	public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-	                                       @NonNull int[] grantResults)
+	public void onRequestPermissionsResult( int requestCode, @NonNull String[] permissions,
+			                                      @NonNull int[] grantResults )
 		{
-			if (requestCode == 666)
+			if(requestCode == REQUEST_CODE)
 			{
-				if (grantResults[0] == PackageManager.PERMISSION_GRANTED)
+				if(grantResults[0] == PackageManager.PERMISSION_GRANTED)
 				{
 					startLocationUpdates();
 				} else
@@ -213,80 +212,84 @@ public class RideActivity extends AppCompatActivity implements
 			}
 		}
 
-	@SuppressWarnings({"MissingPermission"})
-	private void startLocationUpdates()
+
+	@SuppressWarnings({"MissingPermission"}) private void startLocationUpdates()
 		{
-			if (runtimePermissions())
+			if(runtimePermissions())
 			{
-				mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation
-						                                                     (mGoogleApiClient);
+				mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
 				LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
-						mLocationRequest, this);
+						mLocationRequest,
+						this);
 			}
 		}
+
 
 	private void stopLocationUpdates()
 		{
 			LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this);
 		}
 
-	@Override
-	public void onLocationChanged(Location location)
+
+	@Override public void onLocationChanged( Location location )
 		{
-			if (location.getAccuracy() <= 30.0)
+			Location mPreviousLocation = mCurrentLocation;
+			mCurrentLocation = location;
+			if(location.getAccuracy() <= ACCURACY_IN_METERS && location.getAccuracy() > 0.0)
 			{
-				Location mPreviousLocation = mCurrentLocation;
-				mCurrentLocation = location;
 				float distanceCovered;
 				float currentSpeed;
 				float elapsedTime = mCurrentLocation.getElapsedRealtimeNanos() -
 						                    mPreviousLocation.getElapsedRealtimeNanos();
+
 				elapsedTime /= 1000000000.0;
-				distanceCovered = mCurrentLocation.distanceTo(mPreviousLocation);
-				ride.setDistance((ride.getDistance() + distanceCovered) / 1000);
-				currentSpeed = calculateSpeed(distanceCovered, elapsedTime);
+				distanceCovered = mCurrentLocation.distanceTo(mPreviousLocation) / 1000;
+				ride.setDistance(ride.getDistance() + distanceCovered);
+				currentSpeed = calculateSpeed(distanceCovered * 1000, elapsedTime);
 				calculateElevationChange(mPreviousLocation);
 				updateUI(currentSpeed);
 			}
-
 		}
 
-	private float calculateSpeed(float distanceCovered, float elapsedTime)
+
+	private float calculateSpeed( float distanceCovered, float elapsedTime )
 		{
-			float currentSpeed = mCurrentLocation.getSpeed();
-			double speedSum = ride.getAvgSpeed() * mNumberOfLocationUpdates;
-			if (!mCurrentLocation.hasSpeed())
+			float currentSpeed = (18.0f / 5.0f);
+			currentSpeed *= distanceCovered / elapsedTime;
+			if(mCurrentLocation.hasSpeed())
 			{
-				currentSpeed = distanceCovered / elapsedTime;
+				currentSpeed *= mCurrentLocation.getSpeed();
+				if(ride.getMaxSpeed() < currentSpeed)
+				{
+					ride.setMaxSpeed(currentSpeed);
+				}
 			}
-			currentSpeed = (currentSpeed * 18) / 5;
+			mSpeedSum += currentSpeed;
 			mNumberOfLocationUpdates += 1;
-			ride.setAvgSpeed(speedSum / mNumberOfLocationUpdates);
-			if (ride.getMaxSpeed() < currentSpeed)
-			{
-				ride.setMaxSpeed(currentSpeed);
-			}
+			ride.setAvgSpeed(mSpeedSum / mNumberOfLocationUpdates);
 			return currentSpeed;
 		}
 
-	private void calculateElevationChange(Location previousLocation)
+
+	private void calculateElevationChange( Location previousLocation )
 		{
 			double eleChange;
-			if (mCurrentLocation.getAltitude() != 0 && previousLocation.getAltitude() != 0)
+			if(mCurrentLocation.getAltitude() != 0 && previousLocation.getAltitude() != 0)
 			{
-				if (mCurrentLocation.getAltitude() > previousLocation.getAltitude())
+				if(mCurrentLocation.getAltitude() > previousLocation.getAltitude())
 				{
 					eleChange = mCurrentLocation.getAltitude() - previousLocation.getAltitude();
 					ride.setElevationGain(ride.getElevationGain() + eleChange);
-				} else if (mCurrentLocation.getAltitude() < previousLocation.getAltitude())
+				} else if(mCurrentLocation.getAltitude() < previousLocation.getAltitude())
 				{
 					eleChange = previousLocation.getAltitude() - mCurrentLocation.getAltitude();
-					ride.setElevationGain(ride.getElevationLoss() + eleChange);
+					ride.setElevationLoss(ride.getElevationLoss() + eleChange);
 				}
 			}
 		}
 
-	private void updateUI(double currentSpeed)
+
+	private void updateUI( double currentSpeed )
 		{
 			mMaxSpeedTextView.setText(String.format(Locale.UK, "%.1f", ride.getMaxSpeed()));
 			mDistanceTextView.setText(String.format(Locale.UK, "%.1f", ride.getDistance()));
@@ -297,18 +300,19 @@ public class RideActivity extends AppCompatActivity implements
 			mSpeedTextView.setText(String.format(Locale.UK, "%.1f", currentSpeed));
 		}
 
-	@Override
-	protected void onStart()
+
+	@Override protected void onStart()
 		{
 			super.onStart();
-			if (mGoogleApiClient != null)
+			buildGoogleApiClient();
+			if(mGoogleApiClient != null)
 			{
 				mGoogleApiClient.connect();
 			}
 		}
 
-	@Override
-	protected void onStop()
+
+	@Override protected void onStop()
 		{
 			super.onStop();
 		}

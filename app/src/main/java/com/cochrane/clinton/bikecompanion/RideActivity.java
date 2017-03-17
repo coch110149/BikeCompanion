@@ -288,6 +288,10 @@ public class RideActivity extends AppCompatActivity
 				currentSpeed = calculateSpeed(distanceCovered * 1000, elapsedTime);
 				calculateElevationChange(mPreviousLocation);
 				updateUI(currentSpeed);
+				debuggingInformationthatwillbedeletedlater += "," + elapsedTime + "," +
+						                                              +distanceCovered + "," +
+						                                              currentSpeed + "," +
+						                                              ride.toString();
 			}
 		}
 

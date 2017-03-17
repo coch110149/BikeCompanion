@@ -11,18 +11,18 @@ class Ride implements Parcelable
 	 */
 	public static final Parcelable.Creator<Ride> CREATOR = new Parcelable.Creator<Ride>()
 		{
-			public Ride createFromParcel(Parcel in)
+			public Ride createFromParcel( Parcel in )
 				{
 					return new Ride(in);
 				}
 
-			public Ride[] newArray(int size)
+
+			public Ride[] newArray( int size )
 				{
 					return new Ride[size];
 				}
 		};
 	//private variables
-
 	private int _id;
 	private int _bike_id;
 	private double _avg_speed;
@@ -33,13 +33,15 @@ class Ride implements Parcelable
 	private String _duration;
 	private String _ride_date;
 
+
 	Ride()
 		{
 			this(-1, -1, 0, 0, 0, 0, 0, "not started", "not started");
 		}
 
-	Ride(int id, int bikeID, double avgSpeed, double maxSpeed, double distance,
-	     double elevationGain, double elevationLoss, String duration, String rideDate)
+
+	Ride( int id, int bikeID, double avgSpeed, double maxSpeed, double distance,
+			    double elevationGain, double elevationLoss, String duration, String rideDate )
 		{
 			this._id = id;
 			this._bike_id = bikeID;
@@ -52,12 +54,13 @@ class Ride implements Parcelable
 			this._ride_date = rideDate;
 		}
 
+
 	/**
 	 * Use when reconstructing Ride Object from parcel. This will be used only by the "creator"
 	 *
 	 * @param incomingParcel a parcel used to read this object
 	 */
-	private Ride(Parcel incomingParcel)
+	private Ride( Parcel incomingParcel )
 		{
 			this._id = incomingParcel.readInt();
 			this._bike_id = incomingParcel.readInt();
@@ -70,6 +73,7 @@ class Ride implements Parcelable
 			this._ride_date = incomingParcel.readString();
 		}
 
+
 	int getID()
 		{
 			return this._id;
@@ -79,32 +83,38 @@ class Ride implements Parcelable
 //			this._id = id;
 //		}
 
+
 	int getBikeID()
 		{
 			return this._bike_id;
 		}
 
-	void setBikeID(int bikeID)
+
+	void setBikeID( int bikeID )
 		{
 			this._bike_id = bikeID;
 		}
+
 
 	double getAvgSpeed()
 		{
 			return this._avg_speed;
 		}
 
-	void setAvgSpeed(double avgSpeed)
+
+	void setAvgSpeed( double avgSpeed )
 		{
 			this._avg_speed = avgSpeed;
 		}
+
 
 	double getMaxSpeed()
 		{
 			return this._max_speed;
 		}
 
-	void setMaxSpeed(double maxSpeed)
+
+	void setMaxSpeed( double maxSpeed )
 		{
 			this._max_speed = maxSpeed;
 		}
@@ -121,45 +131,61 @@ class Ride implements Parcelable
 			this._distance = distance;
 		}
 
+
 	double getElevationLoss()
 		{
 			return this._elevation_loss;
 		}
 
-	void setElevationLoss(double elevationLoss)
+
+	void setElevationLoss( double elevationLoss )
 		{
 			this._elevation_loss = elevationLoss;
 		}
+
 
 	double getElevationGain()
 		{
 			return this._elevation_gain;
 		}
 
-	void setElevationGain(double elevationGain)
+
+	void setElevationGain( double elevationGain )
 		{
 			this._elevation_gain = elevationGain;
 		}
+
 
 	String getDuration()
 		{
 			return this._duration;
 		}
 
-	void setDuration(String duration)
+
+	void setDuration( String duration )
 		{
 			this._duration = duration;
 		}
+
 
 	String getRideDate()
 		{
 			return this._ride_date;
 		}
 
-	void setRideDate(String rideDate)
+
+	void setRideDate( String rideDate )
 		{
 			this._ride_date = rideDate;
 		}
+
+
+	@Override public String toString()
+		{
+			return _id + "," + _bike_id + "," + _avg_speed + "," + _max_speed + "," + _distance +
+					       _elevation_loss + "," + _elevation_gain + "," + _duration + "," + _ride_date;
+		}
+
 
 	@Override
 	public int describeContents()
@@ -167,15 +193,16 @@ class Ride implements Parcelable
 			return 0;
 		}
 
+
 	/**
 	 * Object Serialization happens here, Write object content to parcel one by one, reading
 	 * should be done according to this writing order
 	 *
-	 * @param dest  parcel
+	 * @param dest parcel
 	 * @param flags additional flags about how the object should be written
 	 */
 	@Override
-	public void writeToParcel(Parcel dest, int flags)
+	public void writeToParcel( Parcel dest, int flags )
 		{
 			dest.writeInt(_id);
 			dest.writeInt(_bike_id);
@@ -188,8 +215,9 @@ class Ride implements Parcelable
 			dest.writeString(_ride_date);
 		}
 
+
 	@Override
-	public boolean equals(Object obj)
+	public boolean equals( Object obj )
 		{
 			Boolean isEqual;
 			isEqual = obj instanceof Ride && this._id == ((Ride) obj)._id;

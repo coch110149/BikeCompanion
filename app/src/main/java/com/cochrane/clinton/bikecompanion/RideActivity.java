@@ -41,6 +41,8 @@ public class RideActivity extends AppCompatActivity
 	private static final long UPDATE_INTERVAL_IN_MS = 5000;
 	private static final long FASTEST_UPDATE_INTERVAL_IN_MS = UPDATE_INTERVAL_IN_MS / 2;
 	public Ride ride = new Ride();
+	String debuggingInformationthatwillbedeletedlater = "Latitude,Longitude,Elevation,Speed,Accuracy," +
+			                                                    "time stamp,provider,Extras";
 	private long mTimeWhenPaused = 0;
 	private Location mCurrentLocation;
 	private GoogleApiClient mGoogleApiClient;
@@ -51,6 +53,7 @@ public class RideActivity extends AppCompatActivity
 	private Button mStartRideButton;
 	private Button mPauseRideButton;
 	private Button mStopRideButton;
+	private Button start_moving_manual_log_debugging_button_that_will_be_deleted;
 	private Chronometer mDurationTextView;
 	private TextView mDistanceTextView;
 	private TextView mMaxSpeedTextView;
@@ -78,9 +81,12 @@ public class RideActivity extends AppCompatActivity
 			mDurationTextView = (Chronometer) findViewById(R.id.Duration_Information);
 			mElevationLossTextView = (TextView) findViewById(R.id.ElevationLoss_Information);
 			mElevationGainTextView = (TextView) findViewById(R.id.ElevationGain_Information);
+			start_moving_manual_log_debugging_button_that_will_be_deleted =
+					(Button) findViewById(R.id.start_moving_manual_log);
 			mStopRideButton.setVisibility(View.GONE);
 			mPauseRideButton.setVisibility(View.GONE);
 			mStartRideButton.setVisibility(View.GONE);
+			start_moving_manual_log_debugging_button_that_will_be_deleted.setVisibility(View.GONE);
 		}
 
 
@@ -130,11 +136,25 @@ public class RideActivity extends AppCompatActivity
 			mDurationTextView.setBase(SystemClock.elapsedRealtime() + mTimeWhenPaused);
 			mDurationTextView.start();
 			mPauseRideButton.setVisibility(View.VISIBLE);
+			start_moving_manual_log_debugging_button_that_will_be_deleted.setVisibility(View.GONE);
 			mStartRideButton.setVisibility(View.GONE);
 			mStopRideButton.setVisibility(View.GONE);
 			if(runtimePermissions())
 			{
 				startLocationUpdates();
+			}
+		}
+
+
+	public void StartMovingManualLogging( View v )
+		{
+			Intent intent = new Intent(Intent.ACTION_SEND);
+			intent.setType("*/*");
+			intent.putExtra(Intent.EXTRA_EMAIL, "clinton.edward.cochrane@gmail.com");
+			intent.putExtra(Intent.EXTRA_TEXT, debuggingInformationthatwillbedeletedlater);
+			if(intent.resolveActivity(getPackageManager()) != null)
+			{
+				startActivity(intent);
 			}
 		}
 
@@ -145,6 +165,7 @@ public class RideActivity extends AppCompatActivity
 			ride.setDuration(mDurationTextView.getText().toString());
 			mStartRideButton.setVisibility(View.VISIBLE);
 			mStopRideButton.setVisibility(View.VISIBLE);
+			start_moving_manual_log_debugging_button_that_will_be_deleted.setVisibility(View.VISIBLE);
 			mPauseRideButton.setVisibility(View.GONE);
 			mDurationTextView.stop();
 			stopLocationUpdates();
@@ -163,6 +184,7 @@ public class RideActivity extends AppCompatActivity
 							ride.setRideDate(new Date().toString());
 							Intent intent = new Intent(RideActivity.this, RideSummaryActivity.class);
 							intent.putExtra("CurrentRideObject", ride);
+							intent.putExtra("DebugMessage", debuggingInformationthatwillbedeletedlater);
 							startActivity(intent);
 						}
 				});
@@ -233,6 +255,25 @@ public class RideActivity extends AppCompatActivity
 
 	@Override public void onLocationChanged( Location location )
 		{
+			debuggingInformationthatwillbedeletedlater += "\n\n/n " +
+					                                              location.getLatitude() +
+					                                              "," +
+					                                              location.getLongitude() +
+					                                              "," +
+					                                              location.getAltitude()
+					                                              +
+					                                              "," +
+					                                              location.getSpeed() +
+					                                              "," +
+					                                              location.getAccuracy() +
+					                                              ","
+					                                              +
+					                                              location.getProvider() +
+					                                              "," +
+					                                              new Date() +
+					                                              "," +
+					                                              location.getExtras() +
+					                                              "\n";
 			Location mPreviousLocation = mCurrentLocation;
 			mCurrentLocation = location;
 			if(location.getAccuracy() <= ACCURACY_IN_METERS && location.getAccuracy() > 0.0)
@@ -241,7 +282,6 @@ public class RideActivity extends AppCompatActivity
 				float currentSpeed;
 				float elapsedTime = mCurrentLocation.getElapsedRealtimeNanos() -
 						                    mPreviousLocation.getElapsedRealtimeNanos();
-
 				elapsedTime /= 1000000000.0;
 				distanceCovered = mCurrentLocation.distanceTo(mPreviousLocation) / 1000;
 				ride.setDistance(ride.getDistance() + distanceCovered);

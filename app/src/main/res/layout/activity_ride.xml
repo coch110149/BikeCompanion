@@ -123,6 +123,13 @@
     </RelativeLayout>
 
     <Button
+        android:id="@+id/start_moving_manual_log"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="StartMovingManualLogging"
+        android:text="send email to Clint"/>
+
+    <Button
         android:id="@+id/StartRideButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

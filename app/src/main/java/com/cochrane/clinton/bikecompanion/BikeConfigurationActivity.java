@@ -63,7 +63,7 @@ public class BikeConfigurationActivity extends AppCompatActivity
 				bike.setTotalBikeDistance(Double.parseDouble(bikeDistanceEdit.getText().toString()));
 				DatabaseHandler db = new DatabaseHandler(this);
 				db.addBike(bike);
-				db.close();
+				//db.close();
 				Intent intent = new Intent(BikeConfigurationActivity.this, BikeGarage.class);
 				startActivity(intent);
 			}

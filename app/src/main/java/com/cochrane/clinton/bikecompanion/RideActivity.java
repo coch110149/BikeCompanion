@@ -1,11 +1,15 @@
 package com.cochrane.clinton.bikecompanion;
 
 import android.Manifest;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -29,36 +33,56 @@ import com.google.android.gms.location.LocationServices;
 import java.util.Date;
 import java.util.Locale;
 
+import static com.google.android.gms.location.LocationServices.FusedLocationApi;
 
-//CHECKSTYLE:OFF: checkstyle:magicnumber
+
 public class RideActivity extends AppCompatActivity
 		implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
 				           LocationListener
 	{
 	public static final int REQUEST_CODE = 666;
-	public static final double ACCURACY_IN_METERS = 30.0;
+	public static final double ACCURACY_IN_METERS = 15.0;
 	protected static final String TAG = "BC-riding-activity";
-	private static final long UPDATE_INTERVAL_IN_MS = 5000;
+	private static final long UPDATE_INTERVAL_IN_MS = 2000;
 	private static final long FASTEST_UPDATE_INTERVAL_IN_MS = UPDATE_INTERVAL_IN_MS / 2;
 	public Ride ride = new Ride();
+	private float mSpeedSum = 0;
+	private boolean mBound = false;
 	private long mTimeWhenPaused = 0;
+	private int mNumberOfLocationUpdates = 0;
 	private Location mCurrentLocation;
 	private GoogleApiClient mGoogleApiClient;
-	private int mNumberOfLocationUpdates = 0;
-	private float mSpeedSum = 0;
 	private LocationRequest mLocationRequest;
+	private RBMService mService;
 	//ui widgets
+	private Button mStopRideButton;
 	private Button mStartRideButton;
 	private Button mPauseRideButton;
-	private Button mStopRideButton;
-	private Chronometer mDurationTextView;
+	private TextView mSpeedTextView;
 	private TextView mDistanceTextView;
 	private TextView mMaxSpeedTextView;
 	private TextView mAvgSpeedTextView;
 	private TextView mElevationTextView;
 	private TextView mElevationGainTextView;
 	private TextView mElevationLossTextView;
-	private TextView mSpeedTextView;
+	private Chronometer mDurationTextView;
+	private ServiceConnection mConnection = new ServiceConnection()
+		{
+			@Override public void onServiceConnected( ComponentName name, IBinder service )
+				{
+					RBMService.RBMBinder binder =
+							(RBMService.RBMBinder) service;
+					mService = binder.getService();
+					mBound = true;
+				}
+
+
+			@Override public void onServiceDisconnected( ComponentName name )
+				{
+					mBound = false;
+				}
+		};
+	private boolean stopped;
 
 
 	@Override protected void onCreate( Bundle savedInstanceState )
@@ -67,15 +91,15 @@ public class RideActivity extends AppCompatActivity
 			ride.setBikeID(intent.getIntExtra("SelectableBikeID", -1));
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.activity_ride);
+			mSpeedTextView = (TextView) findViewById(R.id.Speed_Information);
 			mStopRideButton = (Button) findViewById(R.id.StopRideButton);
 			mStartRideButton = (Button) findViewById(R.id.StartRideButton);
 			mPauseRideButton = (Button) findViewById(R.id.PauseRideButton);
-			mSpeedTextView = (TextView) findViewById(R.id.Speed_Information);
 			mDistanceTextView = (TextView) findViewById(R.id.Distance_Information);
 			mMaxSpeedTextView = (TextView) findViewById(R.id.MaxSpeed_Information);
 			mAvgSpeedTextView = (TextView) findViewById(R.id.AvgSpeed_Information);
-			mElevationTextView = (TextView) findViewById(R.id.Elevation_Information);
 			mDurationTextView = (Chronometer) findViewById(R.id.Duration_Information);
+			mElevationTextView = (TextView) findViewById(R.id.Elevation_Information);
 			mElevationLossTextView = (TextView) findViewById(R.id.ElevationLoss_Information);
 			mElevationGainTextView = (TextView) findViewById(R.id.ElevationGain_Information);
 			mStopRideButton.setVisibility(View.GONE);
@@ -121,7 +145,10 @@ public class RideActivity extends AppCompatActivity
 
 	@Override public void onConnected( @Nullable Bundle bundle )
 		{
-			mStartRideButton.setVisibility(View.VISIBLE);
+			if(mPauseRideButton.getVisibility() != View.VISIBLE)
+			{
+				mStartRideButton.setVisibility(View.VISIBLE);
+			}
 		}
 
 
@@ -135,6 +162,11 @@ public class RideActivity extends AppCompatActivity
 			if(runtimePermissions())
 			{
 				startLocationUpdates();
+				if(!mBound)
+				{
+					Intent intent = new Intent(this, RBMService.class);
+					bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+				}
 			}
 		}
 
@@ -148,6 +180,11 @@ public class RideActivity extends AppCompatActivity
 			mPauseRideButton.setVisibility(View.GONE);
 			mDurationTextView.stop();
 			stopLocationUpdates();
+			if(mBound)
+			{
+				unbindService(mConnection);
+				mBound = false;
+			}
 		}
 
 
@@ -217,8 +254,8 @@ public class RideActivity extends AppCompatActivity
 		{
 			if(runtimePermissions())
 			{
-				mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-				LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
+				mCurrentLocation = FusedLocationApi.getLastLocation(mGoogleApiClient);
+				FusedLocationApi.requestLocationUpdates(mGoogleApiClient,
 						mLocationRequest,
 						this);
 			}
@@ -233,29 +270,108 @@ public class RideActivity extends AppCompatActivity
 
 	@Override public void onLocationChanged( Location location )
 		{
-			Location mPreviousLocation = mCurrentLocation;
-			mCurrentLocation = location;
 			if(location.getAccuracy() <= ACCURACY_IN_METERS && location.getAccuracy() > 0.0)
 			{
+				Location mPreviousLocation = mCurrentLocation;
+				mCurrentLocation = location;
 				float distanceCovered;
 				float currentSpeed;
 				float elapsedTime = mCurrentLocation.getElapsedRealtimeNanos() -
 						                    mPreviousLocation.getElapsedRealtimeNanos();
-
 				elapsedTime /= 1000000000.0;
 				distanceCovered = mCurrentLocation.distanceTo(mPreviousLocation) / 1000;
+				/**
+				 * check that the gps is still connected --in this if block it is
+				 * if distance covered is less than one
+				 * has the speed dropped by quite a bit?
+				 * is the speed lower than 1 or above 200
+				 */
 				ride.setDistance(ride.getDistance() + distanceCovered);
-				currentSpeed = calculateSpeed(distanceCovered * 1000, elapsedTime);
+				Float previousSpeed = mSpeedTextView.getText().toString().equals("") ?
+						                      0 : Float.parseFloat(mSpeedTextView.getText().toString());
+				currentSpeed = calculateSpeed(distanceCovered * 1000, elapsedTime, previousSpeed);
 				calculateElevationChange(mPreviousLocation);
 				updateUI(currentSpeed);
+				hasTheRiderStoppedMoving(distanceCovered, previousSpeed, currentSpeed,
+						location.getAccuracy());
+				hasTheRiderStartedMoving(distanceCovered, previousSpeed, currentSpeed,
+						location.getAccuracy());
 			}
 		}
 
 
-	private float calculateSpeed( float distanceCovered, float elapsedTime )
+	public void StartMovingManualLogging( View v )
+		{
+			String debug = "USER START," + mCurrentLocation.getLatitude() + "," +
+					               mCurrentLocation.getLongitude() + "," + mCurrentLocation.getSpeed() +
+					               "," + mCurrentLocation.getAccuracy();
+			Log.d("BIKEcompanionSTOP", debug);
+		}
+
+
+	public void stoppedMovingManualLogging( View v )
+		{
+			String debug = "USER STOP," + mCurrentLocation.getLatitude() + "," +
+					               mCurrentLocation.getLongitude() + "," + mCurrentLocation.getSpeed() +
+					               "," + mCurrentLocation.getAccuracy();
+			Log.d("BIKEcompanionSTOP", debug);
+		}
+
+
+	private void hasTheRiderStoppedMoving( float distanceCovered, Float previousSpeed,
+			                                     float currentSpeed, float accuracy )
+		{
+			float speedDelta = previousSpeed * 100 - currentSpeed * 100;
+			if(!stopped)
+			{
+				if((distanceCovered / 1000 < accuracy && currentSpeed < 2) || speedDelta > 5)
+				{
+					stopped = true;
+					String debug = "METHOD STOP," +
+							               mCurrentLocation.getLatitude() +
+							               "," +
+							               mCurrentLocation.getLongitude() +
+							               "," +
+							               mCurrentLocation.getSpeed() +
+							               "," +
+							               mCurrentLocation.getAccuracy();
+					Log.d("BIKEcompanionSTOP", debug);
+					Toast.makeText(this, debug, Toast.LENGTH_SHORT).show();
+				}
+			}
+		}
+
+
+	private void hasTheRiderStartedMoving( float distanceCovered, Float previousSpeed,
+			                                     float currentSpeed, float accuracy )
+		{
+			//if the user was previously stopped, but now is moving
+			if(stopped)
+			{
+				if(distanceCovered / 1000 >= accuracy && currentSpeed >= 2)
+				{
+					stopped = false;
+					String debug = "METHOD START," +
+							               mCurrentLocation.getLatitude() +
+							               "," +
+							               mCurrentLocation.getLongitude() +
+							               "," +
+							               mCurrentLocation.getSpeed() +
+							               "," +
+							               mCurrentLocation.getAccuracy();
+					Log.d("BIKEcompanionSTOP", debug);
+					Toast.makeText(this, debug, Toast.LENGTH_SHORT).show();
+				}
+			}
+		}
+
+
+	private float calculateSpeed( float distanceCovered, float elapsedTime, float previousSpeed )
 		{
 			float currentSpeed = (18.0f / 5.0f);
 			currentSpeed *= distanceCovered / elapsedTime;
+			//max acceceleration?
+			//max speed is 150kmh
 			if(mCurrentLocation.hasSpeed())
 			{
 				currentSpeed *= mCurrentLocation.getSpeed();

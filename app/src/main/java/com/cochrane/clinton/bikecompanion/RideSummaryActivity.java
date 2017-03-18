@@ -44,8 +44,9 @@ public class RideSummaryActivity extends AppCompatActivity
 				{
 					@Override public void onClick( View v )
 						{
-							Intent intent = new Intent(RideSummaryActivity.this,
-									                          BikeChooserActivity.class);
+							Intent intent = new Intent(RideSummaryActivity.this, SelectionActivity
+									                                                     .class);
+							intent.putExtra("TypeOfRequest", "Bike");
 							startActivityForResult(intent, PICK_RIDING_BIKE);
 						}
 				});

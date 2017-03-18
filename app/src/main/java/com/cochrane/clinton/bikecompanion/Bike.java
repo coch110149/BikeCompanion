@@ -26,16 +26,17 @@ public class Bike implements Parcelable
 	private String _BikeModel;
 	private String _BikeDescription;
 	private Double _TotalBikeDistance;
+	private String _LastRideDate;
 
 
 	public Bike()
 		{
-			this(-1, "", "", "", "", "", 0);
+			this(-1, "", "", "", "", "", 0, "You have not ridden me yet ");
 		}
 
 
 	public Bike( int id, String name, String make, String bikeYear, String model, String description,
-			           double distance )
+			           double distance, String rideDate )
 		{
 			this._ID = id;
 			this._BikeName = name;
@@ -44,6 +45,7 @@ public class Bike implements Parcelable
 			this._BikeModel = model;
 			this._TotalBikeDistance = distance;
 			this._BikeDescription = description;
+			this._LastRideDate = rideDate;
 		}
 
 
@@ -61,6 +63,18 @@ public class Bike implements Parcelable
 			this._BikeModel = in.readString();
 			this._BikeDescription = in.readString();
 			this._TotalBikeDistance = in.readDouble();
+		}
+
+
+	public String getLastRideDate()
+		{
+			return this._LastRideDate;
+		}
+
+
+	public void setLastRideDate( String _LastRideDate )
+		{
+			this._LastRideDate = _LastRideDate;
 		}
 
 
@@ -174,6 +188,7 @@ public class Bike implements Parcelable
 			dest.writeString(_BikeModel);
 			dest.writeString(_BikeDescription);
 			dest.writeDouble(_TotalBikeDistance);
+			dest.writeString(_LastRideDate);
 		}
 
 
@@ -183,6 +198,24 @@ public class Bike implements Parcelable
 			Boolean isEqual;
 			isEqual = obj instanceof Bike && this._ID == ((Bike) obj)._ID;
 			return isEqual;
+		}
+
+
+	public String getHeading()
+		{
+			return this._BikeName + " " + this._BikeYear + " " + this._BikeModel + " " + this._BikeMake;
+		}
+
+
+	public String getAdditionalInfo1()
+		{
+			return "Total Distance: " + this._TotalBikeDistance;
+		}
+
+
+	public String getAdditionalInfo2()
+		{
+			return "Last Ride Date: " + this._LastRideDate;
 		}
 	}
 

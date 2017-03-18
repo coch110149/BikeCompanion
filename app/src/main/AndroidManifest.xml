@@ -31,6 +31,8 @@
         <activity android:name=".BikeChooserActivity">
         </activity>
 
+        <activity android:name=".SelectionActivity">
+        </activity>
         <service
             android:name=".RBMService"
             android:enabled="true"

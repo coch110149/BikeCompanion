@@ -107,8 +107,9 @@ public class MainActivity extends AppCompatActivity
 							@Override
 							public void onClick( View v )
 								{
-									Intent intent = new Intent(MainActivity.this,
-											                          BikeChooserActivity.class);
+									Intent intent =
+											new Intent(MainActivity.this, SelectionActivity.class);
+									intent.putExtra("TypeOfRequest", "Bike");
 									startActivityForResult(intent, PICK_RIDING_BIKE);
 								}
 						});
@@ -140,19 +141,17 @@ public class MainActivity extends AppCompatActivity
 					{
 						@Override public void onClick( View v )
 							{
-								Intent intent = new Intent
-										                (MainActivity.this,
-												                GroupChooserActivity.class);
-								startActivityForResult
-										(intent, SELECTED_RIDING_GROUPS);
+								Intent intent = new Intent(MainActivity.this, SelectionActivity.class);
+								intent.putExtra("TypeOfRequest", "Group");
+								startActivityForResult(intent, SELECTED_RIDING_GROUPS);
 							}
 					});
 				groupsActivatedText.setOnClickListener(new View.OnClickListener()
 					{
 						@Override public void onClick( View v )
 							{
-								Intent intent = new Intent(MainActivity.this,
-										                          GroupChooserActivity.class);
+								Intent intent = new Intent(MainActivity.this, SelectionActivity.class);
+								intent.putExtra("TypeOfRequest", "Group");
 								startActivityForResult(intent, SELECTED_RIDING_GROUPS);
 							}
 					});

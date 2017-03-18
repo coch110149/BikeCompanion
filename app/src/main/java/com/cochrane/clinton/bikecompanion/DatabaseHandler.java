@@ -36,6 +36,7 @@ class DatabaseHandler extends SQLiteOpenHelper
 	private static final String KEY_BIKE_MODEL = "Model";
 	private static final String KEY_BIKE_DESCRIPTION = "Description";
 	private static final String KEY_BIKE_TOTAL_DISTANCE = "Total_Distance";
+	private static final String KEY_BIKE_LAST_RIDE_DATE = "Last_Ride_Date";
 	//Components Table
 	private static final String TABLE_COMPONENTS = "components";
 	private static final String KEY_COMPONENT_ID = "_id";
@@ -53,7 +54,7 @@ class DatabaseHandler extends SQLiteOpenHelper
 	private static final String KEY_GROUP_NAME = "Group_Name";
 	private static final String KEY_PERIODIC_DELAY = "Periodic_Delay";
 	private static final String KEY_MOVEMENT_WAIT_TIME = "Movement_Wait_Time";
-	private static final String KEY_STOP_PERIDOIC_DELAY = "Stop_Periodic_Delay";
+	private static final String KEY_STOP_PERIODIC_DELAY = "Stop_Periodic_Delay";
 	private static final String KEY_PAUSE_BUTTON_STOPS_SERVICE = "Pause_Button_Stops_Service";
 	private static final String KEY_GROUP_IS_ACTIVATED = "Is_Group_Activated";
 	//Contact Table
@@ -97,27 +98,29 @@ class DatabaseHandler extends SQLiteOpenHelper
 					                           + KEY_BIKE_YEAR + " TEXT, "
 					                           + KEY_BIKE_MODEL + " TEXT, "
 					                           + KEY_BIKE_DESCRIPTION + " TEXT, "
-					                           + KEY_BIKE_TOTAL_DISTANCE + " TEXT);";
+					                           + KEY_BIKE_TOTAL_DISTANCE + " TEXT"
+					                           + KEY_BIKE_LAST_RIDE_DATE + " TEXT);";
 			db.execSQL(CREATE_BIKE_TABLE);
-			String CREATE_COMPONENT_TABLE = "CREATE TABLE "
-					                                + TABLE_COMPONENTS + " ("
-					                                + KEY_COMPONENT_ID + " INTEGER PRIMARY KEY " +
-					                                "AUTOINCREMENT, "
-					                                + KEY_COMPONENT_YEAR + " TEXT, "
-					                                + KEY_COMPONENT_TYPE + " TEXT, "
-					                                + KEY_COMPONENT_MAKE + " TEXT, "
-					                                + KEY_COMPONENT_MODEL + " TEXT, "
-					                                + KEY_COMPONENT_PART_NUMBER + " TEXT, "
-					                                + KEY_COMPONENT_TOTAL_DISTANCE + " TEXT, "
-					                                + KEY_COMPONENT_DATE_INSTALLED + " TEXT, "
-					                                + KEY_COMPONENT_LAST_DATE_INSPECTED + " TEXT);";
-			db.execSQL(CREATE_COMPONENT_TABLE);
-			String CREATE_GROUP_TABLE = "CREATE TABLE " + TABLE_GROUPS + " ("
+			String CREATE_COMPONENT = "CREATE TABLE "
+					                          + TABLE_COMPONENTS + " ("
+					                          + KEY_COMPONENT_ID + " INTEGER PRIMARY KEY " +
+					                          "AUTOINCREMENT, "
+					                          + KEY_COMPONENT_YEAR + " TEXT, "
+					                          + KEY_COMPONENT_TYPE + " TEXT, "
+					                          + KEY_COMPONENT_MAKE + " TEXT, "
+					                          + KEY_COMPONENT_MODEL + " TEXT, "
+					                          + KEY_COMPONENT_PART_NUMBER + " TEXT, "
+					                          + KEY_COMPONENT_TOTAL_DISTANCE + " TEXT, "
+					                          + KEY_COMPONENT_DATE_INSTALLED + " TEXT, "
+					                          + KEY_COMPONENT_LAST_DATE_INSPECTED + " TEXT);";
+			db.execSQL(CREATE_COMPONENT);
+			String CREATE_GROUP_TABLE = "CREATE TABLE "
+					                            + TABLE_GROUPS + " ("
 					                            + KEY_GROUP_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
 					                            + KEY_GROUP_NAME + " TEXT, "
 					                            + KEY_PERIODIC_DELAY + " TEXT, "
 					                            + KEY_MOVEMENT_WAIT_TIME + " TEXT, "
-					                            + KEY_STOP_PERIDOIC_DELAY + " TEXT, "
+					                            + KEY_STOP_PERIODIC_DELAY + " TEXT, "
 					                            + KEY_PAUSE_BUTTON_STOPS_SERVICE + " BOOLEAN, "
 					                            + KEY_GROUP_IS_ACTIVATED + " BOOLEAN);";
 			db.execSQL(CREATE_GROUP_TABLE);
@@ -131,13 +134,14 @@ class DatabaseHandler extends SQLiteOpenHelper
 					                                       + " INTEGER PRIMARY KEY AUTOINCREMENT, "
 					                                       + FOREIGN_KEY_CONTACT_ID + " TEXT, "
 					                                       + FOREIGN_KEY_GROUP_ID + " TEXT, "
-					                                       + "FOREIGN KEY (" + FOREIGN_KEY_CONTACT_ID
-					                                       + ") " + "REFERENCES " + TABLE_CONTACT +
-					                                       "(" + KEY_CONTACT_ID + "), "
-					                                       + " FOREIGN KEY" + " (" +
-					                                       FOREIGN_KEY_GROUP_ID + ") " + "REFERENCES "
-					                                       + TABLE_GROUPS + "(" +
-					                                       KEY_GROUP_ID + "));";
+					                                       + "FOREIGN KEY ("
+					                                       + FOREIGN_KEY_CONTACT_ID + ") "
+					                                       + "REFERENCES " + TABLE_CONTACT
+					                                       + "(" + KEY_CONTACT_ID + "), "
+					                                       + " FOREIGN KEY" + " ("
+					                                       + FOREIGN_KEY_GROUP_ID + ")"
+					                                       + " REFERENCES " + TABLE_GROUPS
+					                                       + "(" + KEY_GROUP_ID + "));";
 			db.execSQL(CREATE_GROUP_CONTACT_RELATION);
 			//db.close();
 		}
@@ -313,21 +317,19 @@ class DatabaseHandler extends SQLiteOpenHelper
 		{
 			if(getBike(bike.getID()) == null)
 			{
-				SQLiteDatabase db = this.getWritableDatabase();
 				ContentValues values = new ContentValues();
 				values.put(KEY_BIKE_NAME, bike.getBikeName());
 				values.put(KEY_BIKE_MAKE, bike.getBikeMake());
 				values.put(KEY_BIKE_YEAR, bike.getBikeYear());
 				values.put(KEY_BIKE_MODEL, bike.getBikeModel());
 				values.put(KEY_BIKE_DESCRIPTION, bike.getBikeDescription());
+				values.put(KEY_BIKE_LAST_RIDE_DATE, bike.getLastRideDate());
 				values.put(KEY_BIKE_TOTAL_DISTANCE, bike.getTotalBikeDistance());
-				db.insert(TABLE_BIKES, null, values);
-				//db.close();
+				this.getWritableDatabase().insert(TABLE_BIKES, null, values);
 			} else
 			{
 				updateBike(bike);
 			}
-
 		}
 
 
@@ -349,7 +351,8 @@ class DatabaseHandler extends SQLiteOpenHelper
 							               cursor.getString(3), //year
 							               cursor.getString(4), //model
 							               cursor.getString(5), //Description
-							               cursor.getDouble(6)); //Distance
+							               cursor.getDouble(6), //Distance
+							               cursor.getString(7)); //Last Ride
 				}
 				cursor.close();
 			}
@@ -376,6 +379,7 @@ class DatabaseHandler extends SQLiteOpenHelper
 					bike.setBikeModel(cursor.getString(4));
 					bike.setBikeDescription(cursor.getString(5));
 					bike.setTotalBikeDistance(Double.parseDouble(cursor.getString(6)));
+					bike.setLastRideDate(cursor.getString(7));
 					bikeList.add(bike);
 				} while (cursor.moveToNext());
 			}
@@ -403,6 +407,7 @@ class DatabaseHandler extends SQLiteOpenHelper
 			values.put(KEY_BIKE_YEAR, bike.getBikeYear());
 			values.put(KEY_BIKE_MODEL, bike.getBikeModel());
 			values.put(KEY_BIKE_DESCRIPTION, bike.getBikeDescription());
+			values.put(KEY_BIKE_LAST_RIDE_DATE, bike.getLastRideDate());
 			values.put(KEY_BIKE_TOTAL_DISTANCE, bike.getTotalBikeDistance());
 			return db.update(TABLE_BIKES, values, KEY_BIKE_ID + " =?",
 					new String[]{String.valueOf(bike.getID())});
@@ -444,7 +449,7 @@ class DatabaseHandler extends SQLiteOpenHelper
 				values.put(KEY_GROUP_NAME, group.getName());
 				values.put(KEY_PERIODIC_DELAY, group.getPeriodicDelay());
 				values.put(KEY_MOVEMENT_WAIT_TIME, group.getMovementWaitTime());
-				values.put(KEY_STOP_PERIDOIC_DELAY, group.getStopPeriodicDelay());
+				values.put(KEY_STOP_PERIODIC_DELAY, group.getStopPeriodicDelay());
 				values.put(KEY_PAUSE_BUTTON_STOPS_SERVICE, group.isPauseButtonStopsService());
 				values.put(KEY_GROUP_IS_ACTIVATED, group.isSelected());
 				db.insert(TABLE_GROUPS, null, values);
@@ -564,7 +569,7 @@ class DatabaseHandler extends SQLiteOpenHelper
 			values.put(KEY_GROUP_NAME, group.getName());
 			values.put(KEY_PERIODIC_DELAY, group.getPeriodicDelay());
 			values.put(KEY_MOVEMENT_WAIT_TIME, group.getMovementWaitTime());
-			values.put(KEY_STOP_PERIDOIC_DELAY, group.getStopPeriodicDelay());
+			values.put(KEY_STOP_PERIODIC_DELAY, group.getStopPeriodicDelay());
 			values.put(KEY_PAUSE_BUTTON_STOPS_SERVICE, group.isPauseButtonStopsService());
 			values.put(KEY_GROUP_IS_ACTIVATED, group.isSelected());
 			return db.update(TABLE_GROUPS, values, KEY_GROUP_ID + " =?",
@@ -735,5 +740,14 @@ class DatabaseHandler extends SQLiteOpenHelper
 					                    RELATION_CONTACT_GROUP + "." + FOREIGN_KEY_GROUP_ID;
 			SQLiteDatabase db = this.getReadableDatabase();
 			return db.rawQuery(countQuery, null).getCount();
+		}
+
+
+	public ArrayList<?> getObjects( String typeOfRequest )
+		{
+			if(typeOfRequest.equals("Bike"))
+			{
+				return (ArrayList<?>) getAllBikes();
+			} else return (ArrayList<?>) getAllGroups();
 		}
 	}

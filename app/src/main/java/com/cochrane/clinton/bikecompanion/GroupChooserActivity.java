@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.ListView;
 
 import java.util.ArrayList;
@@ -21,15 +22,21 @@ public class GroupChooserActivity extends AppCompatActivity
 			final DatabaseHandler db = new DatabaseHandler(this);
 			final ArrayList<Group> groups = (ArrayList<Group>) db.getAllGroups();
 			GroupChooserAdapter groupChooserAdapter = new GroupChooserAdapter(this, groups);
-			ListView listView = (ListView) findViewById(R.id.list_view_group);
+			final ListView listView = (ListView) findViewById(R.id.list_view_group);
 			Button okayButton = (Button) findViewById(R.id.okay_button);
 			listView.setAdapter(groupChooserAdapter);
+			final CheckBox activatedGroup = (CheckBox) listView.findViewById(R.id.activateGroupCheckBox);
 			listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
 				{
 					@Override
 					public void onItemClick( AdapterView<?> parent, View view, int position, long id )
 						{
 							groups.get(position).swapSelected();
+							db.updateGroup(groups.get(position));
+							((CheckBox) listView.findViewById(R.id.activateGroupCheckBox)).setChecked
+									                                                               (groups.get(
+											                                                               position)
+											                                                                .isSelected());
 						}
 				});
 			okayButton.setOnClickListener(new View.OnClickListener()
@@ -37,11 +44,11 @@ public class GroupChooserActivity extends AppCompatActivity
 					@Override public void onClick( View v )
 						{
 							Intent intent = new Intent();
-							ArrayList<Group> groups = (ArrayList<Group>) db.getAllGroups(true);
+							ArrayList<Group> trueGroups = (ArrayList<Group>) db.getAllGroups(true);
 							Bundle bundle = new Bundle();
-							bundle.putSerializable("activated groups", groups);
+							bundle.putSerializable("activated groups", trueGroups);
 							intent.putExtras(bundle);
-							setResult(1, intent);
+							setResult(RESULT_OK, intent);
 							finish();
 						}
 				});

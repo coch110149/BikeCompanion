@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -69,30 +68,51 @@ public class GroupChooserAdapter extends BaseAdapter
 				convertView.setTag(R.id.no_movement_rule, holder.mNoMovementRuleText);
 				convertView.setTag(R.id.periodic_interval, holder.mPeriodicText);
 				convertView.setTag(R.id.activateGroupCheckBox, holder.mCheck);
-				holder.mCheck.setOnCheckedChangeListener(
-						new CompoundButton.OnCheckedChangeListener()
-							{
-								@Override
-								public void onCheckedChanged( CompoundButton button, boolean isChecked )
-									{
-										int getPosition = (Integer) button.getTag();
-										mGroupsList.get(getPosition).setSelected(button.isChecked());
-									}
-							});
+//				holder.mCheck.setOnCheckedChangeListener(
+//						new CompoundButton.OnCheckedChangeListener()
+//							{
+//								@Override
+//								public void onCheckedChanged( CompoundButton button, boolean isChecked )
+//									{
+//										int getPosition = (Integer) button.getTag();
+//										mGroupsList.get(getPosition).setSelected(button.isChecked());
+//									}
+//							});
 			} else
 			{
 				holder = (ViewHolder) convertView.getTag();
 			}
 			holder.mCheck.setTag(position);
 			holder.mGroupNameText.setText(mGroupsList.get(position).getName());
-			String output = String.valueOf(R.string.notify_every
-					                               + mGroupsList.get(position).getPeriodicDelay()
-					                               + R.string.minutes);
+			int PeriodicDelay = mGroupsList.get(position).getPeriodicDelay();
+			int StopPeriodicDelay = mGroupsList.get(position).getStopPeriodicDelay();
+			int MovementWaitTime = mGroupsList.get(position).getMovementWaitTime();
+			String output = "";
+			if(PeriodicDelay > 0)
+			{
+				output = mContext.getString(R.string.notify_every) + " " + String.valueOf(PeriodicDelay)
+						         + "" + mContext.getString(R.string.minutes);
+			} else
+			{
+				output = "Periodic Alerts Are Turned Off";
+			}
 			holder.mPeriodicText.setText(output);
-			output = String.valueOf(
-					R.string.notify_every + mGroupsList.get(position).getStopPeriodicDelay())
-					         + R.string.noMovement + mGroupsList.get(position).getMovementWaitTime()
-					         + R.string.minutes;
+			if(StopPeriodicDelay > 0 && MovementWaitTime > 0)
+			{
+				output = mContext.getString(R.string.notify_every) +
+						         " " +
+						         String.valueOf(StopPeriodicDelay)
+						         +
+						         " " +
+						         mContext.getString(R.string.noMovement) +
+						         " " +
+						         String.valueOf(MovementWaitTime) +
+						         " " +
+						         mContext.getString(R.string.minutes);
+			} else
+			{
+				output = "Stopped Movement Notification Has Been Turned Off";
+			}
 			holder.mNoMovementRuleText.setText(output);
 			holder.mCheck.setChecked(mGroupsList.get(position).isSelected());
 			return convertView;

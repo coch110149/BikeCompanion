@@ -22,7 +22,9 @@ public class MainActivity extends AppCompatActivity
 	private TextView bikeNameText;
 	private TextView bikeDistanceText;
 	private TextView groupsActivatedText;
+	private TextView activateGroupsLabelText;
 	private Button addNewGroupButton;
+	private Button testNotificationsButton;
 
 
 	@Override
@@ -32,6 +34,9 @@ public class MainActivity extends AppCompatActivity
 			setContentView(R.layout.activity_main);
 			bikeNameText = (TextView) findViewById(R.id.bike_name_information);
 			addNewBikeButton = (Button) findViewById(R.id.add_new_bike_button);
+			testNotificationsButton = (Button) findViewById(R.id.Riding_Buddy_Test_Notifications_Button);
+			testNotificationsButton.setVisibility(View.GONE);
+			activateGroupsLabelText = (TextView) findViewById(R.id.Riding_Buddy_Activated_Groups_Label);
 			bikeDistanceText = (TextView) findViewById(R.id.bike_distance);
 			groupsActivatedText = (TextView) findViewById(R.id.Riding_Buddy_Activated_Groups_List);
 			addNewGroupButton = (Button) findViewById(R.id.add_new_groups);
@@ -63,6 +68,10 @@ public class MainActivity extends AppCompatActivity
 			if(bike != null)
 			{
 				intent.putExtra("SelectableBikeID", bike.getID());
+			}
+			if(groups != null && !groups.isEmpty())
+			{
+				intent.putExtra("RidingBuddies", groups);
 			}
 			startActivity(intent);
 		}
@@ -127,6 +136,17 @@ public class MainActivity extends AppCompatActivity
 			if(db.getGroupCount() > 0)
 			{
 				addNewGroupButton.setVisibility(View.GONE);
+				activateGroupsLabelText.setOnClickListener(new View.OnClickListener()
+					{
+						@Override public void onClick( View v )
+							{
+								Intent intent = new Intent
+										                (MainActivity.this,
+												                GroupChooserActivity.class);
+								startActivityForResult
+										(intent, SELECTED_RIDING_GROUPS);
+							}
+					});
 				groupsActivatedText.setOnClickListener(new View.OnClickListener()
 					{
 						@Override public void onClick( View v )
@@ -161,7 +181,7 @@ public class MainActivity extends AppCompatActivity
 				//Toast.makeText(this, "result not okay", Toast.LENGTH_SHORT).show();
 			} else if(requestCode == SELECTED_RIDING_GROUPS)
 			{
-				if(requestCode == RESULT_OK)
+				if(resultCode == RESULT_OK)
 				{
 					Bundle bundle = data.getExtras();
 					groups = (ArrayList<Group>) bundle.getSerializable("activated groups");

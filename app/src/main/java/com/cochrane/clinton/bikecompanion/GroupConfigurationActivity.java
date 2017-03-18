@@ -48,7 +48,7 @@ public class GroupConfigurationActivity extends AppCompatActivity
 			{
 				periodicUpdatesSwitch.setChecked(false);
 				//periodicUpdatesSwitch.setText("Off");
-				periodicTime.setText("");
+				//periodicTime.setText("");
 			} else
 			{
 				periodicTime.setText(group.getPeriodicDelay());

@@ -53,12 +53,18 @@
             android:layout_height="wrap_content"
             android:text="@string/activated_groups"/>
 
+        <Button
+            android:id="@+id/add_new_groups"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/add_new_group"
+            android:visibility="gone"/>
+
         <TextView
             android:id="@+id/Riding_Buddy_Activated_Groups_List"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/Riding_Buddy_Activated_Groups_Label"
-            android:text="Group 1, Group 2, Group 3, Group 4 "/>
+            android:layout_toEndOf="@id/Riding_Buddy_Activated_Groups_Label"/>
 
         <Button
             android:id="@+id/Riding_Buddy_Test_Notifications_Button"

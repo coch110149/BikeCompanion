@@ -30,6 +30,7 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
@@ -46,6 +47,7 @@ public class RideActivity extends AppCompatActivity
 	private static final long UPDATE_INTERVAL_IN_MS = 2000;
 	private static final long FASTEST_UPDATE_INTERVAL_IN_MS = UPDATE_INTERVAL_IN_MS / 2;
 	public Ride ride = new Ride();
+	public ArrayList<Group> groups;
 	private float mSpeedSum = 0;
 	private boolean mBound = false;
 	private long mTimeWhenPaused = 0;
@@ -85,10 +87,23 @@ public class RideActivity extends AppCompatActivity
 	private boolean stopped;
 
 
+	@Override protected void onResume()
+		{
+			if(!mBound)
+			{
+				Intent intent = new Intent(this, RBMService.class);
+				bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+			}
+			super.onResume();
+		}
+
+
 	@Override protected void onCreate( Bundle savedInstanceState )
 		{
 			Intent intent = getIntent();
 			ride.setBikeID(intent.getIntExtra("SelectableBikeID", -1));
+			Bundle bundle = intent.getExtras();
+			groups = (ArrayList<Group>) bundle.getSerializable("RidingBuddies");
 			super.onCreate(savedInstanceState);
 			setContentView(R.layout.activity_ride);
 			mSpeedTextView = (TextView) findViewById(R.id.Speed_Information);
@@ -162,11 +177,7 @@ public class RideActivity extends AppCompatActivity
 			if(runtimePermissions())
 			{
 				startLocationUpdates();
-				if(!mBound)
-				{
-					Intent intent = new Intent(this, RBMService.class);
-					bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
-				}
+				mService.transferGroups(groups);
 			}
 		}
 
@@ -433,3 +444,5 @@ public class RideActivity extends AppCompatActivity
 			super.onStop();
 		}
 	}
+
+

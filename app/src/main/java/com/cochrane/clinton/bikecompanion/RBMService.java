@@ -7,6 +7,8 @@ import android.os.IBinder;
 import android.telephony.SmsManager;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+
 
 public class RBMService extends Service
 	{
@@ -17,6 +19,13 @@ public class RBMService extends Service
 	public IBinder onBind( Intent intent )
 		{
 			return mBinder;
+		}
+
+
+	public void transferGroups( ArrayList<Group> groups )
+		{
+			Toast.makeText(getApplicationContext(), "" + groups.size(), Toast
+					                                                            .LENGTH_LONG).show();
 		}
 
 

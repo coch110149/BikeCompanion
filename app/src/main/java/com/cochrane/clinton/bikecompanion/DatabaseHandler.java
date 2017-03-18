@@ -9,6 +9,8 @@ import android.database.sqlite.SQLiteOpenHelper;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.lang.Boolean.getBoolean;
+
 
 class DatabaseHandler extends SQLiteOpenHelper
 	{
@@ -116,8 +118,8 @@ class DatabaseHandler extends SQLiteOpenHelper
 					                            + KEY_PERIODIC_DELAY + " TEXT, "
 					                            + KEY_MOVEMENT_WAIT_TIME + " TEXT, "
 					                            + KEY_STOP_PERIDOIC_DELAY + " TEXT, "
-					                            + KEY_PAUSE_BUTTON_STOPS_SERVICE + " TEXT, "
-					                            + KEY_GROUP_IS_ACTIVATED + " TEXT);";
+					                            + KEY_PAUSE_BUTTON_STOPS_SERVICE + " BOOLEAN, "
+					                            + KEY_GROUP_IS_ACTIVATED + " BOOLEAN);";
 			db.execSQL(CREATE_GROUP_TABLE);
 			String CREATE_CONTACT_TABLE = "CREATE TABLE " + TABLE_CONTACT + " (" + KEY_CONTACT_ID
 					                              + " INTEGER PRIMARY KEY AUTOINCREMENT, "
@@ -471,8 +473,8 @@ class DatabaseHandler extends SQLiteOpenHelper
 							                 cursor.getInt(2),      //periodicDelay
 							                 cursor.getInt(3),     //movementWaitTime
 							                 cursor.getInt(4),    //stopPeriodicDelay
-							                 Boolean.getBoolean(cursor.getString(5)),//pauseButton
-							                 Boolean.getBoolean(cursor.getString(6))); //activated
+							                 getBoolean(cursor.getString(5)),//pauseButton
+							                 getBoolean(cursor.getString(6))); //activated
 				}
 				cursor.close();
 			}
@@ -497,8 +499,8 @@ class DatabaseHandler extends SQLiteOpenHelper
 							                       cursor.getInt(2),      //periodicDelay
 							                       cursor.getInt(3),     //movementWaitTime
 							                       cursor.getInt(4),    //stopPeriodicDelay
-							                       Boolean.getBoolean(cursor.getString(5)), //pause
-							                       Boolean.getBoolean(cursor.getString(6)));//activated
+							                       getBoolean(cursor.getString(5)), //pause
+							                       getBoolean(cursor.getString(6)));//activated
 					groupList.add(group);
 				} while (cursor.moveToNext());
 			}
@@ -512,21 +514,31 @@ class DatabaseHandler extends SQLiteOpenHelper
 		{
 			List<Group> groupList = new ArrayList<>();
 			String selectQuery = "SELECT * FROM " + TABLE_GROUPS + " WHERE " + KEY_GROUP_IS_ACTIVATED
-					                     + "=" + "true";
+					                     + "=" + "1";
 			SQLiteDatabase db = this.getReadableDatabase();
 			Cursor cursor = db.rawQuery(selectQuery, null);
 			if(cursor.moveToFirst())
 			{
 				do
 				{
+					boolean group_is_activated = false;
+					if(cursor.getString(6).equals("1"))
+					{
+						group_is_activated = true;
+					}
+					boolean pauseControl = false;
+					if(cursor.getString(5).equals("1"))
+					{
+						pauseControl = true;
+					}
 					Group group = new Group(
 							                       cursor.getInt(0),        //id
 							                       cursor.getString(1),    //name
 							                       cursor.getInt(2),      //periodicDelay
 							                       cursor.getInt(3),     //movementWaitTime
 							                       cursor.getInt(4),    //stopPeriodicDelay
-							                       Boolean.getBoolean(cursor.getString(5)), //pause
-							                       Boolean.getBoolean(cursor.getString(6)));//activated
+							                       pauseControl, //pause
+							                       group_is_activated);//activated
 					groupList.add(group);
 				} while (cursor.moveToNext());
 			}
@@ -544,7 +556,7 @@ class DatabaseHandler extends SQLiteOpenHelper
 		}
 
 
-	private int updateGroup( Group group )
+	int updateGroup( Group group )
 		{
 			SQLiteDatabase db = this.getWritableDatabase();
 			ContentValues values = new ContentValues();

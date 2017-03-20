@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:weightSum="1">
+
+    <EditText
+        android:id="@+id/bike_name_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/bike_name"/>
+
+    <EditText
+        android:id="@+id/total_bike_distance_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/distance_on_frame"/>
+
+    <EditText
+        android:id="@+id/bike_year_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/year_of_frame"/>
+
+    <EditText
+        android:id="@+id/bike_model_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/model_of_frame"/>
+
+    <EditText
+        android:id="@+id/bike_make_edit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/make_of_frame"/>
+
+    <EditText
+        android:id="@+id/bike_description_edit"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".5"
+        android:hint="@string/description"/>
+
+    <Button
+        android:id="@+id/save_bike_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="SaveBike"
+        android:text="@string/save_bike"/>
+
+    <Button
+        android:id="@+id/delete_bike_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="DeleteBike"
+        android:text="@string/delete_bike"/>
+
+</LinearLayout>

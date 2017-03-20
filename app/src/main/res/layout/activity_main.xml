@@ -9,29 +9,37 @@
     tools:context="com.cochrane.clinton.bikecompanion.MainActivity">
 
     <RelativeLayout
+        android:id="@+id/bike_information"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <TextView
-            android:id="@+id/Bike_Name_Label"
+            android:id="@+id/bike_name_information"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Bike Name:"/>
+            android:text="@string/bike_name"/>
 
         <TextView
-            android:id="@+id/Bike_ID_Label"
+            android:id="@+id/bike_distance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/Bike_Name_Label"
-            android:text="place Holder"/>
-
+            android:layout_marginStart="15dp"
+            android:layout_toEndOf="@id/bike_name_information"
+            android:text="@string/distance"/>
         <TextView
-            android:id="@+id/alerts_listing"
+            android:id="@+id/bike_alerts"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/Bike_Name_Label"
-            android:text="alerts place holder"/>
+            android:layout_below="@id/add_new_bike_button"
+            android:text="@string/alerts"/>
 
+        <Button
+            android:id="@+id/add_new_bike_button"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/bike_name_information"
+            android:text="@string/add_new_bike"
+            android:visibility="gone"/>
     </RelativeLayout>
 
     <RelativeLayout
@@ -43,28 +51,40 @@
             android:id="@+id/Riding_Buddy_Activated_Groups_Label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Activated Groups:"/>
+            android:text="@string/activated_groups"/>
+
+        <Button
+            android:id="@+id/add_new_groups"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/add_new_group"
+            android:visibility="gone"/>
 
         <TextView
             android:id="@+id/Riding_Buddy_Activated_Groups_List"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/Riding_Buddy_Activated_Groups_Label"
-            android:text="Group 1, Group 2, Group 3, Group 4 "/>
+            android:layout_toEndOf="@id/Riding_Buddy_Activated_Groups_Label"/>
 
         <Button
             android:id="@+id/Riding_Buddy_Test_Notifications_Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/Riding_Buddy_Activated_Groups_Label"
-            android:text="Test Notifications">
+            android:text="@string/test_notifications">
         </Button>
     </RelativeLayout>
 
     <Button
         android:id="@+id/Lets_Ride_Button"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="ShowRideActivity"
-        android:text="Let's ride"/>
+        android:text="@string/lets_ride"/>
+
+    <Button
+        android:id="@+id/Visit_Bike_Garage_Button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/go_to_bike_garage"/>
 </LinearLayout>

@@ -12,13 +12,6 @@
         android:text="Date"/>
 
     <TextView
-        android:id="@+id/ride_history_bike_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="5dp"
-        android:text="bike_name"/>
-
-    <TextView
         android:id="@+id/ride_history_distance"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -31,5 +24,10 @@
         android:layout_height="wrap_content"
         android:layout_margin="5dp"
         android:text="duration"/>
+
+    <TextView
+        android:id="@+id/bike_name_information"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"/>
 
 </LinearLayout>

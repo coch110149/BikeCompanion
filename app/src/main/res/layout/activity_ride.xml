@@ -13,7 +13,7 @@
             android:id="@+id/Duration_Label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Duration:"/>
+            android:text="@string/duration"/>
 
         <Chronometer
             android:id="@+id/Duration_Information"
@@ -26,16 +26,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/Duration_Information"
-            android:text="Distance:"/>
+            android:text="@string/distance"/>
 
         <TextView
             android:id="@+id/Distance_Information"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/Distance_Label"
-            android:text="100km"/>
+            />
     </RelativeLayout>
-
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -45,44 +44,40 @@
             android:id="@+id/Speed_Label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Speed:"/>
+            android:text="@string/speed"/>
 
         <TextView
             android:id="@+id/Speed_Information"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/Speed_Label"
-            android:text="37kph"/>
+            android:layout_toEndOf="@id/Speed_Label"/>
 
         <TextView
             android:id="@+id/MaxSpeed_Label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/Speed_Information"
-            android:text="MaxSpeed:"/>
+            android:text="@string/maxSpeed"/>
 
         <TextView
             android:id="@+id/MaxSpeed_Information"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/MaxSpeed_Label"
-            android:text="57kph"/>
+            android:layout_toEndOf="@id/MaxSpeed_Label"/>
 
         <TextView
             android:id="@+id/AvgSpeed_Label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/MaxSpeed_Information"
-            android:text="Avg. Speed:"/>
+            android:text="@string/avg_speed"/>
 
         <TextView
             android:id="@+id/AvgSpeed_Information"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/AvgSpeed_Label"
-            android:text="45kph"/>
+            android:layout_toEndOf="@id/AvgSpeed_Label"/>
     </RelativeLayout>
-
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -92,42 +87,39 @@
             android:id="@+id/Elevation_Label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Elevation:"/>
+            android:text="@string/elevation"/>
 
         <TextView
             android:id="@+id/Elevation_Information"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/Elevation_Label"
-            android:text="1500km"/>
+            android:layout_toEndOf="@id/Elevation_Label"/>
 
         <TextView
             android:id="@+id/ElevationLoss_Label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/Elevation_Information"
-            android:text="Elevation Loss:"/>
+            android:text="@string/elevation_loss"/>
 
         <TextView
             android:id="@+id/ElevationLoss_Information"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/ElevationLoss_Label"
-            android:text="100km"/>
+            android:layout_toEndOf="@id/ElevationLoss_Label"/>
 
         <TextView
             android:id="@+id/ElevationGain_Label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_toEndOf="@id/ElevationLoss_Information"
-            android:text="Elevation Gain:"/>
+            android:text="@string/elevation_gain"/>
 
         <TextView
             android:id="@+id/ElevationGain_Information"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/ElevationGain_Label"
-            android:text="500km"/>
+            android:layout_toEndOf="@id/ElevationGain_Label"/>
     </RelativeLayout>
 
     <Button
@@ -135,7 +127,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="StartRide"
-        android:text="Start Riding"/>
+        android:text="@string/start_riding"/>
 
     <Button
 
@@ -143,12 +135,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="StopRide"
-        android:text="Stop Riding"/>
+        android:text="@string/stop_riding"/>
 
     <Button
         android:id="@+id/PauseRideButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="PauseRide"
-        android:text="Pause Riding"/>
+        android:text="@string/pause_riding"/>
 </LinearLayout>

@@ -3,6 +3,7 @@
           package="com.cochrane.clinton.bikecompanion">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.SEND_SMS"/>
 
     <application
         android:allowBackup="true"
@@ -22,6 +23,27 @@
         <activity android:name=".RideSummaryActivity">
         </activity>
         <activity android:name=".RideHistoryActivity">
+        </activity>
+        <activity android:name=".BikeGarage">
+        </activity>
+        <activity android:name=".BikeConfigurationActivity">
+        </activity>
+        <activity android:name=".BikeChooserActivity">
+        </activity>
+
+        <activity android:name=".SelectionActivity">
+        </activity>
+        <service
+            android:name=".RBMService"
+            android:enabled="true"
+            android:exported="true">
+        </service>
+
+        <activity android:name=".GroupManagementActivity">
+        </activity>
+        <activity android:name=".GroupChooserActivity">
+        </activity>
+        <activity android:name=".GroupConfigurationActivity">
         </activity>
     </application>
 

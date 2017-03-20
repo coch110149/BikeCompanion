@@ -167,6 +167,13 @@ class Ride implements Parcelable
 			return 0;
 		}
 
+
+	@Override public String toString()
+		{
+			return _id + "," + _bike_id + "," + _avg_speed + "," + _max_speed + "," + _distance +
+					       _elevation_loss + "," + _elevation_gain + "," + _duration + "," + _ride_date;
+		}
+
 	/**
 	 * Object Serialization happens here, Write object content to parcel one by one, reading
 	 * should be done according to this writing order

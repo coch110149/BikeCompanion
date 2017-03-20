@@ -98,7 +98,7 @@ class DatabaseHandler extends SQLiteOpenHelper
 					                           + KEY_BIKE_YEAR + " TEXT, "
 					                           + KEY_BIKE_MODEL + " TEXT, "
 					                           + KEY_BIKE_DESCRIPTION + " TEXT, "
-					                           + KEY_BIKE_TOTAL_DISTANCE + " TEXT"
+					                           + KEY_BIKE_TOTAL_DISTANCE + " TEXT, "
 					                           + KEY_BIKE_LAST_RIDE_DATE + " TEXT);";
 			db.execSQL(CREATE_BIKE_TABLE);
 			String CREATE_COMPONENT = "CREATE TABLE "

@@ -1,49 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.cochrane.clinton.bikecompanion">
+<!-- suppress AndroidDomInspection, AndroidDomInspection -->
+<manifest xmlns:android = "http://schemas.android.com/apk/res/android"
+          package = "com.cochrane.clinton.bikecompanion">
 
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.SEND_SMS"/>
+    <uses-permission android:name = "android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name = "android.permission.SEND_SMS" />
 
     <application
-        android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+            android:allowBackup = "true"
+            android:icon = "@mipmap/ic_launcher"
+            android:label = "@string/app_name"
+            android:supportsRtl = "true"
+            android:theme = "@style/AppTheme">
+        <activity android:name = ".MainActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name = "android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name = "android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".RideActivity">
+        <activity android:name = ".RideActivity">
         </activity>
-        <activity android:name=".RideSummaryActivity">
+        <activity android:name = ".RideSummaryActivity">
         </activity>
-        <activity android:name=".RideHistoryActivity">
+        <activity android:name = ".RideHistoryActivity">
         </activity>
-        <activity android:name=".BikeGarage">
+        <activity android:name = ".BikeGarageActivity">
         </activity>
-        <activity android:name=".BikeConfigurationActivity">
+        <activity android:name = ".BikeConfigActivity">
         </activity>
-        <activity android:name=".BikeChooserActivity">
+        <activity android:name = ".SelectionActivity">
         </activity>
 
-        <activity android:name=".SelectionActivity">
-        </activity>
         <service
-            android:name=".RBMService"
-            android:enabled="true"
-            android:exported="true">
+                android:name = ".RBMService"
+                android:enabled = "true"
+                android:exported = "true"
+                android:permission = "SEND_SMS">
         </service>
 
-        <activity android:name=".GroupManagementActivity">
+        <activity android:name = ".GroupManagementActivity">
         </activity>
-        <activity android:name=".GroupChooserActivity">
+        <activity android:name = ".GroupConfigActivity">
         </activity>
-        <activity android:name=".GroupConfigurationActivity">
+        <activity android:name = ".ContactManagementActivity">
+        </activity>
+        <activity android:name = ".ContactConfigActivity">
         </activity>
     </application>
 

@@ -3,8 +3,10 @@ package com.cochrane.clinton.bikecompanion;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,15 +19,14 @@ import java.util.ArrayList;
 
 class SelectionAdapter extends ArrayAdapter
 {
-    private static final int SELECTED_RIDING_GROUPS = 2;
+    private final Context mContext;
+    private final Resources mRes;
     private TextView heading;
     private TextView additionalInfo1;
     private TextView additionalInfo2;
     private View listItemView;
     private String mExtraId;
     private Button primaryButton;
-    private Button secondaryButton;
-    private Context mContext;
 
 
     SelectionAdapter(final Activity context, final ArrayList<?> objects)
@@ -33,15 +34,17 @@ class SelectionAdapter extends ArrayAdapter
             //noinspection unchecked
             super(context, 0, objects);
             mContext = context;
+            mRes = mContext.getResources();
         }
 
 
-    SelectionAdapter(final Activity context, final ArrayList<?> objects, String _extraId)
+    SelectionAdapter(final Activity context, final ArrayList<?> objects, final String _extraId)
         {
             //noinspection unchecked
             super(context, 0, objects);
             mExtraId = _extraId;
             mContext = context;
+            mRes = mContext.getResources();
         }
 
 
@@ -59,11 +62,11 @@ class SelectionAdapter extends ArrayAdapter
             }
             heading = (TextView) listItemView.findViewById(R.id.heading);
             primaryButton = (Button) listItemView.findViewById(R.id.primary_button);
-            secondaryButton = (Button) listItemView.findViewById(R.id.secondary_button);
+            final Button secondButton = (Button) listItemView.findViewById(R.id.secondary_button);
             additionalInfo1 = (TextView) listItemView.findViewById(R.id.additionalInfo1);
             additionalInfo2 = (TextView) listItemView.findViewById(R.id.additionalInfo2);
+            secondButton.setVisibility(View.GONE);
             primaryButton.setVisibility(View.GONE);
-            secondaryButton.setVisibility(View.GONE);
             try
             {
                 final Bike currentBike = (Bike) getItem(position);
@@ -101,39 +104,15 @@ class SelectionAdapter extends ArrayAdapter
             {
                 if(currentGroup.isSelected())
                 {
-                    listItemView.setBackgroundColor(
-                            listItemView.getResources().getColor(R.color.colorPrimary));
+                    listItemView.setBackgroundColor(ContextCompat.getColor(
+                            mContext, R.color.bright_teal));
                 }else
                 {
                     listItemView.setBackgroundColor(0);
                 }
                 heading.setText(currentGroup.getName());
-                String output;
-                //noinspection IfMayBeConditional
-                if(currentGroup.getPeriodicDelay() > 0)
-                {
-                    output = getContext().getString(R.string.notify_every) + " "
-                             + String.valueOf(currentGroup.getPeriodicDelay()) + " "
-                             + getContext().getString(R.string.minutes);
-                }else
-                {
-                    output = "Periodic Alerts Are Turned Off";
-                }
-                additionalInfo1.setText(output);
-                //noinspection IfMayBeConditional
-                if((currentGroup.getStopPeriodicDelay() > 0) &&
-                   (currentGroup.getMovementWaitTime() > 0))
-                {
-                    output = getContext().getString(R.string.notify_every) + " "
-                             + String.valueOf(currentGroup.getStopPeriodicDelay()) + " "
-                             + getContext().getString(R.string.noMovement) + " "
-                             + String.valueOf(currentGroup.getMovementWaitTime()) + " "
-                             + getContext().getString(R.string.minutes);
-                }else
-                {
-                    output = "Stopped Movement Notification Has Been Turned Off";
-                }
-                additionalInfo2.setText(output);
+                additionalInfo1.setText(currentGroup.getPeriodicDelay(mRes));
+                additionalInfo2.setText(currentGroup.getStopPeriodicDelay(mRes));
             }
         }
 
@@ -148,20 +127,20 @@ class SelectionAdapter extends ArrayAdapter
                     primaryButton.setVisibility(View.VISIBLE);
                     if(currentContact.in(groupId, getContext()))
                     {
-                        primaryButton.setText("Remove From Group");
+                        primaryButton.setText(R.string.remove_from_group_exact);
                         primaryButton.setOnClickListener(new View.OnClickListener()
                         {
-                            @Override public void onClick(View v)
+                            @Override public void onClick(final View v)
                                 {
                                     currentContact.removeFromGroup(groupId, getContext());
                                 }
                         });
                     }else
                     {
-                        primaryButton.setText("Add To Group");
+                        primaryButton.setText(R.string.add_to_group_exact);
                         primaryButton.setOnClickListener(new View.OnClickListener()
                         {
-                            @Override public void onClick(View v)
+                            @Override public void onClick(final View v)
                                 {
                                     currentContact.addToGroup(groupId, getContext());
                                 }
@@ -169,10 +148,10 @@ class SelectionAdapter extends ArrayAdapter
                     }
                 }else
                 {
-                    primaryButton.setText("Manage Group Associations");
+                    primaryButton.setText(R.string.manage_group_associations_exact);
                     primaryButton.setOnClickListener(new View.OnClickListener()
                     {
-                        @Override public void onClick(View v)
+                        @Override public void onClick(final View v)
                             {
                                 final Intent intent =
                                         new Intent(mContext, SelectionActivity.class);

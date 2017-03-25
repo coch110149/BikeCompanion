@@ -20,12 +20,12 @@ public class Bike implements Parcelable
             }
     };
     private int mId;
-    private String mBikeName;
-    private String mBikeMake;
-    private String mBikeYear;
-    private String mBikeModel;
-    private String mBikeDescription;
-    private Double mTotalBikeDistance;
+    private String mName;
+    private String mMake;
+    private String mYear;
+    private String mModel;
+    private String mDescription;
+    private Double mDistance;
     private String mLastRideDate;
 
 
@@ -35,18 +35,18 @@ public class Bike implements Parcelable
         }
 
 
-    public Bike(final int id, final String name, final String make, final String bikeYear,
-                final String model, final String description, final double distance,
-                final String rideDate)
+    public Bike(final int _id, final String _name, final String _make, final String _year,
+                final String _model, final String _description, final double _distance,
+                final String _rideDate)
         {
-            mId = (id);
-            mBikeName = name;
-            mBikeMake = make;
-            mBikeYear = bikeYear;
-            mBikeModel = model;
-            mTotalBikeDistance = distance;
-            mBikeDescription = description;
-            mLastRideDate = rideDate;
+            mId = _id;
+            mName = _name;
+            mMake = _make;
+            mYear = _year;
+            mModel = _model;
+            mDistance = _distance;
+            mLastRideDate = _rideDate;
+            mDescription = _description;
         }
 
 
@@ -58,12 +58,12 @@ public class Bike implements Parcelable
     private Bike(final Parcel in)
         {
             mId = (in.readInt());
-            mBikeYear = in.readString();
-            mBikeName = in.readString();
-            mBikeMake = in.readString();
-            mBikeModel = in.readString();
-            mBikeDescription = in.readString();
-            mTotalBikeDistance = in.readDouble();
+            mYear = in.readString();
+            mName = in.readString();
+            mMake = in.readString();
+            mModel = in.readString();
+            mDescription = in.readString();
+            mDistance = in.readDouble();
         }
 
 
@@ -79,75 +79,69 @@ public class Bike implements Parcelable
         }
 
 
-    String getBikeYear()
+    String getYear()
         {
-            return mBikeYear;
+            return mYear;
         }
 
 
-    void setBikeYear(final String mBikeYear)
+    void setYear(final String _BikeYear)
         {
-            this.mBikeYear = mBikeYear;
+            mYear = _BikeYear;
         }
 
 
-    String getBikeName()
+    String getName()
         {
-            return mBikeName;
+            return mName;
         }
 
 
-    void setBikeName(final String mBikeName)
+    void setName(final String _BikeName){mName = _BikeName;}
+
+
+    String getMake()
         {
-            this.mBikeName = mBikeName;
+            return mMake;
         }
 
 
-    String getBikeMake()
+    void setMake(final String _BikeMake){mMake = _BikeMake;}
+
+
+    String getModel()
         {
-            return mBikeMake;
+            return mModel;
         }
 
 
-    void setBikeMake(final String mBikeMake)
+    void setModel(final String _BikeModel)
         {
-            this.mBikeMake = mBikeMake;
+            mModel = _BikeModel;
         }
 
 
-    String getBikeModel()
+    String getDescription()
         {
-            return mBikeModel;
+            return mDescription;
         }
 
 
-    void setBikeModel(final String mBikeModel)
+    void setDescription(final String _BikeDescription)
         {
-            this.mBikeModel = mBikeModel;
+            mDescription = _BikeDescription;
         }
 
 
-    String getBikeDescription()
+    Double getDistance()
         {
-            return mBikeDescription;
+            return mDistance;
         }
 
 
-    void setBikeDescription(final String mBikeDescription)
+    void setDistance(final Double _TotalBikeDistance)
         {
-            this.mBikeDescription = mBikeDescription;
-        }
-
-
-    Double getTotalBikeDistance()
-        {
-            return mTotalBikeDistance;
-        }
-
-
-    void setTotalBikeDistance(final Double mTotalBikeDistance)
-        {
-            this.mTotalBikeDistance = mTotalBikeDistance;
+            mDistance = _TotalBikeDistance;
         }
 
 
@@ -169,12 +163,12 @@ public class Bike implements Parcelable
     public void writeToParcel(final Parcel dest, final int flags)
         {
             dest.writeInt(mId);
-            dest.writeString(mBikeYear);
-            dest.writeString(mBikeName);
-            dest.writeString(mBikeMake);
-            dest.writeString(mBikeModel);
-            dest.writeString(mBikeDescription);
-            dest.writeDouble(mTotalBikeDistance);
+            dest.writeString(mYear);
+            dest.writeString(mName);
+            dest.writeString(mMake);
+            dest.writeString(mModel);
+            dest.writeString(mDescription);
+            dest.writeDouble(mDistance);
             dest.writeString(mLastRideDate);
         }
 
@@ -183,6 +177,7 @@ public class Bike implements Parcelable
     public boolean equals(final Object obj)
         {
             final Boolean isEqual;
+            //noinspection CallToSimpleGetterFromWithinClass
             isEqual = (obj instanceof Bike) && (mId == ((Bike) obj).getId());
             return isEqual;
         }
@@ -194,21 +189,21 @@ public class Bike implements Parcelable
         }
 
 
-    void setId(final int mID)
+    void setId(final int _Id)
         {
-            mId = mID;
+            mId = _Id;
         }
 
 
     String getHeading()
         {
-            return mBikeName + " " + mBikeYear + " " + mBikeModel + " " + mBikeMake;
+            return mName + " " + mYear + " " + mModel + " " + mMake;
         }
 
 
     String getAdditionalInfo1()
         {
-            return "Total Distance: " + mTotalBikeDistance;
+            return "Total Distance: " + mDistance;
         }
 
 

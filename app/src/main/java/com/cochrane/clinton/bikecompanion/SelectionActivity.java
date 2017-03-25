@@ -1,8 +1,10 @@
 package com.cochrane.clinton.bikecompanion;
 
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
@@ -14,11 +16,11 @@ import java.util.ArrayList;
 
 public class SelectionActivity extends AppCompatActivity
 {
-    private final DatabaseHandler db = new DatabaseHandler(this);
-    SelectionAdapter selectionAdapter;
-    private ListView listView;
-    private ArrayList<?> objects;
-    private Button okayButton;
+    private final DatabaseHandler mDb = new DatabaseHandler(this);
+    private ListView mListView;
+    private ArrayList<?> mObjects;
+    private Button mOkayButton;
+    private Context mContext;
 
 
     @Override
@@ -26,14 +28,16 @@ public class SelectionActivity extends AppCompatActivity
         {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_selection);
-            final String typeOfRequest = getIntent().getStringExtra("TypeOfRequest");
+            mContext = getBaseContext();
             final String contactId = getIntent().getStringExtra("ContactId");
-            objects = db.getObjects(typeOfRequest);
-            selectionAdapter = (contactId == null) ? new SelectionAdapter(this, objects) :
-                               new SelectionAdapter(this, objects, contactId);
-            listView = (ListView) findViewById(R.id.object_list_view);
-            okayButton = (Button) findViewById(R.id.okay_button);
-            listView.setAdapter(selectionAdapter);
+            final String typeOfRequest = getIntent().getStringExtra("TypeOfRequest");
+            mListView = (ListView) findViewById(R.id.object_list_view);
+            mOkayButton = (Button) findViewById(R.id.okay_button);
+            mObjects = mDb.getObjects(typeOfRequest);
+            final SelectionAdapter selectionAdapter =
+                    (contactId == null) ? new SelectionAdapter(this, mObjects) :
+                    new SelectionAdapter(this, mObjects, contactId);
+            mListView.setAdapter(selectionAdapter);
             if("Bike".equals(typeOfRequest))
             {
                 bikeSelection();
@@ -46,15 +50,15 @@ public class SelectionActivity extends AppCompatActivity
 
     private void bikeSelection()
         {
-            okayButton.setVisibility(View.GONE);
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+            mOkayButton.setVisibility(View.GONE);
+            mListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
             {
                 @Override
                 public void onItemClick(final AdapterView<?> parent, final View view,
                                         final int position, final long id)
                     {
                         final Intent intent = new Intent();
-                        final Bike bike = (Bike) objects.get(position);
+                        final Bike bike = (Bike) mObjects.get(position);
                         intent.setData(Uri.parse(Integer.toString(bike.getId())));
                         setResult(RESULT_OK, intent);
                         finish();
@@ -63,46 +67,37 @@ public class SelectionActivity extends AppCompatActivity
         }
 
 
-    private void groupSelection(String _contactId)
+    private void groupSelection(final String _contactId)
         {
-            okayButton.setVisibility(View.VISIBLE);
-            okayButton.setText(R.string.finished_selection);
+            mOkayButton.setText(R.string.finished_selection);
+            mOkayButton.setVisibility(View.VISIBLE);
             if(_contactId != null)
             {
                 group_contactSelection(_contactId);
             }else
             {
-                listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+                mListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
                 {
                     @Override
                     public void onItemClick(final AdapterView<?> parent, final View view,
                                             final int position, final long id)
                         {
-                            final Group group = (Group) objects.get(position);
+                            final Group group = (Group) mObjects.get(position);
                             group.swapSelected();
                             if(group.isSelected())
                             {
-                                view.setBackgroundColor(
-                                        view.getResources().getColor(R.color.colorPrimary));
+                                view.setBackgroundColor(ContextCompat.getColor(
+                                        mContext, R.color.bright_teal));
                             }else
                             {
                                 view.setBackgroundColor(0);
                             }
-                            db.updateGroup(group);
+                            mDb.updateGroup(group);
                         }
                 });
-                okayButton.setOnClickListener(new View.OnClickListener()
+                mOkayButton.setOnClickListener(new View.OnClickListener()
                 {
-                    @Override public void onClick(final View v)
-                        {
-                            final Intent intent = new Intent();
-                            //objects = (ArrayList<Group>) db.getAllGroups(true);
-                            //Bundle bundle = new Bundle();
-                            //bundle.putSerializable("activated groups", objects);
-                            //intent.putExtras(bundle);
-                            setResult(RESULT_OK, intent);
-                            finish();
-                        }
+                    @Override public void onClick(final View v){finish();}
                 });
             }
         }
@@ -110,60 +105,55 @@ public class SelectionActivity extends AppCompatActivity
 
     private void group_contactSelection(final String _extraId)
         {
-            listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+            mListView.setOnItemClickListener(new AdapterView.OnItemClickListener()
             {
-                @Override
+                @SuppressWarnings ( "LawOfDemeter" ) @Override
                 public void onItemClick(final AdapterView<?> parent, final View view,
                                         final int position, final long id)
                     {
-                        final Group group = (Group) objects.get(position);
-                        Contact contact = group.addRemoveContact(_extraId, getApplicationContext());
-                        if(contact.in(group.getId(), getApplicationContext()))
+                        final Group group = (Group) mObjects.get(position);
+                        final Contact contact = group.addRemoveContact(_extraId, getBaseContext());
+                        if(contact.in(group.getId(), getBaseContext()))
                         {
-                            view.setBackgroundColor(
-                                    view.getResources().getColor(R.color.colorPrimary));
+                            view.setBackgroundColor(ContextCompat.getColor(
+                                    mContext, R.color.bright_teal));
                         }else
                         {
                             view.setBackgroundColor(0);
                         }
                     }
             });
-            okayButton.setOnClickListener(new View.OnClickListener()
+            mOkayButton.setOnClickListener(new View.OnClickListener()
             {
                 @Override public void onClick(final View v)
                     {
                         final Intent intent =
                                 new Intent(SelectionActivity.this, SelectionActivity.class);
-                        //objects = (ArrayList<Group>) db.getAllGroups(true);
-                        //Bundle bundle = new Bundle();
-                        //bundle.putSerializable("activated groups", objects);
                         setResult(RESULT_OK, intent);
                         finish();
                     }
             });
         }
-
-
-    private void contactSelection()
-        {
-            okayButton.setVisibility(View.VISIBLE);
-            okayButton.setText(R.string.finished_selection);
-            /*
-             secondaryButton.Text = "Edit"
-                        onClick calls intent to ContactManagment(id)
-                if _groupId is empty
-                    primaryButton.Text = "Manage Group Associations"
-                        onClick calls GroupSelection and passes contactId
-
-               else
-                    if(contact in group)
-                        primaryButton.Text = "Remove From Group"
-                            onClick will remove from group
-                        highlight
-                    else
-                        primaryButton.Text = "Add To Group"
-                            onClick will add to Group
-
-             */
-        }
+//    private void contactSelection()
+//        {
+//            mOkayButton.setVisibility(View.VISIBLE);
+//            mOkayButton.setText(R.string.finished_selection);
+//            /*
+//             secondaryButton.Text = "Edit"
+//                        onClick calls intent to Contact Management(id)
+//                if _groupId is empty
+//                    primaryButton.Text = "Manage Group Associations"
+//                        onClick calls GroupSelection and passes contactId
+//
+//               else
+//                    if(contact in group)
+//                        primaryButton.Text = "Remove From Group"
+//                            onClick will remove from group
+//                        highlight
+//                    else
+//                        primaryButton.Text = "Add To Group"
+//                            onClick will add to Group
+//
+//             */
+//        }
 }

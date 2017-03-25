@@ -3,6 +3,7 @@ package com.cochrane.clinton.bikecompanion;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -18,6 +19,10 @@ import java.util.ArrayList;
 
 class BikeGarageAdapter extends ArrayAdapter<Bike>
 {
+    final private Context mContext = getContext();
+    final private Resources mRes = mContext.getResources();
+
+
     BikeGarageAdapter(final Activity context, final ArrayList<Bike> bikes)
         {
             super(context, 0, bikes);
@@ -31,18 +36,15 @@ class BikeGarageAdapter extends ArrayAdapter<Bike>
             View listItemView = _view;
             if(listItemView == null)
             {
-                listItemView = LayoutInflater.from(getContext()).inflate(
+                listItemView = LayoutInflater.from(mContext).inflate(
                         R.layout.bike_garage_list_item, parent, false);
             }
             final Bike currentBike = getItem(_i);
             if(currentBike != null)
             {
-                final TextView bikeNameView =
-                        (TextView) listItemView.findViewById(R.id.bike_name_information);
-                bikeNameView.setText(currentBike.getBikeName());
-                final TextView bikeDistanceView =
-                        (TextView) listItemView.findViewById(R.id.total_bike_distance);
-                bikeDistanceView.setText(currentBike.getTotalBikeDistance().toString());
+                final TextView bikeNameView = (TextView) listItemView.findViewById(R.id.bike_name);
+                final TextView bikeDistanceView = (TextView) listItemView.findViewById(
+                        R.id.bike_distance);
                 final Button editBikeButton =
                         (Button) listItemView.findViewById(R.id.edit_bike_button);
                 editBikeButton.setOnClickListener(new View.OnClickListener()
@@ -50,13 +52,12 @@ class BikeGarageAdapter extends ArrayAdapter<Bike>
                     @Override
                     public void onClick(final View v)
                         {
-                            final Context context = getContext();
-                            final Intent intent =
-                                    new Intent(context, BikeConfigurationActivity.class);
+                            final Intent intent = new Intent(mContext, BikeConfigActivity.class);
                             intent.putExtra("SelectedBikeObject", currentBike);
-                            context.startActivity(intent);
+                            mContext.startActivity(intent);
                         }
                 });
+                ///// TODO: 25/03/2017 implement
                 final Button viewComponentsButton =
                         (Button) listItemView.findViewById(R.id.view_components);
                 viewComponentsButton.setOnClickListener(new View.OnClickListener()
@@ -64,9 +65,7 @@ class BikeGarageAdapter extends ArrayAdapter<Bike>
                     @Override
                     public void onClick(final View v)
                         {
-                            Toast.makeText(getContext(),
-                                           "View Components",
-                                           Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Coming soon", Toast.LENGTH_SHORT).show();
                         }
                 });
                 final Button viewRidesButton =
@@ -76,9 +75,12 @@ class BikeGarageAdapter extends ArrayAdapter<Bike>
                     @Override
                     public void onClick(final View v)
                         {
-                            Toast.makeText(getContext(), "View Rides", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getContext(), "Coming Soon", Toast.LENGTH_SHORT).show();
                         }
                 });
+                bikeDistanceView.setText(mRes.getString(R.string.bike_distance,
+                                                        currentBike.getDistance()));
+                bikeNameView.setText(mRes.getString(R.string.bike_name, currentBike.getName()));
             }
             return listItemView;
         }

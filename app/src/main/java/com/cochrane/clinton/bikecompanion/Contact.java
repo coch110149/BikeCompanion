@@ -44,15 +44,9 @@ class Contact implements Parcelable
 
     Contact(final int id, final String name, final String phoneNumber)
         {
-            this.mId = id;
-            this.mName = name;
-            this.mPhoneNumber = phoneNumber;
-        }
-
-
-    public void setID(final int id)
-        {
-            this.mId = id;
+            mId = id;
+            mName = name;
+            mPhoneNumber = phoneNumber;
         }
 
 
@@ -64,7 +58,7 @@ class Contact implements Parcelable
 
     public void setName(final String name)
         {
-            this.mName = name;
+            mName = name;
         }
 
 
@@ -76,27 +70,27 @@ class Contact implements Parcelable
 
     public void setPhoneNumber(final String phoneNumber)
         {
-            this.mPhoneNumber = phoneNumber;
+            mPhoneNumber = phoneNumber;
         }
 
 
-    boolean in(int _groupId, Context _context)
+    boolean in(final int _groupId, final Context _context)
         {
-            DatabaseHandler db = new DatabaseHandler(_context);
+            final DatabaseHandler db = new DatabaseHandler(_context);
             return db.getContactGroupRelation(mId, _groupId);
         }
 
 
-    void removeFromGroup(int _groupId, Context _context)
+    void removeFromGroup(final int _groupId, final Context _context)
         {
-            DatabaseHandler db = new DatabaseHandler(_context);
+            final DatabaseHandler db = new DatabaseHandler(_context);
             db.removeContactFromGroup(mId, _groupId);
         }
 
 
-    void addToGroup(int _groupId, Context _context)
+    void addToGroup(final int _groupId, final Context _context)
         {
-            DatabaseHandler db = new DatabaseHandler(_context);
+            final DatabaseHandler db = new DatabaseHandler(_context);
             db.addContactToGroup(mId, _groupId);
         }
 
@@ -137,5 +131,11 @@ class Contact implements Parcelable
     public int getId()
         {
             return mId;
+        }
+
+
+    public void setId(final int id)
+        {
+            mId = id;
         }
 }

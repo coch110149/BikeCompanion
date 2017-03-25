@@ -1,6 +1,8 @@
 package com.cochrane.clinton.bikecompanion;
 
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -9,38 +11,41 @@ import android.widget.Button;
 import android.widget.EditText;
 
 
-public class ContactConfigurationActivity extends AppCompatActivity
+public class ContactConfigActivity extends AppCompatActivity
 {
+    final private DatabaseHandler mDb = new DatabaseHandler(this);
+    private EditText mPhoneNumber;
     private Contact mContact;
     private String mGroupId;
-    private EditText mContactName;
-    private EditText mPhoneNumber;
+    private EditText mName;
+    private Resources mRes;
 
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
+    protected void onCreate(final Bundle savedInstanceState)
         {
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_contact_configuration);
+            mRes = getResources();
             final Bundle bundle = getIntent().getExtras();
             if(bundle != null)
             {
-                mContact = bundle.getParcelable("SelectedContactObject");
                 mGroupId = bundle.getString("GroupId");
+                mContact = bundle.getParcelable("SelectedContactObject");
             }
             if(mContact == null){mContact = new Contact();}
-            mContactName = (EditText) findViewById(R.id.contact_name);
-            mContactName.setText(mContact.getName());
-            mPhoneNumber = (EditText) findViewById(R.id.contact_phone);
-            mPhoneNumber.setText(mContact.getPhoneNumber());
             final Button saveContact = (Button) findViewById(R.id.save_contact);
-            saveContact.setText(R.string.save_contact);
-            final Button deleteContact = (Button) findViewById(R.id.delete_contact);
-            deleteContact.setText(R.string.delete_contact);
             final Button manageGroups = (Button) findViewById(R.id.manage_groups);
+            final Button deleteContact = (Button) findViewById(R.id.delete_contact);
+            saveContact.setText(R.string.save_contact);
+            deleteContact.setText(R.string.delete_contact);
+            mName = (EditText) findViewById(R.id.contact_name);
+            mPhoneNumber = (EditText) findViewById(R.id.contact_phone);
+            mName.setText(mRes.getString(R.string.contact_name, mContact.getName()));
+            mPhoneNumber.setText(mRes.getString(R.string.contact_name, mContact.getPhoneNumber()));
             deleteContact.setOnClickListener(new View.OnClickListener()
             {
-                @Override public void onClick(View v)
+                @Override public void onClick(final View v)
                     {
                         deleteContact();
                     }
@@ -58,20 +63,15 @@ public class ContactConfigurationActivity extends AppCompatActivity
     private void deleteContact()
         {
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
-            builder.setMessage(getResources().getString(R.string.confirm_delete_group)
-                               + mContact.getName());
+            builder.setMessage(mRes.getString(R.string.confirm_delete, mContact.getName()));
             builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
             {
                 @Override
                 public void onClick(final DialogInterface dialog, final int which)
                     {
-                        final DatabaseHandler db =
-                                new DatabaseHandler(ContactConfigurationActivity.this);
-                        db.deleteContact(mContact);
-//                        final Intent intent = new Intent(ContactConfigurationActivity.this,
-//                                                         GroupManagementActivity.class);
-//                        startActivity(intent);
-                        finish();
+                        mDb.deleteContact(mContact);
+                        startActivity(new Intent(ContactConfigActivity.this,
+                                                 ContactManagementActivity.class));
                     }
             });
             //noinspection AnonymousInnerClassMayBeStatic
@@ -83,31 +83,25 @@ public class ContactConfigurationActivity extends AppCompatActivity
                         dialog.dismiss();
                     }
             });
-            final AlertDialog deleteGroupDialog = builder.create();
-            deleteGroupDialog.show();
+            final AlertDialog alertDialog = builder.create();
+            alertDialog.show();
         }
 
 
     private void saveContact()
         {
-            if("".equals(mContactName.getText().toString().trim()))
+            if("".equals(mName.getText().toString().trim()))
             {
-                mContactName.setError("Name is required");
+                mName.setError("Name is required");
             }else if("".equals(mPhoneNumber.getText().toString().trim()))
             {
                 mPhoneNumber.setError("Phone Number is Required");
             }else
             {
-                mContact.setName(mContactName.getText().toString().trim());
+                mContact.setName(mName.getText().toString().trim());
                 mContact.setPhoneNumber(mPhoneNumber.getText().toString().trim());
-                final DatabaseHandler db = new DatabaseHandler(this);
-                db.addContact(mContact);
-                if(mGroupId != null)
-                {
-                    mContact.addToGroup(Integer.parseInt(mGroupId), this);
-                }
-//                startActivity(new Intent(ContactConfigurationActivity.this,
-//                                         ContactManagementActivity.class));
+                mDb.addContact(mContact);
+                if(mGroupId != null){mContact.addToGroup(Integer.parseInt(mGroupId), this);}
                 finish();
             }
         }

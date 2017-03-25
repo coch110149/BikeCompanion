@@ -1,90 +1,159 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.cochrane.clinton.bikecompanion.MainActivity">
+<android.support.constraint.ConstraintLayout
+        xmlns:android = "http://schemas.android.com/apk/res/android"
+        xmlns:app = "http://schemas.android.com/apk/res-auto"
+        xmlns:tools = "http://schemas.android.com/tools"
+        android:layout_width = "match_parent"
+        android:layout_height = "match_parent"
+        android:orientation = "vertical"
+        tools:context = "com.cochrane.clinton.bikecompanion.MainActivity"
+        tools:layout_editor_absoluteX = "0dp"
+        tools:layout_editor_absoluteY = "25dp">
 
-    <RelativeLayout
-        android:id="@+id/bike_information"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <TextView
+            android:id = "@+id/bike_name"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:layout_marginEnd = "8dp"
+            android:layout_marginLeft = "8dp"
+            android:layout_marginRight = "8dp"
+            android:layout_marginStart = "8dp"
+            android:layout_marginTop = "8dp"
+            android:text = "@string/bike_name"
+            app:layout_constraintLeft_toLeftOf = "parent"
+            app:layout_constraintRight_toLeftOf = "@+id/bike_distance"
+            app:layout_constraintTop_toTopOf = "parent" />
 
-        <TextView
-            android:id="@+id/bike_name_information"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/bike_name"/>
+    <TextView
+            android:id = "@+id/bike_distance"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:layout_marginEnd = "8dp"
+            android:layout_marginStart = "8dp"
+            android:layout_marginTop = "8dp"
+            android:text = "@string/bike_distance"
+            app:layout_constraintRight_toRightOf = "parent"
+            app:layout_constraintTop_toTopOf = "parent" />
 
-        <TextView
-            android:id="@+id/bike_distance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="15dp"
-            android:layout_toEndOf="@id/bike_name_information"
-            android:text="@string/distance"/>
-        <TextView
-            android:id="@+id/bike_alerts"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/add_new_bike_button"
-            android:text="@string/alerts"/>
-
-        <Button
-            android:id="@+id/add_new_bike_button"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/bike_name_information"
-            android:text="@string/add_new_bike"
-            android:visibility="gone"/>
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:id="@+id/Riding_Buddy_Settings_Main"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <TextView
-            android:id="@+id/Riding_Buddy_Activated_Groups_Label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/activated_groups"/>
-
-        <Button
-            android:id="@+id/add_new_groups"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/add_new_group"
-            android:visibility="gone"/>
-
-        <TextView
-            android:id="@+id/Riding_Buddy_Activated_Groups_List"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/Riding_Buddy_Activated_Groups_Label"/>
-
-        <Button
-            android:id="@+id/Riding_Buddy_Test_Notifications_Button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/Riding_Buddy_Activated_Groups_Label"
-            android:text="@string/test_notifications">
-        </Button>
-    </RelativeLayout>
+    <TextView
+            android:id = "@+id/textView"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:layout_marginTop = "8dp"
+            android:text = "@string/alerts"
+            app:layout_constraintLeft_toLeftOf = "parent"
+            app:layout_constraintTop_toBottomOf = "@+id/bike_name"
+            tools:layout_conversion_absoluteHeight = "16dp"
+            tools:layout_conversion_absoluteWidth = "787dp"
+            tools:layout_conversion_absoluteX = "0dp"
+            tools:layout_conversion_absoluteY = "16dp" />
 
     <Button
-        android:id="@+id/Lets_Ride_Button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="ShowRideActivity"
-        android:text="@string/lets_ride"/>
+            android:id = "@+id/add_new_bike_button"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:layout_marginLeft = "8dp"
+            android:layout_marginRight = "8dp"
+            android:layout_marginTop = "0dp"
+            android:text = "@string/add_new_bike"
+            android:visibility = "gone"
+            app:layout_constraintLeft_toLeftOf = "parent"
+            app:layout_constraintRight_toRightOf = "parent"
+            app:layout_constraintTop_toTopOf = "@+id/bike_name"
+            tools:layout_conversion_absoluteHeight = "0dp"
+            tools:layout_conversion_absoluteWidth = "0dp"
+            tools:layout_conversion_absoluteX = "0dp"
+            tools:layout_conversion_absoluteY = "0dp" />
 
     <Button
-        android:id="@+id/Visit_Bike_Garage_Button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/go_to_bike_garage"/>
-</LinearLayout>
+            android:id = "@+id/add_new_groups"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:layout_marginLeft = "8dp"
+            android:layout_marginRight = "8dp"
+            android:layout_marginTop = "16dp"
+            android:text = "@string/add_new_group"
+            android:visibility = "gone"
+            app:layout_constraintLeft_toLeftOf = "parent"
+            app:layout_constraintRight_toRightOf = "parent"
+            app:layout_constraintTop_toBottomOf = "@+id/textView"
+            tools:layout_conversion_absoluteHeight = "0dp"
+            tools:layout_conversion_absoluteWidth = "0dp"
+            tools:layout_conversion_absoluteX = "0dp"
+            tools:layout_conversion_absoluteY = "33dp" />
+
+    <TextView
+            android:id = "@+id/Riding_Buddy_Activated_Groups_List"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:layout_marginLeft = "8dp"
+            android:layout_marginRight = "8dp"
+            android:layout_marginTop = "15dp"
+            android:text = "@string/activated_groups"
+            app:layout_constraintLeft_toLeftOf = "parent"
+            app:layout_constraintRight_toRightOf = "parent"
+            app:layout_constraintTop_toBottomOf = "@+id/textView"
+            tools:layout_conversion_absoluteHeight = "16dp"
+            tools:layout_conversion_absoluteWidth = "148dp"
+            tools:layout_conversion_absoluteX = "0dp"
+            tools:layout_conversion_absoluteY = "33dp" />
+
+    <Button
+            android:id = "@+id/Riding_Buddy_Test_Notifications_Button"
+            android:layout_width = "wrap_content"
+            android:layout_height = "wrap_content"
+            android:layout_marginLeft = "8dp"
+            android:layout_marginRight = "8dp"
+            android:layout_marginTop = "8dp"
+            android:text = "@string/test_notifications"
+            app:layout_constraintHorizontal_bias = "0.0"
+            app:layout_constraintLeft_toLeftOf = "parent"
+            app:layout_constraintRight_toRightOf = "parent"
+            app:layout_constraintTop_toBottomOf = "@+id/Riding_Buddy_Activated_Groups_List"
+            tools:layout_conversion_absoluteHeight = "48dp"
+            tools:layout_conversion_absoluteWidth = "165dp"
+            tools:layout_conversion_absoluteX = "0dp"
+            tools:layout_conversion_absoluteY = "33dp">
+    </Button>
+
+    <Button
+            android:id = "@+id/button2"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:layout_marginLeft = "8dp"
+            android:layout_marginRight = "8dp"
+            android:layout_marginTop = "24dp"
+            android:onClick = "beginRideActivity"
+            android:text = "@string/lets_ride"
+            app:layout_constraintLeft_toLeftOf = "parent"
+            app:layout_constraintRight_toRightOf = "parent"
+            app:layout_constraintTop_toBottomOf = "@+id/Riding_Buddy_Test_Notifications_Button" />
+
+    <Button
+            android:id = "@+id/Visit_Bike_Garage_Button"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:layout_marginLeft = "8dp"
+            android:layout_marginRight = "8dp"
+            android:layout_marginTop = "8dp"
+            android:text = "@string/go_to_bike_garage"
+            app:layout_constraintLeft_toLeftOf = "parent"
+            app:layout_constraintRight_toRightOf = "parent"
+            app:layout_constraintTop_toBottomOf = "@+id/button2" />
+
+    <Button
+            android:id = "@+id/Visit_Buddy_Management_Button"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:layout_marginBottom = "8dp"
+            android:layout_marginLeft = "8dp"
+            android:layout_marginRight = "8dp"
+            android:layout_marginTop = "8dp"
+            android:text = "@string/manage_buddies"
+            app:layout_constraintBottom_toBottomOf = "parent"
+            app:layout_constraintHorizontal_bias = "0.0"
+            app:layout_constraintLeft_toLeftOf = "parent"
+            app:layout_constraintRight_toRightOf = "parent"
+            app:layout_constraintTop_toBottomOf = "@+id/Visit_Bike_Garage_Button"
+            app:layout_constraintVertical_bias = "0.0" />
+</android.support.constraint.ConstraintLayout>

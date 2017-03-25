@@ -14,45 +14,41 @@ import java.util.ArrayList;
 public class RBMService extends Service
 {
     private final IBinder mBinder = new RBMBinder();
-    private ArrayList<Group> mGroups;
-    private long mMinuite = 1;
+    private final DatabaseHandler mDb = new DatabaseHandler(this);
+    private long mMinute = 1;
     private RideActivity mRide;
-    private DatabaseHandler db = new DatabaseHandler(this);
+    private boolean running;
+    private ArrayList<Group> mGroups;
+    //// TODO: 25/03/2017 spawn a thread
 
 
-    @Override public void onCreate()
+    @Override public int onStartCommand(final Intent intent, final int flags, final int startId)
         {
-            super.onCreate();
-        }
-
-
-    @Override public int onStartCommand(Intent intent, int flags, int startId)
-        {
-            ArrayList<Group> groups = intent.getParcelableArrayListExtra("GroupObject");
+            final ArrayList<Group> groups = intent.getParcelableArrayListExtra("GroupObject");
             testNotifications(groups);
             return super.onStartCommand(intent, flags, startId);
         }
 
 
-    private void testNotifications(ArrayList<Group> _groups)
+    private void testNotifications(final ArrayList<Group> _groups)
         {
             //get a list of all contacts in each group
-            DatabaseHandler db = new DatabaseHandler(this);
-            ArrayList<Contact> contacts = new ArrayList<>();
-            for(Group group : _groups)
+            final ArrayList<Contact> contacts = new ArrayList<>();
+            for(final Group group : _groups)
             {
-                contacts.addAll(db.getAllContactsInGroup(group.getId()));
+                contacts.addAll(mDb.getAllContactsInGroup(group.getId()));
             }
-            for(Contact contact : contacts)
+            for(final Contact contact : contacts)
             {
-                String message = "Hey, this is just a test message from the bike companion app";
+                final String message = "Hey, just testing notifications with " +
+                                       " the bike companion app";
                 sendMessage(contact, message);
             }
             stopSelf();
         }
 
 
-    public void sendMessage(Contact _contact, String message)
+    private void sendMessage(final Contact _contact, final String message)
         {
             if(!("").equals(message))
             {
@@ -70,6 +66,13 @@ public class RBMService extends Service
         }
 
 
+    @Override public void onDestroy()
+        {
+            mDb.close();
+            super.onDestroy();
+        }
+
+
     @Override
     public IBinder onBind(final Intent intent)
         {
@@ -77,11 +80,12 @@ public class RBMService extends Service
         }
 
 
-    public void beginRide(RideActivity ride)
+    public void beginRide(final RideActivity ride)
         {
-            mGroups = (ArrayList<Group>) db.getAllGroups(true);
+            mGroups = (ArrayList<Group>) mDb.getAllGroups();
             if((mGroups != null) && (!mGroups.isEmpty()))
             {
+                running = true;
                 mRide = ride;
                 messageTimer();
             }
@@ -96,9 +100,13 @@ public class RBMService extends Service
                 @Override
                 public void run()
                     {
-                        checkGroupTime();
-                        mMinuite++;
-                        handler.postDelayed(this, 60000);
+                        if(running)
+                        {
+                            checkGroupTime();
+                            mMinute++;
+                            handler.postDelayed(this, 60000);
+                        }
+
                     }
             });
         }
@@ -106,17 +114,24 @@ public class RBMService extends Service
 
     private void checkGroupTime()
         {
-            for(Group group : mGroups)
+            for(final Group group : mGroups)
             {
-                if((mMinuite % group.getPeriodicDelay()) == 0)
+                if((mMinute % group.getPeriodicDelay()) == 0)
                 {
-                    for(final Contact contact : db.getAllContactsInGroup(group.getId()))
+                    for(final Contact contact : mDb.getAllContactsInGroup(group.getId()))
                     {
                         sendMessage(contact, mRide.getMessage());
                     }
                 }
             }
         }
+
+
+    public void stopRide()
+        {
+            running = false;
+        }
+
 
 
     public class RBMBinder extends Binder

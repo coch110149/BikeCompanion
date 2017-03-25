@@ -188,13 +188,13 @@ import static java.lang.Boolean.getBoolean;
             if(getBike(bike.getId()) == null)
             {
                 final ContentValues values = new ContentValues();
-                values.put(KEY_BIKE_NAME, bike.getBikeName());
-                values.put(KEY_BIKE_MAKE, bike.getBikeMake());
-                values.put(KEY_BIKE_YEAR, bike.getBikeYear());
-                values.put(KEY_BIKE_MODEL, bike.getBikeModel());
-                values.put(KEY_BIKE_DESCRIPTION, bike.getBikeDescription());
+                values.put(KEY_BIKE_NAME, bike.getName());
+                values.put(KEY_BIKE_MAKE, bike.getMake());
+                values.put(KEY_BIKE_YEAR, bike.getYear());
+                values.put(KEY_BIKE_MODEL, bike.getModel());
+                values.put(KEY_BIKE_DESCRIPTION, bike.getDescription());
                 values.put(KEY_BIKE_LAST_RIDE_DATE, bike.getLastRideDate());
-                values.put(KEY_BIKE_TOTAL_DISTANCE, bike.getTotalBikeDistance());
+                values.put(KEY_BIKE_TOTAL_DISTANCE, bike.getDistance());
                 getWritableDatabase().insert(TABLE_BIKES, null, values);
             }else
             {
@@ -236,13 +236,13 @@ import static java.lang.Boolean.getBoolean;
             final SQLiteDatabase db = getWritableDatabase();
             final ContentValues values = new ContentValues();
             values.put(KEY_BIKE_ID, bike.getId());
-            values.put(KEY_BIKE_NAME, bike.getBikeName());
-            values.put(KEY_BIKE_MAKE, bike.getBikeMake());
-            values.put(KEY_BIKE_YEAR, bike.getBikeYear());
-            values.put(KEY_BIKE_MODEL, bike.getBikeModel());
-            values.put(KEY_BIKE_DESCRIPTION, bike.getBikeDescription());
+            values.put(KEY_BIKE_NAME, bike.getName());
+            values.put(KEY_BIKE_MAKE, bike.getMake());
+            values.put(KEY_BIKE_YEAR, bike.getYear());
+            values.put(KEY_BIKE_MODEL, bike.getModel());
+            values.put(KEY_BIKE_DESCRIPTION, bike.getDescription());
             values.put(KEY_BIKE_LAST_RIDE_DATE, bike.getLastRideDate());
-            values.put(KEY_BIKE_TOTAL_DISTANCE, bike.getTotalBikeDistance());
+            values.put(KEY_BIKE_TOTAL_DISTANCE, bike.getDistance());
             db.update(TABLE_BIKES, values, KEY_BIKE_ID + " =?",
                       new String[]{String.valueOf(bike.getId())});
         }
@@ -387,7 +387,7 @@ import static java.lang.Boolean.getBoolean;
         }
 
 
-    List<Group> getAllGroups(final boolean activated)
+    List<Group> getAllGroups(final Boolean _boolean)
         {
             final List<Group> groupList = new ArrayList<>();
             final String selectQuery = "SELECT * FROM " + TABLE_GROUPS +
@@ -398,7 +398,7 @@ import static java.lang.Boolean.getBoolean;
             {
                 do
                 {
-                    final boolean group_is_activated = true;
+                    final boolean group_is_activated = _boolean;
                     boolean pauseControl = false;
                     if("1".equals(cursor.getString(5)))
                     {
@@ -641,12 +641,12 @@ import static java.lang.Boolean.getBoolean;
                 {
                     final Bike bike = new Bike();
                     bike.setId(Integer.parseInt(cursor.getString(0)));
-                    bike.setBikeName(cursor.getString(1));
-                    bike.setBikeMake(cursor.getString(2));
-                    bike.setBikeYear(cursor.getString(3));
-                    bike.setBikeModel(cursor.getString(4));
-                    bike.setBikeDescription(cursor.getString(5));
-                    bike.setTotalBikeDistance(Double.parseDouble(cursor.getString(6)));
+                    bike.setName(cursor.getString(1));
+                    bike.setMake(cursor.getString(2));
+                    bike.setYear(cursor.getString(3));
+                    bike.setModel(cursor.getString(4));
+                    bike.setDescription(cursor.getString(5));
+                    bike.setDistance(Double.parseDouble(cursor.getString(6)));
                     bike.setLastRideDate(cursor.getString(7));
                     bikeList.add(bike);
                 } while(cursor.moveToNext());

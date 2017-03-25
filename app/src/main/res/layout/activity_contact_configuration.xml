@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+        xmlns:android = "http://schemas.android.com/apk/res/android"
+        xmlns:app = "http://schemas.android.com/apk/res-auto"
+        xmlns:tools = "http://schemas.android.com/tools"
+        android:layout_width = "match_parent"
+        android:layout_height = "match_parent"
+        tools:context = "com.cochrane.clinton.bikecompanion.ContactConfigActivity">
+
+    <EditText
+            android:id = "@+id/contact_name"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:layout_marginLeft = "8dp"
+            android:layout_marginRight = "8dp"
+            android:layout_marginTop = "16dp"
+            android:ems = "10"
+            android:hint = "@string/name"
+            android:inputType = "textPersonName"
+            app:layout_constraintHorizontal_bias = "1.0"
+            app:layout_constraintLeft_toLeftOf = "parent"
+            app:layout_constraintRight_toRightOf = "parent"
+            app:layout_constraintTop_toTopOf = "parent" />
+
+    <EditText
+            android:id = "@+id/contact_phone"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:layout_marginLeft = "8dp"
+            android:layout_marginRight = "8dp"
+            android:layout_marginTop = "7dp"
+            android:ems = "10"
+            android:hint = "@string/phone_number"
+            android:inputType = "phone"
+            app:layout_constraintHorizontal_bias = "0.0"
+            app:layout_constraintLeft_toLeftOf = "parent"
+            app:layout_constraintRight_toRightOf = "parent"
+            app:layout_constraintTop_toBottomOf = "@+id/contact_name" />
+
+    <Button
+            android:id = "@+id/save_contact"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:layout_marginLeft = "8dp"
+            android:layout_marginRight = "8dp"
+            android:layout_marginTop = "0dp"
+            app:layout_constraintLeft_toLeftOf = "parent"
+            app:layout_constraintRight_toRightOf = "parent"
+            app:layout_constraintTop_toBottomOf = "@+id/contact_phone" />
+
+    <Button
+            android:id = "@+id/delete_contact"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:layout_marginLeft = "8dp"
+            android:layout_marginRight = "8dp"
+            android:layout_marginTop = "0dp"
+            app:layout_constraintLeft_toLeftOf = "parent"
+            app:layout_constraintRight_toRightOf = "parent"
+            app:layout_constraintTop_toBottomOf = "@+id/save_contact" />
+
+    <Button
+            android:id = "@+id/manage_groups"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:layout_marginLeft = "8dp"
+            android:layout_marginRight = "8dp"
+            android:layout_marginTop = "0dp"
+            app:layout_constraintHorizontal_bias = "0.0"
+            app:layout_constraintLeft_toLeftOf = "parent"
+            app:layout_constraintRight_toRightOf = "parent"
+            app:layout_constraintTop_toBottomOf = "@+id/delete_contact" />
+</android.support.constraint.ConstraintLayout>

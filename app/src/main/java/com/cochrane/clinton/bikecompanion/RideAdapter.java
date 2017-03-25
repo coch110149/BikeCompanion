@@ -31,7 +31,7 @@ class RideAdapter extends CursorAdapter
             {
             final TextView dateView = (TextView) view.findViewById(R.id.ride_history_date);
                 dateView.setText(cursor.getString(3));
-            final TextView bikeName = (TextView) view.findViewById(R.id.bike_name_information);
+                final TextView bikeName = (TextView) view.findViewById(R.id.bike_name);
                 bikeName.setText(cursor.getString(4));
             final TextView distanceView = (TextView) view.findViewById(R.id.ride_history_distance);
                 distanceView.setText(String.format(Locale.UK, "%.1f", cursor.getDouble(1)));

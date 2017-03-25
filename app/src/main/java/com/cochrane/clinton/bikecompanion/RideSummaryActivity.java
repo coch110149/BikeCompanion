@@ -2,18 +2,17 @@ package com.cochrane.clinton.bikecompanion;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
-import java.util.Locale;
-
 import static com.cochrane.clinton.bikecompanion.MainActivity.PICK_RIDING_BIKE;
 
 
-public class RideSummaryActivity extends AppCompatActivity
+@SuppressWarnings ( "LawOfDemeter" ) public class RideSummaryActivity extends AppCompatActivity
 {
     private final DatabaseHandler db = new DatabaseHandler(this);
     private android.widget.TextView bikeNameTextView;
@@ -25,16 +24,15 @@ public class RideSummaryActivity extends AppCompatActivity
             super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_ride_summary);
             final Bundle bundle = getIntent().getExtras();
+            final Resources res = getResources();
             ride = bundle.getParcelable("CurrentRideObject");
-            final TextView durationTextView = (TextView) findViewById(R.id.Duration_Information);
-            final TextView distanceTextView = (TextView) findViewById(R.id.Distance_Information);
-            final TextView maxSpeedTextView = (TextView) findViewById(R.id.MaxSpeed_Information);
-            final TextView avgSpeedTextView = (TextView) findViewById(R.id.AvgSpeed_Information);
-            final TextView elevLossTextView =
-                    (TextView) findViewById(R.id.ElevationLoss_Information);
-            final TextView elevGainTextView =
-                    (TextView) findViewById(R.id.ElevationGain_Information);
-            bikeNameTextView = (TextView) findViewById(R.id.bike_name_information);
+            final TextView durationText = (TextView) findViewById(R.id.Duration_Information);
+            final TextView distanceText = (TextView) findViewById(R.id.Distance_Information);
+            final TextView maxSpeedText = (TextView) findViewById(R.id.MaxSpeed_Information);
+            final TextView avgSpeedText = (TextView) findViewById(R.id.AvgSpeed_Information);
+            final TextView elevLossText = (TextView) findViewById(R.id.ElevationLoss_Information);
+            final TextView elevGainText = (TextView) findViewById(R.id.ElevationGain_Information);
+            bikeNameTextView = (TextView) findViewById(R.id.bike_name);
             bikeNameTextView.setOnClickListener(new View.OnClickListener()
             {
                 @Override public void onClick(final View v)
@@ -45,27 +43,16 @@ public class RideSummaryActivity extends AppCompatActivity
                         startActivityForResult(intent, PICK_RIDING_BIKE);
                     }
             });
-            findViewById(R.id.bike_name_label).setOnClickListener(new View.OnClickListener()
-            {
-                @Override public void onClick(final View v)
-                    {
-                        final Intent intent = new Intent(RideSummaryActivity.this,
-                                                         SelectionActivity.class);
-                        intent.putExtra("TypeOfRequest", "Bike");
-                        startActivityForResult(intent, PICK_RIDING_BIKE);
-                    }
-            });
-            durationTextView.setText(ride.getDuration());
-            distanceTextView.setText(String.format(Locale.UK, "%.1f", ride.getDistance()));
-            avgSpeedTextView.setText(String.format(Locale.UK, "%.0f", ride.getAvgSpeed()));
-            maxSpeedTextView
-                    .setText(String.format(java.util.Locale.UK, "%.2f", ride.getMaxSpeed()));
-            elevLossTextView.setText(String.format(Locale.UK, "%.1f", ride.getElevationLoss()));
-            elevGainTextView.setText(String.format(Locale.UK, "%.1f", ride.getElevationGain()));
+            durationText.setText(res.getString(R.string.duration, ride.getDuration()));
+            distanceText.setText(res.getString(R.string.distance, ride.getDistance()));
+            avgSpeedText.setText(res.getString(R.string.avg_speed, ride.getAvgSpeed()));
+            maxSpeedText.setText(res.getString(R.string.max_speed, ride.getMaxSpeed()));
+            elevLossText.setText(res.getString(R.string.elevation_loss, ride.getElevationLoss()));
+            elevGainText.setText(res.getString(R.string.elevation_gain, ride.getElevationGain()));
         }
 
 
-    public void SaveRide(final View view)
+    public void SaveRide(final View _view)
         {
             if(!"not started".equals(ride.getDuration()))
             {
@@ -84,10 +71,10 @@ public class RideSummaryActivity extends AppCompatActivity
         }
 
 
-    public void DeleteRide(final View view)
+    public void DeleteRide(final View _view)
         {
             final AlertDialog.Builder deleteRideDialogBuilder = new AlertDialog.Builder(this);
-            deleteRideDialogBuilder.setMessage(R.string.confirm_delete_ride);
+            deleteRideDialogBuilder.setMessage(R.string.confirm_delete);
             deleteRideDialogBuilder
                     .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
                     {
@@ -123,12 +110,12 @@ public class RideSummaryActivity extends AppCompatActivity
                 if(resultCode == RESULT_OK)
                 {
                     final Bike oldBike = db.getBike(ride.getBikeId());
-                    oldBike.setTotalBikeDistance(
-                            oldBike.getTotalBikeDistance() - ride.getDistance());
+                    oldBike.setDistance(
+                            oldBike.getDistance() - ride.getDistance());
                     ride.setBikeId(Integer.parseInt(data.getData().toString()));
                     final Bike newBike = db.getBike(ride.getBikeId());
-                    newBike.setTotalBikeDistance(
-                            newBike.getTotalBikeDistance() + ride.getDistance());
+                    newBike.setDistance(
+                            newBike.getDistance() + ride.getDistance());
                 }else
                 {
                     android.widget.Toast
@@ -144,7 +131,7 @@ public class RideSummaryActivity extends AppCompatActivity
             if(ride.getBikeId() != -1)
             {
                 final Bike bike = db.getBike(ride.getBikeId());
-                bikeNameTextView.setText(bike.getBikeName());
+                bikeNameTextView.setText(bike.getName());
             }
             super.onResume();
         }

@@ -75,6 +75,7 @@ class Ride implements Parcelable
         }
 
 
+
     int getBikeId()
         {
             return mBikeId;
@@ -174,6 +175,8 @@ class Ride implements Parcelable
             mRideDate = rideDate;
         }
 
+
+    void incrementDistance(final double _distance){mDistance += _distance;}
 
     @Override
     public int describeContents()

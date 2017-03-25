@@ -7,7 +7,7 @@ import android.support.test.runner.AndroidJUnit4;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Instrumentation test, which will execute on an Android device.
@@ -21,7 +21,7 @@ public class ExampleInstrumentedTest
 	public void useAppContext() throws Exception
 		{
 			// Context of the app under test.
-			Context appContext = InstrumentationRegistry.getTargetContext();
+            final Context appContext = InstrumentationRegistry.getTargetContext();
 
 			assertEquals("com.cochrane.clinton.bikecompanion", appContext.getPackageName());
 		}

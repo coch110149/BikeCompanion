@@ -5,58 +5,49 @@
                                              android:layout_height = "match_parent">
 
     <TextView
-            android:id = "@+id/heading"
-            android:layout_width = "352dp"
+            android:id = "@+id/contact_name"
+            android:layout_width = "0dp"
             android:layout_height = "wrap_content"
+            android:layout_marginLeft = "8dp"
+            android:layout_marginRight = "8dp"
             android:layout_marginTop = "0dp"
             android:textIsSelectable = "true"
-            app:layout_constraintHorizontal_bias = "0.125"
+            app:layout_constraintHorizontal_bias = "0.0"
             app:layout_constraintLeft_toLeftOf = "parent"
             app:layout_constraintRight_toRightOf = "parent"
             app:layout_constraintTop_toTopOf = "parent" />
 
     <TextView
-            android:id = "@+id/additionalInfo1"
-            android:layout_width = "352dp"
+            android:id = "@+id/contact_phone"
+            android:layout_width = "0dp"
             android:layout_height = "wrap_content"
-            android:layout_marginEnd = "8dp"
-            android:layout_marginStart = "0dp"
-            android:layout_marginTop = "15dp"
+            android:layout_marginLeft = "8dp"
+            android:layout_marginRight = "8dp"
+            android:layout_marginTop = "8dp"
             android:textIsSelectable = "true"
             app:layout_constraintLeft_toLeftOf = "parent"
             app:layout_constraintRight_toRightOf = "parent"
-            app:layout_constraintTop_toBottomOf = "@+id/heading" />
-
-    <TextView
-            android:id = "@+id/additionalInfo2"
-            android:layout_width = "352dp"
-            android:layout_height = "wrap_content"
-            android:layout_marginEnd = "8dp"
-            android:layout_marginStart = "0dp"
-            android:layout_marginTop = "6dp"
-            android:textIsSelectable = "true"
-            app:layout_constraintLeft_toLeftOf = "parent"
-            app:layout_constraintRight_toRightOf = "parent"
-            app:layout_constraintTop_toBottomOf = "@+id/additionalInfo1" />
+            app:layout_constraintTop_toBottomOf = "@id/contact_name" />
 
     <Button
             android:id = "@+id/primary_button"
             android:layout_width = "0dp"
             android:layout_height = "wrap_content"
-            android:layout_marginEnd = "8dp"
-            android:layout_marginStart = "8dp"
-            android:layout_marginTop = "8dp"
+            android:layout_marginLeft = "8dp"
+            android:layout_marginRight = "8dp"
+            app:layout_constraintHorizontal_bias = "0.0"
             app:layout_constraintLeft_toLeftOf = "parent"
             app:layout_constraintRight_toLeftOf = "@+id/secondary_button"
-            app:layout_constraintTop_toBottomOf = "@+id/additionalInfo2" />
+            app:layout_constraintTop_toBottomOf = "@+id/contact_phone" />
 
     <Button
             android:id = "@+id/secondary_button"
             android:layout_width = "0dp"
             android:layout_height = "wrap_content"
-            android:layout_marginEnd = "8dp"
-            android:layout_marginTop = "8dp"
+            android:layout_marginEnd = "0dp"
+            android:layout_marginTop = "0dp"
+            android:text = "@string/edit"
             app:layout_constraintRight_toRightOf = "parent"
-            app:layout_constraintTop_toBottomOf = "@+id/additionalInfo2" />
-
+            app:layout_constraintTop_toBottomOf = "@+id/contact_phone"
+            />
 </android.support.constraint.ConstraintLayout>

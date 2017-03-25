@@ -1,9 +1,12 @@
 package com.cochrane.clinton.bikecompanion;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,8 +20,10 @@ import java.util.ArrayList;
 /**
  * Created by Clint on 24/03/2017.
  */
-public class ContactAdapter extends ArrayAdapter<Contact>
+class ContactAdapter extends ArrayAdapter<Contact>
 {
+    private final Context mContext;
+    private final Resources mRes;
     private int mGroupId = -1;
     private Button mPrimaryButton;
 
@@ -26,18 +31,22 @@ public class ContactAdapter extends ArrayAdapter<Contact>
     ContactAdapter(final Activity context, final ArrayList<Contact> contacts)
         {
             super(context, 0, contacts);
+            mContext = context;
+            mRes = mContext.getResources();
         }
 
 
-    ContactAdapter(final Activity context, final ArrayList<Contact> contacts, String _groupId)
+    ContactAdapter(final Activity context, final ArrayList<Contact> contacts, final String _groupId)
         {
             super(context, 0, contacts);
             mGroupId = Integer.parseInt(_groupId);
+            mContext = context;
+            mRes = mContext.getResources();
         }
 
 
-    @NonNull @Override public View getView(int position, @Nullable View convertView,
-                                           @NonNull ViewGroup parent)
+    @NonNull @Override public View getView(final int position, @Nullable final View convertView,
+                                           @NonNull final ViewGroup parent)
         {
             View listItemView = convertView;
             if(listItemView == null)
@@ -58,10 +67,10 @@ public class ContactAdapter extends ArrayAdapter<Contact>
                         R.id.secondary_button);
                 secondaryButton.setOnClickListener(new View.OnClickListener()
                 {
-                    @Override public void onClick(View v)
+                    @Override public void onClick(final View v)
                         {
                             final Intent intent = new Intent(getContext(),
-                                                             ContactConfigurationActivity.class);
+                                                             ContactConfigActivity.class);
                             intent.putExtra("SelectedContactObject", currentContact);
                             getContext().startActivity(intent);
                         }
@@ -80,41 +89,41 @@ public class ContactAdapter extends ArrayAdapter<Contact>
                 final View view = (View) mPrimaryButton.getParent();
                 if(currentContact.in(mGroupId, getContext()))
                 {
-                    mPrimaryButton.setText("remove");
-                    view.setBackgroundColor(view.getResources().getColor(R.color.colorPrimary));
+                    mPrimaryButton.setText(mRes.getString(R.string.remove_exact));
+                    view.setBackgroundColor(ContextCompat.getColor(mContext, R.color.bright_teal));
                 }else
                 {
-                    mPrimaryButton.setText("add");
+                    mPrimaryButton.setText(mRes.getString(R.string.add_exact));
                 }
                 mPrimaryButton.setOnClickListener(new View.OnClickListener()
                 {
-                    @Override public void onClick(View v)
+                    @Override public void onClick(final View v)
                         {
                             if("add".equals(mPrimaryButton.getText().toString().toLowerCase()))
                             {
                                 currentContact.addToGroup(mGroupId, getContext());
-                                mPrimaryButton.setText("remove");
+                                mPrimaryButton.setText(mRes.getString(R.string.add_exact));
                                 view.setBackgroundColor(
-                                        view.getResources().getColor(R.color.colorPrimary));
+                                        ContextCompat.getColor(mContext, R.color.bright_teal));
                             }else
                             {
                                 currentContact.removeFromGroup(mGroupId, getContext());
-                                mPrimaryButton.setText("add");
+                                mPrimaryButton.setText((mRes.getString(R.string.add_exact)));
                                 view.setBackgroundColor(0);
                             }
                         }
                 });
             }else
             {
-                mPrimaryButton.setText("manage groups");
+                mPrimaryButton.setText(mRes.getString(R.string.manage_groups_exact));
                 mPrimaryButton.setOnClickListener(new View.OnClickListener()
                 {
-                    @Override public void onClick(View v)
+                    @Override public void onClick(final View v)
                         {
                             final Intent intent =
                                     new Intent(getContext(), SelectionActivity.class);
                             intent.putExtra("TypeOfRequest", "Group");
-                            intent.putExtra("ContactId", "" + currentContact.getId());
+                            intent.putExtra("ContactId", String.valueOf(currentContact.getId()));
                             getContext().startActivity(intent);
                         }
                 });

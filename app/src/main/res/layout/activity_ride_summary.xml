@@ -1,123 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_ride_summary"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.cochrane.clinton.bikecompanion.MainActivity">
+<android.support.constraint.ConstraintLayout
+        xmlns:android = "http://schemas.android.com/apk/res/android"
+        xmlns:app = "http://schemas.android.com/apk/res-auto"
+        xmlns:tools = "http://schemas.android.com/tools"
+        android:layout_width = "match_parent"
+        android:layout_height = "match_parent"
+        android:orientation = "vertical"
+        tools:context = "com.cochrane.clinton.bikecompanion.MainActivity">
 
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+    <TextView
+            android:id = "@+id/Duration_Information"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:layout_marginLeft = "8dp"
+            android:layout_marginRight = "8dp"
+            android:layout_marginTop = "16dp"
+            android:textIsSelectable = "true"
+            app:layout_constraintHorizontal_bias = "0.0"
+            app:layout_constraintLeft_toLeftOf = "parent"
+            app:layout_constraintRight_toRightOf = "parent"
+            app:layout_constraintTop_toTopOf = "parent"
+            tools:layout_constraintLeft_creator = "1"
+            tools:layout_constraintRight_creator = "1"
+            tools:layout_constraintTop_creator = "1"
+            tools:text = "@string/duration" />
 
-        <TextView
-            android:id="@+id/Duration_Label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/duration"/>
+    <TextView
+            android:id = "@+id/Distance_Information"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:layout_marginLeft = "8dp"
+            android:layout_marginRight = "8dp"
+            android:layout_marginTop = "8dp"
+            android:textIsSelectable = "true"
+            app:layout_constraintHorizontal_bias = "0.0"
+            app:layout_constraintLeft_toLeftOf = "parent"
+            app:layout_constraintRight_toRightOf = "parent"
+            app:layout_constraintTop_toBottomOf = "@+id/Duration_Information"
+            tools:layout_constraintLeft_creator = "1"
+            tools:layout_constraintTop_creator = "1"
+            tools:text = "@string/distance" />
 
-        <TextView
-            android:id="@+id/Duration_Information"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_toEndOf="@id/Duration_Label"/>
+    <TextView
+            android:id = "@+id/MaxSpeed_Information"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:layout_marginLeft = "8dp"
+            android:layout_marginRight = "8dp"
+            android:layout_marginTop = "8dp"
+            android:textIsSelectable = "true"
+            app:layout_constraintHorizontal_bias = "0.0"
+            app:layout_constraintLeft_toLeftOf = "parent"
+            app:layout_constraintRight_toRightOf = "parent"
+            app:layout_constraintTop_toBottomOf = "@+id/bike_name"
+            tools:layout_constraintLeft_creator = "1"
+            tools:layout_constraintRight_creator = "1"
+            tools:layout_constraintTop_creator = "1"
+            tools:text = "@string/max_speed" />
 
-        <TextView
-            android:id="@+id/Distance_Label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/Duration_Label"
-            android:text="@string/distance"/>
+    <TextView
+            android:id = "@+id/AvgSpeed_Information"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:layout_marginLeft = "8dp"
+            android:layout_marginRight = "8dp"
+            android:layout_marginTop = "7dp"
+            android:textIsSelectable = "true"
+            app:layout_constraintHorizontal_bias = "0.504"
+            app:layout_constraintLeft_toLeftOf = "parent"
+            app:layout_constraintRight_toRightOf = "parent"
+            app:layout_constraintTop_toBottomOf = "@+id/MaxSpeed_Information"
+            tools:layout_constraintLeft_creator = "1"
+            tools:layout_constraintRight_creator = "1"
+            tools:layout_constraintTop_creator = "1"
+            tools:text = "@string/avg_speed" />
 
-        <TextView
-            android:id="@+id/Distance_Information"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/Duration_Information"
-            android:layout_toEndOf="@id/Distance_Label"/>
+    <TextView
+            android:id = "@+id/ElevationLoss_Information"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:layout_marginLeft = "8dp"
+            android:layout_marginRight = "8dp"
+            android:layout_marginTop = "8dp"
+            android:textIsSelectable = "true"
+            app:layout_constraintHorizontal_bias = "0.504"
+            app:layout_constraintLeft_toLeftOf = "parent"
+            app:layout_constraintRight_toRightOf = "parent"
+            app:layout_constraintTop_toBottomOf = "@+id/AvgSpeed_Information"
+            tools:layout_constraintLeft_creator = "1"
+            tools:layout_constraintRight_creator = "1"
+            tools:layout_constraintTop_creator = "1"
+            tools:text = "@string/elevation_loss" />
 
-        <TextView
-            android:id="@+id/MaxSpeed_Label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/Distance_Label"
-            android:text="@string/maxSpeed"/>
+    <TextView
+            android:id = "@+id/ElevationGain_Information"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:layout_marginLeft = "8dp"
+            android:layout_marginRight = "8dp"
+            android:layout_marginTop = "7dp"
+            android:textIsSelectable = "true"
+            app:layout_constraintLeft_toLeftOf = "parent"
+            app:layout_constraintRight_toRightOf = "parent"
+            app:layout_constraintTop_toBottomOf = "@+id/ElevationLoss_Information"
+            tools:layout_constraintLeft_creator = "1"
+            tools:layout_constraintRight_creator = "1"
+            tools:layout_constraintTop_creator = "1"
+            tools:text = "@string/elevation_gain" />
 
-        <TextView
-            android:id="@+id/MaxSpeed_Information"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/Distance_Information"
-            android:layout_toEndOf="@id/MaxSpeed_Label"/>
-
-        <TextView
-            android:id="@+id/AvgSpeed_Label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/MaxSpeed_Label"
-            android:text="@string/avg_speed"/>
-
-        <TextView
-            android:id="@+id/AvgSpeed_Information"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/MaxSpeed_Information"
-            android:layout_toEndOf="@id/AvgSpeed_Label"/>
-
-        <TextView
-            android:id="@+id/ElevationLoss_Label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/AvgSpeed_Label"
-            android:text="@string/elevation_loss"/>
-
-        <TextView
-            android:id="@+id/ElevationLoss_Information"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/AvgSpeed_Information"
-            android:layout_toEndOf="@id/ElevationLoss_Label"/>
-
-        <TextView
-            android:id="@+id/ElevationGain_Label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/ElevationLoss_Label"
-            android:text="@string/elevation_gain"/>
-
-        <TextView
-            android:id="@+id/ElevationGain_Information"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/ElevationLoss_Information"
-            android:layout_toEndOf="@id/ElevationGain_Label"/>
-
-        <TextView
-            android:id="@+id/bike_name_label"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/ElevationGain_Information"
-            android:text="@string/bike_name"/>
-
-        <TextView
-            android:id="@+id/bike_name_information"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/ElevationGain_Information"
-            android:layout_toEndOf="@id/bike_name_label"/>
-    </RelativeLayout>
+    <TextView
+            android:id = "@+id/bike_name"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:layout_marginLeft = "8dp"
+            android:layout_marginRight = "8dp"
+            android:layout_marginTop = "8dp"
+            android:textIsSelectable = "true"
+            app:layout_constraintHorizontal_bias = "1.0"
+            app:layout_constraintLeft_toLeftOf = "parent"
+            app:layout_constraintRight_toRightOf = "parent"
+            app:layout_constraintTop_toBottomOf = "@+id/Distance_Information"
+            tools:layout_constraintLeft_creator = "1"
+            tools:layout_constraintRight_creator = "1"
+            tools:layout_constraintTop_creator = "1"
+            tools:text = "@string/bike_name" />
 
     <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="SaveRide"
-        android:text="@string/save_ride"/>
+            android:id = "@+id/button5"
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:layout_marginEnd = "8dp"
+            android:layout_marginStart = "8dp"
+            android:layout_marginTop = "16dp"
+            android:onClick = "SaveRide"
+            android:text = "@string/save_ride"
+            app:layout_constraintLeft_toLeftOf = "parent"
+            app:layout_constraintRight_toRightOf = "parent"
+            app:layout_constraintTop_toBottomOf = "@+id/ElevationGain_Information"
+            tools:layout_constraintLeft_creator = "1"
+            tools:layout_constraintRight_creator = "1"
+            tools:layout_constraintTop_creator = "1" />
 
     <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="DeleteRide"
-        android:text="@string/remove_ride"/>
-</LinearLayout>
+            android:layout_width = "0dp"
+            android:layout_height = "wrap_content"
+            android:onClick = "DeleteRide"
+            android:text = "@string/remove_ride"
+            app:layout_constraintLeft_toLeftOf = "@+id/button5"
+            app:layout_constraintRight_toRightOf = "@+id/button5"
+            app:layout_constraintTop_toBottomOf = "@+id/button5"
+            tools:layout_constraintLeft_creator = "1"
+            tools:layout_constraintRight_creator = "1"
+            tools:layout_constraintTop_creator = "1" />
+</android.support.constraint.ConstraintLayout>

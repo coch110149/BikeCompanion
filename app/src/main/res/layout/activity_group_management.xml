@@ -1,33 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_main"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context="com.cochrane.clinton.bikecompanion.MainActivity">
+<android.support.constraint.ConstraintLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app = "http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        tools:context="com.cochrane.clinton.bikecompanion.MainActivity">
 
     <Button
-        android:id="@+id/add_new_group_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="AddNewGroup"
-        android:text="@string/add_a_new_group"/>
+            android:id = "@+id/new_group_button"
+            android:layout_width = "0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd = "8dp"
+            android:layout_marginStart = "8dp"
+            android:onClick="AddNewGroup"
+            android:text = "@string/add_new_group"
+            app:layout_constraintLeft_toLeftOf = "parent"
+            app:layout_constraintRight_toRightOf = "parent"
+            app:layout_constraintTop_toTopOf = "parent"
+            tools:layout_constraintLeft_creator = "1"
+            tools:layout_constraintRight_creator = "1"
+            tools:layout_constraintTop_creator = "1" />
 
     <Button
-        android:id="@+id/manage_contacts"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="ViewContacts"
-        android:text="@string/manage_contacts"/>
+            android:id="@+id/manage_contacts"
+            android:layout_width = "0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd = "8dp"
+            android:layout_marginStart = "8dp"
+            android:layout_marginTop = "0dp"
+            android:text = "@string/manage_contacts"
+            app:layout_constraintLeft_toLeftOf = "parent"
+            app:layout_constraintRight_toRightOf = "parent"
+            app:layout_constraintTop_toBottomOf = "@+id/new_group_button"
+            tools:layout_constraintLeft_creator = "1"
+            tools:layout_constraintRight_creator = "1"
+            tools:layout_constraintTop_creator = "1"
+            />
 
     <ListView
-        android:id="@+id/list_view_group"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp">
+            android:id="@+id/list_view_group"
+            android:layout_width = "0dp"
+            android:layout_height = "0dp"
+            android:layout_marginBottom = "0dp"
+            android:layout_marginTop = "0dp"
+            app:layout_constraintBottom_toBottomOf = "parent"
+            app:layout_constraintHorizontal_bias = "0.55"
+            app:layout_constraintLeft_toLeftOf = "parent"
+            app:layout_constraintRight_toRightOf = "parent"
+            app:layout_constraintTop_toBottomOf = "@+id/manage_contacts"
+            app:layout_constraintVertical_bias = "0.0"
+            tools:layout_constraintBottom_creator = "1"
+            tools:layout_constraintLeft_creator = "1"
+            tools:layout_constraintRight_creator = "1">
 
     </ListView>
 
-</LinearLayout>
+</android.support.constraint.ConstraintLayout>

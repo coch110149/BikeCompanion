@@ -2,5 +2,15 @@
 <resources>
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
-    <color name="colorAccent">#FF4081</color>
+    <color name = "colorAccent">#ff4081</color>
+    <color name = "where_is_this_colour">#ec1e1e</color>
+    <color name = "dark_purple">#300061</color>
+    <color name = "mint">#70bf96</color>
+    <color name = "super_black">#000000</color>
+    <color name = "secondary_text_material_light">#8a975141</color>
+    <color name = "primary_bike_purple">#421172</color>
+    <color name = "material_green_200">#a5d6a7</color>
+    <color name = "pink_accent">#c51162</color>
+    <color name = "material_deep_purple_400">#4b2586</color>
+    <color name = "bright_teal">#ceffd0</color>
 </resources>

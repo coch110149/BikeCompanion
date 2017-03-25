@@ -1,6 +1,7 @@
 package com.cochrane.clinton.bikecompanion;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -28,10 +29,10 @@ public class Group implements Parcelable
     private int mId;
     private String mName;
     private int mPeriodicDelay;
+    private boolean mIsSelected;
     private int mMovementWaitTime;
     private int mStopPeriodicDelay;
     private boolean mPauseButtonStopsService;
-    private boolean mIsSelected;
 
 
     private Group(final Parcel in)
@@ -51,17 +52,17 @@ public class Group implements Parcelable
         }
 
 
-    public Group(final int id, final String name, final int periodicDelay,
-                 final int movementWaitTime, final int stopPeriodicDelay,
-                 final boolean pauseButtonStopsService, final boolean isSelected)
+    public Group(final int _id, final String _name, final int _periodicDelay,
+                 final int _movementWaitTime, final int _stopPeriodicDelay,
+                 final boolean _pauseButtonStopsService, final boolean _isSelected)
         {
-            mId = id;
-            mName = name;
-            mPeriodicDelay = periodicDelay;
-            mMovementWaitTime = movementWaitTime;
-            mStopPeriodicDelay = stopPeriodicDelay;
-            mPauseButtonStopsService = pauseButtonStopsService;
-            mIsSelected = isSelected;
+            mId = _id;
+            mName = _name;
+            mIsSelected = _isSelected;
+            mPeriodicDelay = _periodicDelay;
+            mMovementWaitTime = _movementWaitTime;
+            mStopPeriodicDelay = _stopPeriodicDelay;
+            mPauseButtonStopsService = _pauseButtonStopsService;
         }
 
 
@@ -71,9 +72,9 @@ public class Group implements Parcelable
         }
 
 
-    public void setSelected(final boolean selected)
+    public void setSelected(final boolean _selected)
         {
-            mIsSelected = selected;
+            mIsSelected = _selected;
         }
 
 
@@ -83,9 +84,9 @@ public class Group implements Parcelable
         }
 
 
-    public void setName(final String name)
+    public void setName(final String _name)
         {
-            mName = name;
+            mName = _name;
         }
 
 
@@ -95,15 +96,15 @@ public class Group implements Parcelable
         }
 
 
-    public void setPeriodicDelay(final int periodicDelay)
+    public void setPeriodicDelay(final int _periodicDelay)
         {
-            mPeriodicDelay = periodicDelay;
+            mPeriodicDelay = _periodicDelay;
         }
 
 
-    void setPeriodicDelayPositive(final int periodicDelay, final Boolean activate)
+    void setPeriodicDelayPositive(final int _periodicDelay, final Boolean _activate)
         {
-            mPeriodicDelay = activate ? abs(periodicDelay) : (abs(periodicDelay) * -1);
+            mPeriodicDelay = _activate ? abs(_periodicDelay) : (abs(_periodicDelay) * -1);
         }
 
 
@@ -125,7 +126,7 @@ public class Group implements Parcelable
         }
 
 
-    public void setStopPeriodicDelay(final int stopPeriodicDelay)
+    void setStopPeriodicDelay(final int stopPeriodicDelay)
         {
             mStopPeriodicDelay = stopPeriodicDelay;
         }
@@ -203,28 +204,54 @@ public class Group implements Parcelable
         }
 
 
-    public void setPeriodicDelay(int _delay, boolean _checked)
+    String getPeriodicDelay(final Resources mRes)
+        {
+            String output = "Periodic Alerts Are Turned Off";
+            if(mPeriodicDelay > 0)
+            {
+                output = mRes.getQuantityString(R.plurals.notify_every, mPeriodicDelay,
+                                                mPeriodicDelay);
+            }
+            return output;
+        }
+
+
+    String getStopPeriodicDelay(final Resources mRes)
+        {
+            String output = "Stopped Movement Notification Has Been Turned Off";
+            if((mStopPeriodicDelay > 0) && (mMovementWaitTime > 0))
+            {
+                output = mRes.getQuantityString(R.plurals.notify_every, mStopPeriodicDelay,
+                                                mMovementWaitTime);
+                output += mRes.getQuantityString(R.plurals.stop, mMovementWaitTime,
+                                                 mMovementWaitTime);
+            }
+            return output;
+        }
+
+
+    public void setPeriodicDelay(final int _delay, final boolean _checked)
         {
             mPeriodicDelay = _checked ? abs(_delay) : (abs(_delay) * -1);
         }
 
 
-    public void setStopPeriodicDelay(int _stopDelay, boolean _checked)
+    public void setStopPeriodicDelay(final int _stopDelay, final boolean _checked)
         {
             mStopPeriodicDelay = _checked ? abs(_stopDelay) : (abs(_stopDelay) * -1);
         }
 
 
-    public void setMovementWaitTime(int _waitDelay, boolean _checked)
+    public void setMovementWaitTime(final int _waitDelay, final boolean _checked)
         {
             mMovementWaitTime = _checked ? abs(_waitDelay) : (abs(_waitDelay) * -1);
         }
 
 
-    public Contact addRemoveContact(String _contactId, Context _context)
+    public Contact addRemoveContact(final String _contactId, final Context _context)
         {
-            DatabaseHandler db = new DatabaseHandler(_context);
-            Contact contact = db.getContact(Integer.parseInt(_contactId));
+            final DatabaseHandler db = new DatabaseHandler(_context);
+            final Contact contact = db.getContact(Integer.parseInt(_contactId));
             if(db.getContactGroupRelation(Integer.parseInt(_contactId), mId))
             {
                 db.removeContactFromGroup(Integer.parseInt(_contactId), mId);
@@ -232,6 +259,7 @@ public class Group implements Parcelable
             {
                 db.addContactToGroup(Integer.parseInt(_contactId), mId);
             }
+            db.close();
             return contact;
         }
 }

@@ -5,218 +5,217 @@ import android.os.Parcelable;
 
 
 public class Bike implements Parcelable
-	{
-	public static final Parcelable.Creator<Bike> CREATOR = new Parcelable.Creator<Bike>()
-		{
-			public Bike createFromParcel( final Parcel in )
-				{
-					return new Bike(in);
-				}
+{
+    public static final Parcelable.Creator<Bike> CREATOR = new Parcelable.Creator<Bike>()
+    {
+        @Override public Bike createFromParcel(final Parcel in)
+            {
+                return new Bike(in);
+            }
 
 
-			public Bike[] newArray( final int size )
-				{
-					return new Bike[size];
-				}
-		};
-	private int _ID;
-	private String _BikeName;
-	private String _BikeMake;
-	private String _BikeYear;
-	private String _BikeModel;
-	private String _BikeDescription;
-	private Double _TotalBikeDistance;
-	private String _LastRideDate;
+        @Override public Bike[] newArray(final int size)
+            {
+                return new Bike[size];
+            }
+    };
+    private int mId;
+    private String mBikeName;
+    private String mBikeMake;
+    private String mBikeYear;
+    private String mBikeModel;
+    private String mBikeDescription;
+    private Double mTotalBikeDistance;
+    private String mLastRideDate;
 
 
-	public Bike()
-		{
-			this(-1, "", "", "", "", "", 0, "You have not ridden me yet ");
-		}
+    public Bike()
+        {
+            this(-1, "", "", "", "", "", 0, "You have not ridden me yet ");
+        }
 
 
-	public Bike( int id, String name, String make, String bikeYear, String model, String description,
-			           double distance, String rideDate )
-		{
-			this._ID = id;
-			this._BikeName = name;
-			this._BikeMake = make;
-			this._BikeYear = bikeYear;
-			this._BikeModel = model;
-			this._TotalBikeDistance = distance;
-			this._BikeDescription = description;
-			this._LastRideDate = rideDate;
-		}
+    public Bike(final int id, final String name, final String make, final String bikeYear,
+                final String model, final String description, final double distance,
+                final String rideDate)
+        {
+            mId = (id);
+            mBikeName = name;
+            mBikeMake = make;
+            mBikeYear = bikeYear;
+            mBikeModel = model;
+            mTotalBikeDistance = distance;
+            mBikeDescription = description;
+            mLastRideDate = rideDate;
+        }
 
 
-	/**
-	 * Use when reconstruction Bike Object from Parcel. This will be used only by the "creator"
-	 *
-	 * @param in a parcel used to create the object
-	 */
-	private Bike( Parcel in )
-		{
-			this._ID = in.readInt();
-			this._BikeYear = in.readString();
-			this._BikeName = in.readString();
-			this._BikeMake = in.readString();
-			this._BikeModel = in.readString();
-			this._BikeDescription = in.readString();
-			this._TotalBikeDistance = in.readDouble();
-		}
+    /**
+     * Use when reconstruction Bike Object from Parcel. This will be used only by the "creator"
+     *
+     * @param in a parcel used to create the object
+     */
+    private Bike(final Parcel in)
+        {
+            mId = (in.readInt());
+            mBikeYear = in.readString();
+            mBikeName = in.readString();
+            mBikeMake = in.readString();
+            mBikeModel = in.readString();
+            mBikeDescription = in.readString();
+            mTotalBikeDistance = in.readDouble();
+        }
 
 
-	public String getLastRideDate()
-		{
-			return this._LastRideDate;
-		}
+    String getLastRideDate()
+        {
+            return mLastRideDate;
+        }
 
 
-	public void setLastRideDate( String _LastRideDate )
-		{
-			this._LastRideDate = _LastRideDate;
-		}
+    void setLastRideDate(final String _LastRideDate)
+        {
+            mLastRideDate = _LastRideDate;
+        }
 
 
-	String getBikeYear()
-		{
-			return this._BikeYear;
-		}
+    String getBikeYear()
+        {
+            return mBikeYear;
+        }
 
 
-	void setBikeYear( String mBikeYear )
-		{
-			this._BikeYear = mBikeYear;
-		}
+    void setBikeYear(final String mBikeYear)
+        {
+            this.mBikeYear = mBikeYear;
+        }
 
 
-	int getID()
-		{
-			return this._ID;
-		}
+    String getBikeName()
+        {
+            return mBikeName;
+        }
 
 
-	void setID( int mID )
-		{
-			this._ID = mID;
-		}
+    void setBikeName(final String mBikeName)
+        {
+            this.mBikeName = mBikeName;
+        }
 
 
-	String getBikeName()
-		{
-			return this._BikeName;
-		}
+    String getBikeMake()
+        {
+            return mBikeMake;
+        }
 
 
-	void setBikeName( String mBikeName )
-		{
-			this._BikeName = mBikeName;
-		}
+    void setBikeMake(final String mBikeMake)
+        {
+            this.mBikeMake = mBikeMake;
+        }
 
 
-	String getBikeMake()
-		{
-			return this._BikeMake;
-		}
+    String getBikeModel()
+        {
+            return mBikeModel;
+        }
 
 
-	void setBikeMake( String mBikeMake )
-		{
-			this._BikeMake = mBikeMake;
-		}
+    void setBikeModel(final String mBikeModel)
+        {
+            this.mBikeModel = mBikeModel;
+        }
 
 
-	String getBikeModel()
-		{
-			return this._BikeModel;
-		}
+    String getBikeDescription()
+        {
+            return mBikeDescription;
+        }
 
 
-	void setBikeModel( String mBikeModel )
-		{
-			this._BikeModel = mBikeModel;
-		}
+    void setBikeDescription(final String mBikeDescription)
+        {
+            this.mBikeDescription = mBikeDescription;
+        }
 
 
-	String getBikeDescription()
-		{
-			return this._BikeDescription;
-		}
-	//private Components[] components
+    Double getTotalBikeDistance()
+        {
+            return mTotalBikeDistance;
+        }
 
 
-	void setBikeDescription( String mBikeDescription )
-		{
-			this._BikeDescription = mBikeDescription;
-		}
+    void setTotalBikeDistance(final Double mTotalBikeDistance)
+        {
+            this.mTotalBikeDistance = mTotalBikeDistance;
+        }
 
 
-	Double getTotalBikeDistance()
-		{
-			return this._TotalBikeDistance;
-		}
+    @Override
+    public int describeContents()
+        {
+            return 0;
+        }
 
 
-	void setTotalBikeDistance( Double mTotalBikeDistance )
-		{
-			this._TotalBikeDistance = mTotalBikeDistance;
-		}
-	//Insert Method here
+    /**
+     * Object Serialization happens here, Write object content to parcel one by one, reading
+     * should be done according to this writing order
+     *
+     * @param dest  parcel
+     * @param flags additional flags about how the object should be written
+     */
+    @Override
+    public void writeToParcel(final Parcel dest, final int flags)
+        {
+            dest.writeInt(mId);
+            dest.writeString(mBikeYear);
+            dest.writeString(mBikeName);
+            dest.writeString(mBikeMake);
+            dest.writeString(mBikeModel);
+            dest.writeString(mBikeDescription);
+            dest.writeDouble(mTotalBikeDistance);
+            dest.writeString(mLastRideDate);
+        }
 
 
-	@Override
-	public int describeContents()
-		{
-			return 0;
-		}
+    @Override
+    public boolean equals(final Object obj)
+        {
+            final Boolean isEqual;
+            isEqual = (obj instanceof Bike) && (mId == ((Bike) obj).getId());
+            return isEqual;
+        }
 
 
-	/**
-	 * Object Serialization happens here, Write object content to parcel one by one, reading
-	 * should be done according to this writing order
-	 *
-	 * @param dest parcel
-	 * @param flags additional flags about how the object should be written
-	 */
-	@Override
-	public void writeToParcel( Parcel dest, int flags )
-		{
-			dest.writeInt(_ID);
-			dest.writeString(_BikeYear);
-			dest.writeString(_BikeName);
-			dest.writeString(_BikeMake);
-			dest.writeString(_BikeModel);
-			dest.writeString(_BikeDescription);
-			dest.writeDouble(_TotalBikeDistance);
-			dest.writeString(_LastRideDate);
-		}
+    int getId()
+        {
+            return mId;
+        }
 
 
-	@Override
-	public boolean equals( Object obj )
-		{
-			Boolean isEqual;
-			isEqual = obj instanceof Bike && this._ID == ((Bike) obj)._ID;
-			return isEqual;
-		}
+    void setId(final int mID)
+        {
+            mId = mID;
+        }
 
 
-	public String getHeading()
-		{
-			return this._BikeName + " " + this._BikeYear + " " + this._BikeModel + " " + this._BikeMake;
-		}
+    String getHeading()
+        {
+            return mBikeName + " " + mBikeYear + " " + mBikeModel + " " + mBikeMake;
+        }
 
 
-	public String getAdditionalInfo1()
-		{
-			return "Total Distance: " + this._TotalBikeDistance;
-		}
+    String getAdditionalInfo1()
+        {
+            return "Total Distance: " + mTotalBikeDistance;
+        }
 
 
-	public String getAdditionalInfo2()
-		{
-			return "Last Ride Date: " + this._LastRideDate;
-		}
-	}
+    String getAdditionalInfo2()
+        {
+            return "Last Ride Date: " + mLastRideDate;
+        }
+}
 
 

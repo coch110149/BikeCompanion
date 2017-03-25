@@ -12,92 +12,119 @@ import java.util.Locale;
 
 
 public class BikeConfigurationActivity extends AppCompatActivity
-	{
-	Bike bike = new Bike();
-	EditText bikeYearEdit;
-	EditText bikeMakeEdit;
-	EditText bikeNameEdit;
-	EditText bikeModelEdit;
-	EditText bikeDistanceEdit;
-	EditText bikeDescriptionEdit;
+{
+    private Bike mBike = new Bike();
+    private EditText mBikeYearEdit;
+    private EditText mBikeMakeEdit;
+    private EditText mBikeNameEdit;
+    private EditText mBikeModelEdit;
+    private EditText mBikeDistanceEdit;
+    private EditText mBikeDescriptionEdit;
 
 
-	@Override
-	protected void onCreate( Bundle savedInstanceState )
-		{
-			super.onCreate(savedInstanceState);
-			setContentView(R.layout.activity_bike_configuration);
-			Bundle bundle = getIntent().getExtras();
-			if(bundle != null)
-			{
-				bike = bundle.getParcelable("SelectedBikeObject");
-			}
-			bikeMakeEdit = (EditText) findViewById(R.id.bike_make_edit);
-			bikeMakeEdit.setText(bike.getBikeMake());
-			bikeNameEdit = (EditText) findViewById(R.id.bike_name_edit);
-			bikeNameEdit.setText(bike.getBikeName());
-			bikeYearEdit = (EditText) findViewById(R.id.bike_year_edit);
-			bikeYearEdit.setText(bike.getBikeYear());
-			bikeModelEdit = (EditText) findViewById(R.id.bike_model_edit);
-			bikeModelEdit.setText(bike.getBikeModel());
-			bikeDescriptionEdit = (EditText) findViewById(R.id.bike_description_edit);
-			bikeDescriptionEdit.setText(bike.getBikeDescription());
-			bikeDistanceEdit = (EditText) findViewById(R.id.total_bike_distance_edit);
-			bikeDistanceEdit.setText(String.format(Locale.UK, "%.1f", bike.getTotalBikeDistance()));
-		}
+    @Override
+    protected void onCreate(final Bundle savedInstanceState)
+        {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_bike_configuration);
+            final Bundle bundle = getIntent().getExtras();
+            if(bundle != null)
+            {
+                mBike = bundle.getParcelable("SelectedBikeObject");
+            }
+            mBikeMakeEdit = (EditText) findViewById(R.id.bike_make_edit);
+            mBikeMakeEdit.setText(mBike.getBikeMake());
+            mBikeNameEdit = (EditText) findViewById(R.id.bike_name_edit);
+            mBikeNameEdit.setText(mBike.getBikeName());
+            mBikeYearEdit = (EditText) findViewById(R.id.bike_year_edit);
+            mBikeYearEdit.setText(mBike.getBikeYear());
+            mBikeModelEdit = (EditText) findViewById(R.id.bike_model_edit);
+            mBikeModelEdit.setText(mBike.getBikeModel());
+            mBikeDescriptionEdit = (EditText) findViewById(R.id.bike_description_edit);
+            mBikeDescriptionEdit.setText(mBike.getBikeDescription());
+            mBikeDistanceEdit = (EditText) findViewById(R.id.total_bike_distance_edit);
+            if(mBike.getTotalBikeDistance() > 0.0)
+            {
+                mBikeDistanceEdit
+                        .setText(String.format(Locale.UK, "%.1f", mBike.getTotalBikeDistance()));
+            }
+        }
 
 
-	public void SaveBike( View view )
-		{
-			if(bikeNameEdit.getText().toString().trim().equals(""))
-			{
-				bikeNameEdit.setError("Bike Name is required!");
-				bikeNameEdit.setText("Sparkling Unicorn");
-			} else
-			{
-				bike.setBikeName(bikeNameEdit.getText().toString());
-				bike.setBikeMake(bikeMakeEdit.getText().toString());
-				bike.setBikeYear(bikeYearEdit.getText().toString());
-				bike.setBikeModel(bikeModelEdit.getText().toString());
-				bike.setBikeDescription(bikeDescriptionEdit.getText().toString());
-				bike.setTotalBikeDistance(Double.parseDouble(bikeDistanceEdit.getText().toString()));
-				DatabaseHandler db = new DatabaseHandler(this);
-				db.addBike(bike);
-				//db.close();
-				Intent intent = new Intent(BikeConfigurationActivity.this, BikeGarage.class);
-				startActivity(intent);
-			}
-		}
+    public void SaveBike(final View view)
+        {
+            Boolean shouldSaveBike = true;
+            if("".equals(mBikeNameEdit.getText().toString().trim()))
+            {
+                mBikeNameEdit.setError("Bike Name is required!");
+                mBikeNameEdit.setText(R.string.default_bike_name);
+            }else
+            {
+                try
+                {
+                    mBike.setBikeName(mBikeNameEdit.getText().toString());
+                    mBike.setBikeMake(mBikeMakeEdit.getText().toString());
+                    mBike.setBikeYear(mBikeYearEdit.getText().toString());
+                    mBike.setBikeModel(mBikeModelEdit.getText().toString());
+                    mBike.setBikeDescription(mBikeDescriptionEdit.getText().toString());
+                    mBike.setTotalBikeDistance(
+                            Double.parseDouble(mBikeDistanceEdit.getText().toString()));
+                }catch(final NumberFormatException _e)
+                {
+                    if("".equals(mBikeDistanceEdit.getText().toString()))
+                    {
+                        mBike.setTotalBikeDistance(0.0);
+                    }else
+                    {
+                        mBikeDistanceEdit.setError("Must be a number");
+                        shouldSaveBike = false;
+                    }
+                }finally
+                {
+                    if(shouldSaveBike)
+                    {
+                        final DatabaseHandler db = new DatabaseHandler(this);
+                        db.addBike(mBike);
+                        final Intent intent =
+                                new Intent(BikeConfigurationActivity.this, BikeGarage.class);
+                        startActivity(intent);
+                    }
+                }
+            }
+        }
 
 
-	public void DeleteBike( View view )
-		{
-			AlertDialog.Builder deleteBikeDialogBuilder = new AlertDialog.Builder(this);
-			deleteBikeDialogBuilder.setMessage(R.string.confirm_delete_bike + bike.getBikeName());
-			deleteBikeDialogBuilder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
-				{
-					@Override
-					public void onClick( DialogInterface dialog, int which )
-						{
-							DatabaseHandler db = new DatabaseHandler(BikeConfigurationActivity.this);
-							db.deleteBike(bike);
-							Intent intent = new Intent(BikeConfigurationActivity.this, BikeGarage.class);
-							db.close();
-							startActivity(intent);
-						}
-				});
-			deleteBikeDialogBuilder.setNegativeButton(R.string.no, new MyOnClickListener());
-			AlertDialog deleteBikeDialog = deleteBikeDialogBuilder.create();
-			deleteBikeDialog.show();
-		}
-
-
-	private static class MyOnClickListener implements DialogInterface.OnClickListener
-		{
-			@Override
-			public void onClick( DialogInterface dialog, int which )
-				{
-					dialog.dismiss();
-				}
-		}
-	}
+    public void DeleteBike(final View view)
+        {
+            final AlertDialog.Builder deleteBikeDialogBuilder = new AlertDialog.Builder(this);
+            deleteBikeDialogBuilder.setMessage(R.string.confirm_delete_bike + mBike.getBikeName());
+            deleteBikeDialogBuilder
+                    .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(final DialogInterface dialog, final int which)
+                            {
+                                final DatabaseHandler db =
+                                        new DatabaseHandler(BikeConfigurationActivity.this);
+                                db.deleteBike(mBike);
+                                final Intent intent = new Intent(BikeConfigurationActivity.this,
+                                                                 BikeGarage.class);
+                                startActivity(intent);
+                            }
+                    });
+            //noinspection AnonymousInnerClassMayBeStatic
+            deleteBikeDialogBuilder
+                    .setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
+                                       {
+                                           @Override
+                                           public void onClick(final DialogInterface dialog,
+                                                               final int which)
+                                               {
+                                                   dialog.dismiss();
+                                               }
+                                       }
+                                      );
+            final AlertDialog deleteBikeDialog = deleteBikeDialogBuilder.create();
+            deleteBikeDialog.show();
+        }
+}

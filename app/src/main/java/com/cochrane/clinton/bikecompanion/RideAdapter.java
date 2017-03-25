@@ -13,27 +13,29 @@ import java.util.Locale;
 
 class RideAdapter extends CursorAdapter
 	{
-	RideAdapter( Context context, Cursor cursor )
-		{
+        RideAdapter(final Context context, final Cursor cursor)
+            {
 			super(context, cursor, 0);
 		}
 
 
-	@Override public View newView( Context context, Cursor cursor, ViewGroup parent )
-		{
-			return LayoutInflater.from(context).inflate(R.layout.ride_history_list_item, parent, false);
+        @Override public View newView(final Context context, final Cursor cursor,
+                                      final ViewGroup parent)
+            {
+			return LayoutInflater.from(context).inflate(R.layout.ride_history_list_item, parent,
+                                                        false);
 		}
 
 
-	@Override public void bindView( View view, Context context, Cursor cursor )
-		{
-			TextView dateView = (TextView) view.findViewById(R.id.ride_history_date);
-			dateView.setText(cursor.getString(3));
-			TextView bikeName = (TextView) view.findViewById(R.id.bike_name_information);
-			bikeName.setText(cursor.getString(4));
-			TextView distanceView = (TextView) view.findViewById(R.id.ride_history_distance);
-			distanceView.setText(String.format(Locale.UK, "%.1f", cursor.getDouble(1)));
-			TextView durationView = (TextView) view.findViewById(R.id.ride_history_duration);
-			durationView.setText(cursor.getString(2));
+        @Override public void bindView(final View view, final Context context, final Cursor cursor)
+            {
+            final TextView dateView = (TextView) view.findViewById(R.id.ride_history_date);
+                dateView.setText(cursor.getString(3));
+            final TextView bikeName = (TextView) view.findViewById(R.id.bike_name_information);
+                bikeName.setText(cursor.getString(4));
+            final TextView distanceView = (TextView) view.findViewById(R.id.ride_history_distance);
+                distanceView.setText(String.format(Locale.UK, "%.1f", cursor.getDouble(1)));
+            final TextView durationView = (TextView) view.findViewById(R.id.ride_history_duration);
+                durationView.setText(cursor.getString(2));
 		}
 	}

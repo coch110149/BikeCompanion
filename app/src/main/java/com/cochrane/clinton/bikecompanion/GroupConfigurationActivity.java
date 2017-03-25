@@ -1,132 +1,223 @@
 package com.cochrane.clinton.bikecompanion;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Switch;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 
 public class GroupConfigurationActivity extends AppCompatActivity
-	{
-	Group group = new Group();
-	EditText groupNameEdit;
-	Switch periodicUpdatesSwitch;
-	Switch stoppedMovingPeriodicUpdatesSwitch;
-	EditText stoppedPeriodicTimeEdit;
-	EditText stoppedWaitTimeEdit;
-	EditText periodicTime;
-	Button deleteGroupButton;
-	Button saveGroupButton;
-	Button manageGroupButton;
+{
+    private static final Pattern MIN =
+            Pattern.compile(" min", Pattern.LITERAL);
+    private Group group = new Group();
+    private EditText groupNameEdit;
+    private Switch periodicUpdatesSwitch;
+    private Switch moveUpdateSwitch;
+    private EditText periodicTime;
+    private EditText stopPeriodicTime;
+    private EditText stopWaitTime;
 
 
-	@Override
-	protected void onCreate( Bundle savedInstanceState )
-		{
-			super.onCreate(savedInstanceState);
-			setContentView(R.layout.activity_group_configuration);
-			groupNameEdit = (EditText) findViewById(R.id.group_name);
-			periodicTime = (EditText) findViewById(R.id.periodic_time);
-			stoppedWaitTimeEdit = (EditText) findViewById(R.id.stopped_wait_time_edit);
-			stoppedPeriodicTimeEdit = (EditText) findViewById(R.id.stopped_periodic_time_edit);
-			stoppedMovingPeriodicUpdatesSwitch = (Switch) findViewById(R.id.stopped_updates_switch);
-			periodicUpdatesSwitch = (Switch) findViewById(R.id.periodic_notifications_switch);
-			manageGroupButton = (Button) findViewById(R.id.manage_group_contacts);
-			deleteGroupButton = (Button) findViewById(R.id.delete_group);
-			saveGroupButton = (Button) findViewById(R.id.save_group);
-			Bundle bundle = getIntent().getExtras();
-			if(bundle != null)
-			{
-				group = bundle.getParcelable("SelectedGroupObject");
-			}
-			groupNameEdit.setText(group.getName());
-			if(group.getPeriodicDelay() <= 0)
-			{
-				periodicUpdatesSwitch.setChecked(false);
-				//periodicUpdatesSwitch.setText("Off");
-				//periodicTime.setText("");
-			} else
-			{
-				periodicTime.setText(group.getPeriodicDelay());
-				periodicUpdatesSwitch.setChecked(true);
-				//periodicUpdatesSwitch.setText("On");
-			}
-			if(group.getMovementWaitTime() <= -1 || group.getStopPeriodicDelay() <= 0)
-			{
-				stoppedWaitTimeEdit.setText("");
-				stoppedPeriodicTimeEdit.setText("");
-				stoppedMovingPeriodicUpdatesSwitch.setChecked(true);
-				//stoppedMovingPeriodicUpdatesSwitch.setText("Off");
-			} else
-			{
-				stoppedWaitTimeEdit.setText(group.getMovementWaitTime());
-				stoppedPeriodicTimeEdit.setText(group.getStopPeriodicDelay());
-				stoppedMovingPeriodicUpdatesSwitch.setChecked(true);
-				//stoppedMovingPeriodicUpdatesSwitch.setText("On");
-			}
-			stoppedMovingPeriodicUpdatesSwitch.setOnCheckedChangeListener(
-					new CompoundButton.OnCheckedChangeListener()
-						{
-							@Override
-							public void onCheckedChanged( CompoundButton buttonView, boolean isChecked )
-								{
-									stoppedWaitTimeEdit.setActivated(isChecked);
-									stoppedPeriodicTimeEdit.setActivated(isChecked);
-								}
-						});
-			periodicUpdatesSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
-				{
-					@Override public void onCheckedChanged( CompoundButton button, boolean isChecked )
-						{
-							periodicTime.setActivated(isChecked);
-						}
-				});
-			saveGroupButton.setOnClickListener(new View.OnClickListener()
-				{
-					@Override public void onClick( View v )
-						{
-							SaveGroup();
-						}
-				});
-		}
+    @Override
+    protected void onCreate(final Bundle savedInstanceState)
+        {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_group_configuration);
+            final Bundle bundle = getIntent().getExtras();
+            if(bundle != null)
+            {
+                group = bundle.getParcelable("SelectedGroupObject");
+            }
+            groupNameEdit = (EditText) findViewById(R.id.group_name);
+            periodicTime = (EditText) findViewById(R.id.periodic_time);
+            stopWaitTime = (EditText) findViewById(R.id.stopped_wait_time_edit);
+            stopPeriodicTime = (EditText) findViewById(R.id.stopped_periodic_time_edit);
+            periodicUpdatesSwitch = (Switch) findViewById(R.id.periodic_updates_switch);
+            moveUpdateSwitch = (Switch) findViewById(R.id.stopped_updates_switch);
+            final Button manageGroupButton = (Button) findViewById(
+                    R.id.manage_group_contacts);
+            manageGroupButton.setOnClickListener(new View.OnClickListener()
+            {
+                @Override public void onClick(View v)
+                    {
+                        setUpContacts();
+                    }
+            });
+            final Button deleteGroupButton = (Button) findViewById(
+                    R.id.delete_group);
+            final Button saveGroupButton = (Button) findViewById(
+                    R.id.save_group);
+            assert group != null;
+            groupNameEdit.setText(group.getName());
+            periodicTime.setText(Math.abs(group.getPeriodicDelay()) + " min");
+            stopWaitTime.setText(Math.abs(group.getMovementWaitTime()) + " min");
+            stopPeriodicTime.setText(Math.abs(group.getStopPeriodicDelay()) + " min");
+            if(group.getPeriodicDelay() < 0)
+            {
+                periodicUpdatesSwitch.setChecked(false);
+            }else if(group.getPeriodicDelay() > 0)
+            {
+                periodicUpdatesSwitch.setChecked(true);
+            }else
+            {
+                periodicTime.setText("");
+            }
+            if((group.getMovementWaitTime() < -1) || (group.getStopPeriodicDelay() < -1))
+            {
+                moveUpdateSwitch.setChecked(false);
+            }else if((group.getMovementWaitTime() > 1) || (group.getStopPeriodicDelay() > 1))
+            {
+                moveUpdateSwitch.setChecked(true);
+            }else
+            {
+                if(group.getMovementWaitTime() == 0)
+                {
+                    stopWaitTime.setText("");
+                }
+                if(group.getStopPeriodicDelay() == 0)
+                {
+                    stopPeriodicTime.setText("");
+                }
+            }
+            deleteGroupButton.setOnClickListener(new View.OnClickListener()
+            {
+                @Override public void onClick(View v)
+                    {
+                        deleteGroup();
+                    }
+            });
+            saveGroupButton.setOnClickListener(new View.OnClickListener()
+            {
+                @Override public void onClick(final View v)
+                    {
+                        SaveGroup();
+                    }
+            });
+        }
 
 
-	public void SaveGroup()
-		{
-			//check if there are contacts in. Contacts are required
-			if(groupNameEdit.getText().toString().trim().equals(""))
-			{
-				groupNameEdit.setError("Group Name Is Required");
-				groupNameEdit.setText(group.getID());  //contactCount
-			} else
-			{
-				group.setName(groupNameEdit.getText().toString().trim());
-				if(!stoppedPeriodicTimeEdit.isActivated())
-				{
-					group.setMovementWaitTime(-1);
-					group.setStopPeriodicDelay(-1);
-				} else
-				{
-					group.setMovementWaitTime(
-							Integer.parseInt(stoppedWaitTimeEdit.getText().toString()));
-					group.setStopPeriodicDelay(
-							Integer.parseInt(stoppedPeriodicTimeEdit.getText().toString()));
-				}
-				if(!periodicTime.isActivated())
-				{
-					group.setPeriodicDelay(-1);
-				} else
-				{
-					group.setPeriodicDelay(Integer.parseInt(periodicTime.getText().toString()));
-				}
-				DatabaseHandler db = new DatabaseHandler(this);
-				db.addGroup(group);
-				Intent i = new Intent(GroupConfigurationActivity.this, GroupManagementActivity.class);
-				startActivity(i);
-			}
-		}
-	}
+    private void setUpContacts()
+        {
+            Intent intent = new Intent(GroupConfigurationActivity.this,
+                                       ContactManagementActivity.class);
+            intent.putExtra("GroupId", "" + group.getId());
+            startActivity(intent);
+        }
+
+
+    private void deleteGroup()
+        {
+            final AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(getResources().getString(R.string.confirm_delete_group)
+                               + group.getName());
+            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick(final DialogInterface dialog, final int which)
+                    {
+                        final DatabaseHandler db =
+                                new DatabaseHandler(GroupConfigurationActivity.this);
+                        db.deleteGroup(group);
+                        final Intent intent = new Intent(GroupConfigurationActivity.this,
+                                                         GroupManagementActivity.class);
+                        startActivity(intent);
+                    }
+            });
+            //noinspection AnonymousInnerClassMayBeStatic
+            builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick(final DialogInterface dialog, final int which)
+                    {
+                        dialog.dismiss();
+                    }
+            });
+            final AlertDialog deleteGroupDialog = builder.create();
+            deleteGroupDialog.show();
+        }
+
+
+    private void SaveGroup()
+        {
+            //check if there are contacts in. Contacts are required
+            if("".equals(groupNameEdit.getText().toString().trim()))
+            {
+                groupNameEdit.setError("Group Name Is Required");
+                groupNameEdit.setText(" ");  //contactCount
+            }else
+            {
+                if(periodicInputIsAcceptable() && stoppedMovementPeriodicInputIsAcceptable() &&
+                   movementMessagingDelayInputIsAcceptable())
+                {
+                    group.setName(groupNameEdit.getText().toString().trim());
+                    final DatabaseHandler db = new DatabaseHandler(this);
+                    db.addGroup(group);
+                    startActivity(new Intent(GroupConfigurationActivity.this,
+                                             GroupManagementActivity.class));
+                }
+            }
+        }
+
+
+    private boolean periodicInputIsAcceptable()
+        {
+            boolean output = true;
+            try
+            {
+                final String input = MIN.matcher(periodicTime.getText().toString())
+                                             .replaceAll(Matcher.quoteReplacement(""));
+                final int delay = "".equals(input) ? 0 : Integer.parseInt(input);
+                group.setPeriodicDelay(delay, periodicUpdatesSwitch.isChecked());
+            }catch(NumberFormatException _e)
+            {
+                periodicTime.setError("Enter a whole number");
+                output = false;
+            }
+            return output;
+        }
+
+
+    private boolean stoppedMovementPeriodicInputIsAcceptable()
+        {
+            boolean output = true;
+            try
+            {
+                final String stop = MIN.matcher(stopPeriodicTime.getText().toString())
+                                            .replaceAll(Matcher.quoteReplacement(""));
+                final int stopDelay = "".equals(stop) ? 0 : Integer.parseInt(stop);
+                group.setStopPeriodicDelay(stopDelay, moveUpdateSwitch.isChecked());
+            }catch(NumberFormatException _e)
+            {
+                stopPeriodicTime.setError("Whole Numbers only");
+                output = false;
+            }
+            return output;
+        }
+
+
+    private boolean movementMessagingDelayInputIsAcceptable()
+        {
+            boolean output = true;
+            try
+            {
+                final String stopWait = MIN.matcher(stopWaitTime.getText().toString())
+                                                .replaceAll(Matcher.quoteReplacement(""));
+                final int waitDelay = "".equals(stopWait) ? 0 : Integer.parseInt(stopWait);
+                group.setMovementWaitTime(waitDelay, moveUpdateSwitch.isChecked());
+            }catch(NumberFormatException _e)
+            {
+                stopWaitTime.setError("Whole Numbers only");
+                output = false;
+            }
+            return output;
+        }
+}

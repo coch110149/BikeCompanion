@@ -1,186 +1,237 @@
 package com.cochrane.clinton.bikecompanion;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import static java.lang.Math.abs;
 
 
 /**
  * Created by Clint on 16/03/2017.
  */
 public class Group implements Parcelable
-	{
-	public static final Parcelable.Creator<Group> CREATOR = new Parcelable.Creator<Group>()
-		{
-			public Group createFromParcel( final Parcel in )
-				{
-					return new Group(in);
-				}
+{
+    public static final Parcelable.Creator<Group> CREATOR = new Parcelable.Creator<Group>()
+    {
+        @Override public Group createFromParcel(final Parcel in)
+            {
+                return new Group(in);
+            }
 
 
-			public Group[] newArray( final int size )
-				{
-					return new Group[size];
-				}
-		};
-	private int id;
-	private String name;
-	private int periodicDelay;
-	private int movementWaitTime;
-	private int stopPeriodicDelay;
-	private boolean pauseButtonStopsService;
-	private boolean isSelected;
+        @Override public Group[] newArray(final int size)
+            {
+                return new Group[size];
+            }
+    };
+    private int mId;
+    private String mName;
+    private int mPeriodicDelay;
+    private int mMovementWaitTime;
+    private int mStopPeriodicDelay;
+    private boolean mPauseButtonStopsService;
+    private boolean mIsSelected;
 
 
-	private Group( Parcel in )
-		{
-			this.id = in.readInt();
-			this.name = in.readString();
-			this.periodicDelay = in.readInt();
-			this.movementWaitTime = in.readInt();
-			this.stopPeriodicDelay = in.readInt();
-			this.pauseButtonStopsService = (Boolean) in.readValue(getClass().getClassLoader());
-		}
+    private Group(final Parcel in)
+        {
+            mId = in.readInt();
+            mName = in.readString();
+            mPeriodicDelay = in.readInt();
+            mMovementWaitTime = in.readInt();
+            mStopPeriodicDelay = in.readInt();
+            mPauseButtonStopsService = (Boolean) in.readValue(getClass().getClassLoader());
+        }
 
 
-	public Group()
-		{
-			this(-1, "", -1, -1, -1, true, false);
-		}
+    public Group()
+        {
+            this(-1, "", 0, 0, 0, true, false);
+        }
 
 
-	public Group( int id, String name, int periodicDelay, int movementWaitTime, int stopPeriodicDelay,
-			            boolean pauseButtonStopsService, boolean isSelected )
-		{
-			this.id = id;
-			this.name = name;
-			this.periodicDelay = periodicDelay;
-			this.movementWaitTime = movementWaitTime;
-			this.stopPeriodicDelay = stopPeriodicDelay;
-			this.pauseButtonStopsService = pauseButtonStopsService;
-		}
+    public Group(final int id, final String name, final int periodicDelay,
+                 final int movementWaitTime, final int stopPeriodicDelay,
+                 final boolean pauseButtonStopsService, final boolean isSelected)
+        {
+            mId = id;
+            mName = name;
+            mPeriodicDelay = periodicDelay;
+            mMovementWaitTime = movementWaitTime;
+            mStopPeriodicDelay = stopPeriodicDelay;
+            mPauseButtonStopsService = pauseButtonStopsService;
+            mIsSelected = isSelected;
+        }
 
 
-	public boolean isSelected()
-		{
-			return isSelected;
-		}
+    boolean isSelected()
+        {
+            return mIsSelected;
+        }
 
 
-	public void setSelected( boolean selected )
-		{
-			isSelected = selected;
-		}
+    public void setSelected(final boolean selected)
+        {
+            mIsSelected = selected;
+        }
 
 
-	public int getID()
-		{
-			return id;
-		}
+    public String getName()
+        {
+            return mName;
+        }
 
 
-	public void setID( int id )
-		{
-			this.id = id;
-		}
+    public void setName(final String name)
+        {
+            mName = name;
+        }
 
 
-	public String getName()
-		{
-			return name;
-		}
+    int getPeriodicDelay()
+        {
+            return mPeriodicDelay;
+        }
 
 
-	public void setName( String name )
-		{
-			this.name = name;
-		}
+    public void setPeriodicDelay(final int periodicDelay)
+        {
+            mPeriodicDelay = periodicDelay;
+        }
 
 
-	public int getPeriodicDelay()
-		{
-			return periodicDelay;
-		}
+    void setPeriodicDelayPositive(final int periodicDelay, final Boolean activate)
+        {
+            mPeriodicDelay = activate ? abs(periodicDelay) : (abs(periodicDelay) * -1);
+        }
 
 
-	public void setPeriodicDelay( int periodicDelay )
-		{
-			this.periodicDelay = periodicDelay;
-		}
+    int getMovementWaitTime()
+        {
+            return mMovementWaitTime;
+        }
 
 
-	public int getMovementWaitTime()
-		{
-			return movementWaitTime;
-		}
+    public void setMovementWaitTime(final int movementWaitTime)
+        {
+            mMovementWaitTime = movementWaitTime;
+        }
 
 
-	public void setMovementWaitTime( int movementWaitTime )
-		{
-			this.movementWaitTime = movementWaitTime;
-		}
+    int getStopPeriodicDelay()
+        {
+            return mStopPeriodicDelay;
+        }
 
 
-	public int getStopPeriodicDelay()
-		{
-			return stopPeriodicDelay;
-		}
+    public void setStopPeriodicDelay(final int stopPeriodicDelay)
+        {
+            mStopPeriodicDelay = stopPeriodicDelay;
+        }
 
 
-	public void setStopPeriodicDelay( int stopPeriodicDelay )
-		{
-			this.stopPeriodicDelay = stopPeriodicDelay;
-		}
+    boolean isPauseButtonStopsService()
+        {
+            return mPauseButtonStopsService;
+        }
 
 
-	public boolean isPauseButtonStopsService()
-		{
-			return pauseButtonStopsService;
-		}
+    public void setPauseButtonStopsService(final boolean pauseButtonStopsService)
+        {
+            mPauseButtonStopsService = pauseButtonStopsService;
+        }
 
 
-	public void setPauseButtonStopsService( boolean pauseButtonStopsService )
-		{
-			this.pauseButtonStopsService = pauseButtonStopsService;
-		}
+    @Override
+    public int describeContents()
+        {
+            return 0;
+        }
 
 
-	@Override
-	public int describeContents()
-		{
-			return 0;
-		}
+    /**
+     * Object Serialization happens here, Write object content to parcel one by one, reading
+     * should be done according to this writing order
+     *
+     * @param dest  parcel
+     * @param flags additional flags about how the object should be written
+     */
+    @Override
+    public void writeToParcel(final Parcel dest, final int flags)
+        {
+            dest.writeInt(mId);
+            dest.writeString(mName);
+            dest.writeInt(mPeriodicDelay);
+            dest.writeInt(mMovementWaitTime);
+            dest.writeInt(mStopPeriodicDelay);
+            dest.writeValue(mPauseButtonStopsService);
+        }
 
 
-	/**
-	 * Object Serialization happens here, Write object content to parcel one by one, reading
-	 * should be done according to this writing order
-	 *
-	 * @param dest parcel
-	 * @param flags additional flags about how the object should be written
-	 */
-	@Override
-	public void writeToParcel( Parcel dest, int flags )
-		{
-			dest.writeInt(id);
-			dest.writeString(name);
-			dest.writeInt(periodicDelay);
-			dest.writeInt(movementWaitTime);
-			dest.writeInt(stopPeriodicDelay);
-			dest.writeValue(pauseButtonStopsService);
-		}
+    @Override
+    public boolean equals(final Object obj)
+        {
+            final Boolean isEqual;
+            //noinspection CallToSimpleGetterFromWithinClass
+            isEqual = (obj instanceof Group) && (mId == ((Group) obj).getId());
+            return isEqual;
+        }
 
 
-	@Override
-	public boolean equals( Object obj )
-		{
-			Boolean isEqual;
-			isEqual = obj instanceof Group && this.id == ((Group) obj).id;
-			return isEqual;
-		}
+    public int getId()
+        {
+            return mId;
+        }
 
 
-	public void swapSelected()
-		{
-			this.isSelected = !this.isSelected;
-		}
-	}
+    public void setId(final int id)
+        {
+            mId = id;
+        }
+
+
+    void swapSelected()
+        {
+            mIsSelected = !mIsSelected;
+        }
+
+
+    String getHeading()
+        {
+            return "Group Name: " + mName;
+        }
+
+
+    public void setPeriodicDelay(int _delay, boolean _checked)
+        {
+            mPeriodicDelay = _checked ? abs(_delay) : (abs(_delay) * -1);
+        }
+
+
+    public void setStopPeriodicDelay(int _stopDelay, boolean _checked)
+        {
+            mStopPeriodicDelay = _checked ? abs(_stopDelay) : (abs(_stopDelay) * -1);
+        }
+
+
+    public void setMovementWaitTime(int _waitDelay, boolean _checked)
+        {
+            mMovementWaitTime = _checked ? abs(_waitDelay) : (abs(_waitDelay) * -1);
+        }
+
+
+    public Contact addRemoveContact(String _contactId, Context _context)
+        {
+            DatabaseHandler db = new DatabaseHandler(_context);
+            Contact contact = db.getContact(Integer.parseInt(_contactId));
+            if(db.getContactGroupRelation(Integer.parseInt(_contactId), mId))
+            {
+                db.removeContactFromGroup(Integer.parseInt(_contactId), mId);
+            }else
+            {
+                db.addContactToGroup(Integer.parseInt(_contactId), mId);
+            }
+            return contact;
+        }
+}

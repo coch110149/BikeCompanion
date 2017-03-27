@@ -77,17 +77,24 @@ import static java.lang.Boolean.getBoolean;
 
     void addRide(final Ride ride)
         {
-            final SQLiteDatabase db = getWritableDatabase();
-            final ContentValues values = new ContentValues();
-            values.put(KEY_BIKE_USED_ID, ride.getBikeId());
-            values.put(KEY_AVG_SPEED, ride.getAvgSpeed());
-            values.put(KEY_MAX_SPEED, ride.getMaxSpeed());
-            values.put(KEY_DURATION, ride.getDuration());
-            values.put(KEY_DISTANCE, ride.getDistance());
-            values.put(KEY_ELE_LOSS, ride.getElevationLoss());
-            values.put(KEY_ELE_GAIN, ride.getElevationGain());
-            values.put(KEY_RIDE_DATE, ride.getRideDate());
-            db.insert(TABLE_RIDES, null, values);
+            if(getRide(ride.getId()) == null)
+            {
+                final SQLiteDatabase db = getWritableDatabase();
+                final ContentValues values = new ContentValues();
+                values.put(KEY_BIKE_USED_ID, ride.getBikeId());
+                values.put(KEY_AVG_SPEED, ride.getAvgSpeed());
+                values.put(KEY_MAX_SPEED, ride.getMaxSpeed());
+                values.put(KEY_DURATION, ride.getDuration());
+                values.put(KEY_DISTANCE, ride.getDistance());
+                values.put(KEY_ELE_LOSS, ride.getElevationLoss());
+                values.put(KEY_ELE_GAIN, ride.getElevationGain());
+                values.put(KEY_RIDE_DATE, ride.getRideDate());
+                db.insert(TABLE_RIDES, null, values);
+            }else
+            {
+                updateRide(ride);
+            }
+
             //update bike used's distance
             //db.close();
         }
@@ -120,6 +127,23 @@ import static java.lang.Boolean.getBoolean;
             }
             //db.close();
             return ride;
+        }
+
+
+    void updateRide(final Ride ride)
+        {
+            final SQLiteDatabase db = getWritableDatabase();
+            final ContentValues values = new ContentValues();
+            values.put(KEY_DURATION, ride.getDuration());
+            values.put(KEY_DISTANCE, ride.getDistance());
+            values.put(KEY_AVG_SPEED, ride.getAvgSpeed());
+            values.put(KEY_MAX_SPEED, ride.getMaxSpeed());
+            values.put(KEY_RIDE_DATE, ride.getRideDate());
+            values.put(KEY_BIKE_USED_ID, ride.getBikeId());
+            values.put(KEY_ELE_LOSS, ride.getElevationLoss());
+            values.put(KEY_ELE_GAIN, ride.getElevationGain());
+            db.update(TABLE_RIDES, values, KEY_RIDE_ID + " =?",
+                      new String[]{String.valueOf(ride.getId())});
         }
 
 
@@ -231,7 +255,7 @@ import static java.lang.Boolean.getBoolean;
         }
 
 
-    private void updateBike(final Bike bike)
+    void updateBike(final Bike bike)
         {
             final SQLiteDatabase db = getWritableDatabase();
             final ContentValues values = new ContentValues();
@@ -289,23 +313,6 @@ import static java.lang.Boolean.getBoolean;
                 }
                 cursor.close();
             }
-        }
-
-
-    void updateRide(final Ride ride)
-        {
-            final SQLiteDatabase db = getWritableDatabase();
-            final ContentValues values = new ContentValues();
-            values.put(KEY_DURATION, ride.getDuration());
-            values.put(KEY_DISTANCE, ride.getDistance());
-            values.put(KEY_AVG_SPEED, ride.getAvgSpeed());
-            values.put(KEY_MAX_SPEED, ride.getMaxSpeed());
-            values.put(KEY_RIDE_DATE, ride.getRideDate());
-            values.put(KEY_BIKE_USED_ID, ride.getBikeId());
-            values.put(KEY_ELE_LOSS, ride.getElevationLoss());
-            values.put(KEY_ELE_GAIN, ride.getElevationGain());
-            db.update(TABLE_RIDES, values, KEY_RIDE_ID + " =?",
-                      new String[]{String.valueOf(ride.getId())});
         }
 
 

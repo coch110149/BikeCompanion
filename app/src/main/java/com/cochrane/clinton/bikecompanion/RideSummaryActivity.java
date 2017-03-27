@@ -56,16 +56,10 @@ import static com.cochrane.clinton.bikecompanion.MainActivity.PICK_RIDING_BIKE;
         {
             if(!"not started".equals(ride.getDuration()))
             {
-                if(db.getRide(ride.getId()) == null)
-                {
-                    db.addRide(ride);
-                }else
-                {
-                    db.updateRide(ride);
-                }
+                db.addRide(ride);
             }
-            final Intent intent = new Intent(RideSummaryActivity.this, RideHistoryActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(RideSummaryActivity.this, RideHistoryActivity.class));
+
             //Log.d("long ride" ,Double.toString(db.getRide(0).getDistance
             // ()));
         }
@@ -110,12 +104,14 @@ import static com.cochrane.clinton.bikecompanion.MainActivity.PICK_RIDING_BIKE;
                 if(resultCode == RESULT_OK)
                 {
                     final Bike oldBike = db.getBike(ride.getBikeId());
-                    oldBike.setDistance(
-                            oldBike.getDistance() - ride.getDistance());
+                    oldBike.setDistance(oldBike.getDistance() - ride.getDistance());
+                    oldBike.setLastRideDate("");
+                    db.updateBike(oldBike);
                     ride.setBikeId(Integer.parseInt(data.getData().toString()));
                     final Bike newBike = db.getBike(ride.getBikeId());
-                    newBike.setDistance(
-                            newBike.getDistance() + ride.getDistance());
+                    newBike.setDistance(newBike.getDistance() + ride.getDistance());
+                    newBike.setLastRideDate(ride.getRideDate());
+                    db.updateBike(newBike);
                 }else
                 {
                     android.widget.Toast

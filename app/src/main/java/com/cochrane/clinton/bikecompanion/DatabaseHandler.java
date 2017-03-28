@@ -94,7 +94,6 @@ import static java.lang.Boolean.getBoolean;
             {
                 updateRide(ride);
             }
-
             //update bike used's distance
             //db.close();
         }
@@ -269,6 +268,17 @@ import static java.lang.Boolean.getBoolean;
             values.put(KEY_BIKE_TOTAL_DISTANCE, bike.getDistance());
             db.update(TABLE_BIKES, values, KEY_BIKE_ID + " =?",
                       new String[]{String.valueOf(bike.getId())});
+        }
+
+
+    void updateBike(final Ride _ride)
+        {
+            final SQLiteDatabase db = getWritableDatabase();
+            final ContentValues values = new ContentValues();
+            values.put(KEY_BIKE_TOTAL_DISTANCE, _ride.getDistance());
+            values.put(KEY_BIKE_LAST_RIDE_DATE, _ride.getRideDate());
+            db.update(TABLE_BIKES, values, KEY_BIKE_ID + " =?",
+                      new String[]{String.valueOf(_ride.getBikeId())});
         }
 
 

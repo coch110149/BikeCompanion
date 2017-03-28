@@ -19,8 +19,8 @@ import java.util.ArrayList;
 
 class SelectionAdapter extends ArrayAdapter
 {
-    private final Context mContext;
-    private final Resources mRes;
+    private Context mContext = getContext();
+    private Resources mRes = mContext.getResources();
     private TextView heading;
     private TextView additionalInfo1;
     private TextView additionalInfo2;
@@ -92,7 +92,8 @@ class SelectionAdapter extends ArrayAdapter
             if(currentBike != null)
             {
                 heading.setText(currentBike.getHeading());
-                additionalInfo1.setText(currentBike.getAdditionalInfo1());
+                additionalInfo1.setText(
+                        mRes.getString(R.string.bike_distance, currentBike.getDistance()));
                 additionalInfo2.setText(currentBike.getAdditionalInfo2());
             }
         }

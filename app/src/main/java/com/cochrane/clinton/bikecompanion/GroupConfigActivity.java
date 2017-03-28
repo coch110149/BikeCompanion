@@ -119,7 +119,7 @@ public class GroupConfigActivity extends AppCompatActivity
         {
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(mRes.getString(R.string.confirm_delete, mGroup.getName()));
-            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
+            builder.setPositiveButton(R.string.yes_exact, new DialogInterface.OnClickListener()
             {
                 @Override
                 public void onClick(final DialogInterface dialog, final int which)
@@ -130,7 +130,7 @@ public class GroupConfigActivity extends AppCompatActivity
                     }
             });
             //noinspection AnonymousInnerClassMayBeStatic
-            builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
+            builder.setNegativeButton(R.string.no_exact, new DialogInterface.OnClickListener()
             {
                 @Override
                 public void onClick(final DialogInterface dialog, final int which)

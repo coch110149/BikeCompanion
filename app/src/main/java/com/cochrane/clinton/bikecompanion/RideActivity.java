@@ -312,7 +312,7 @@ import java.util.Date;
             final AlertDialog.Builder stopRideDialogBuilder = new AlertDialog.Builder(this);
             stopRideDialogBuilder.setMessage(R.string.confirm_exit_ride);
             stopRideDialogBuilder
-                    .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
+                    .setPositiveButton(R.string.yes_exact, new DialogInterface.OnClickListener()
                     {
                         @Override public void onClick(final DialogInterface dialog, final int which)
                             {
@@ -328,7 +328,7 @@ import java.util.Date;
                     });
             //noinspection AnonymousInnerClassMayBeStatic
             stopRideDialogBuilder
-                    .setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
+                    .setNegativeButton(R.string.no_exact, new DialogInterface.OnClickListener()
                     {
                         @Override public void onClick(final DialogInterface dialog, final int which)
                             {

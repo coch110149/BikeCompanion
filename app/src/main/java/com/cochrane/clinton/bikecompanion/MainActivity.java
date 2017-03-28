@@ -1,9 +1,9 @@
 package com.cochrane.clinton.bikecompanion;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -11,7 +11,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 
-@SuppressWarnings ( "UnusedParameters" ) public class MainActivity extends AppCompatActivity
+@SuppressWarnings ( "UnusedParameters" ) public class MainActivity extends Activity
 {
     static final int PICK_RIDING_BIKE = 1;
     private static final int SELECTED_RIDING_GROUPS = 2;
@@ -62,14 +62,20 @@ import java.util.ArrayList;
         }
 
 
-    public void beginRideActivity(final View _view)
+    @Override
+    protected void onResume()
         {
-            final Intent intent = new Intent(this, RideActivity.class);
-            if(bike != null)
-            {
-                intent.putExtra("SelectableBikeID", bike.getId());
-            }
-            startActivity(intent);
+            mDb = new DatabaseHandler(this);
+            setBikeInformationView();
+            setGroupInformationView();
+            super.onResume();
+        }
+
+
+    @Override protected void onPause()
+        {
+            mDb.close();
+            super.onPause();
         }
 
 
@@ -83,23 +89,6 @@ import java.util.ArrayList;
                     bikeId = Integer.parseInt(data.getData().toString());
                 }
             }
-        }
-
-
-    @Override protected void onPause()
-        {
-            mDb.close();
-            super.onPause();
-        }
-
-
-    @Override
-    protected void onResume()
-        {
-            mDb = new DatabaseHandler(this);
-            setBikeInformationView();
-            setGroupInformationView();
-            super.onResume();
         }
 
 
@@ -180,6 +169,17 @@ import java.util.ArrayList;
                 groupsActivatedText.setText(
                         mRes.getString(R.string.activated_groups, activatedGroupNames));
             }
+        }
+
+
+    public void beginRideActivity(final View _view)
+        {
+            final Intent intent = new Intent(this, RideActivity.class);
+            if(bike != null)
+            {
+                intent.putExtra("SelectableBikeID", bike.getId());
+            }
+            startActivity(intent);
         }
 }
 

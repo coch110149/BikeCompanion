@@ -111,7 +111,7 @@ import java.util.Locale;
         {
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(mRes.getString(R.string.confirm_delete, mBike.getName()));
-            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
+            builder.setPositiveButton(R.string.yes_exact, new DialogInterface.OnClickListener()
             {
                 @Override
                 public void onClick(final DialogInterface dialog, final int which)
@@ -122,7 +122,7 @@ import java.util.Locale;
                     }
             });
             //noinspection AnonymousInnerClassMayBeStatic
-            builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
+            builder.setNegativeButton(R.string.no_exact, new DialogInterface.OnClickListener()
             {
                 @Override
                 public void onClick(final DialogInterface dialog, final int which)

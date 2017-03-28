@@ -28,7 +28,6 @@ public class Bike implements Parcelable
     private Double mDistance;
     private String mLastRideDate;
 
-
     public Bike()
         {
             this(-1, "", "", "", "", "", 0, "You have not ridden me yet ");

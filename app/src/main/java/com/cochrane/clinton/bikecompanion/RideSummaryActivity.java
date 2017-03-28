@@ -57,6 +57,7 @@ import static com.cochrane.clinton.bikecompanion.MainActivity.PICK_RIDING_BIKE;
             if(!"not started".equals(ride.getDuration()))
             {
                 db.addRide(ride);
+                db.updateBike(ride);
             }
             startActivity(new Intent(RideSummaryActivity.this, RideHistoryActivity.class));
 
@@ -70,7 +71,7 @@ import static com.cochrane.clinton.bikecompanion.MainActivity.PICK_RIDING_BIKE;
             final AlertDialog.Builder deleteRideDialogBuilder = new AlertDialog.Builder(this);
             deleteRideDialogBuilder.setMessage(R.string.confirm_delete);
             deleteRideDialogBuilder
-                    .setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
+                    .setPositiveButton(R.string.yes_exact, new DialogInterface.OnClickListener()
                     {
                         @Override public void onClick(final DialogInterface dialog, final int which)
                             {
@@ -84,7 +85,7 @@ import static com.cochrane.clinton.bikecompanion.MainActivity.PICK_RIDING_BIKE;
                     });
             //noinspection AnonymousInnerClassMayBeStatic
             deleteRideDialogBuilder
-                    .setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
+                    .setNegativeButton(R.string.no_exact, new DialogInterface.OnClickListener()
                     {
                         @Override public void onClick(final DialogInterface dialog, final int which)
                             {

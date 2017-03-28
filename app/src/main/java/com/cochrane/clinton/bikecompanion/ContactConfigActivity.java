@@ -37,8 +37,8 @@ public class ContactConfigActivity extends AppCompatActivity
             final Button saveContact = (Button) findViewById(R.id.save_contact);
             final Button manageGroups = (Button) findViewById(R.id.manage_groups);
             final Button deleteContact = (Button) findViewById(R.id.delete_contact);
-            saveContact.setText(R.string.save_contact);
-            deleteContact.setText(R.string.delete_contact);
+            saveContact.setText(R.string.save_contact_exact);
+            deleteContact.setText(R.string.delete_contact_exact);
             mName = (EditText) findViewById(R.id.contact_name);
             mPhoneNumber = (EditText) findViewById(R.id.contact_phone);
             mName.setText(mRes.getString(R.string.contact_name, mContact.getName()));
@@ -64,7 +64,7 @@ public class ContactConfigActivity extends AppCompatActivity
         {
             final AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setMessage(mRes.getString(R.string.confirm_delete, mContact.getName()));
-            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener()
+            builder.setPositiveButton(R.string.yes_exact, new DialogInterface.OnClickListener()
             {
                 @Override
                 public void onClick(final DialogInterface dialog, final int which)
@@ -75,7 +75,7 @@ public class ContactConfigActivity extends AppCompatActivity
                     }
             });
             //noinspection AnonymousInnerClassMayBeStatic
-            builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
+            builder.setNegativeButton(R.string.no_exact, new DialogInterface.OnClickListener()
             {
                 @Override
                 public void onClick(final DialogInterface dialog, final int which)

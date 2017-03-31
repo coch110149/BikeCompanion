@@ -3,7 +3,7 @@
                                              xmlns:app = "http://schemas.android.com/apk/res-auto"
                                              xmlns:tools = "http://schemas.android.com/tools"
                                              android:layout_width = "match_parent"
-                                             android:layout_height = "match_parent"
+                                             android:layout_height = "wrap_content"
                                              tools:layout_editor_absoluteX = "0dp"
                                              tools:layout_editor_absoluteY = "25dp">
 
@@ -40,7 +40,7 @@
             android:layout_height = "wrap_content"
             android:layout_marginStart = "8dp"
             android:layout_marginTop = "8dp"
-            android:text = "@string/edit_bike"
+            android:text = "@string/edit_bike_exact"
             app:layout_constraintLeft_toLeftOf = "parent"
             app:layout_constraintTop_toBottomOf = "@+id/bike_name" />
 
@@ -51,7 +51,7 @@
             android:layout_marginEnd = "8dp"
             android:layout_marginStart = "9dp"
             android:layout_marginTop = "8dp"
-            android:text = "@string/view_components"
+            android:text = "@string/view_components_exact"
             app:layout_constraintLeft_toRightOf = "@+id/edit_bike_button"
             app:layout_constraintRight_toLeftOf = "@+id/view_ride_button"
             app:layout_constraintTop_toBottomOf = "@+id/bike_name"
@@ -64,7 +64,7 @@
             android:layout_height = "wrap_content"
             android:layout_marginEnd = "8dp"
             android:layout_marginTop = "8dp"
-            android:text = "@string/view_rides"
+            android:text = "@string/view_rides_exact"
             app:layout_constraintRight_toRightOf = "parent"
             app:layout_constraintTop_toBottomOf = "@+id/bike_name" />
 

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name = "bike" parent = "Theme.AppCompat.NoActionBar">
+    <style name = "bike" parent = "android:Theme.Material">
         <item name = "colorPrimaryDark">@color/dark_purple</item>
         <item name = "colorAccent">@color/mint</item>
         <item name = "android:colorBackground">@color/super_black</item>
@@ -10,12 +10,12 @@
         <item name = "android:textColorSecondary">@color/material_deep_purple_400</item>
         <item name = "android:textColorPrimary">@color/bright_teal</item>
         <item name = "android:windowBackground">@color/super_black</item>
-        <item name = "android:colorPrimary">@color/primary_bike_purple</item>
+        <item name = "android:colorPrimary">@color/material_deep_purple_500</item>
         <item name = "android:colorPrimaryDark">@color/dark_purple</item>
         <item name = "android:colorAccent">@color/material_green_200</item>
-        <item name = "android:statusBarColor">@color/dark_purple</item>
+        <item name = "android:statusBarColor">?attr/colorPrimaryDark</item>
         <item name = "android:textColorPrimaryInverse">@android:color/holo_green_dark</item>
-        <item name = "android:textColorSecondaryInverse">?android:attr/colorPrimaryDark</item>
+        <item name = "android:textColorSecondaryInverse">?android:attr/textColorPrimaryInverse</item>
         <item name = "colorPrimary">@color/primary_bike_purple</item>
     </style>
 </resources>

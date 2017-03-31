@@ -1,15 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android = "http://schemas.android.com/apk/res/android"
-                                             xmlns:app = "http://schemas.android.com/apk/res-auto"
-                                             android:layout_width = "match_parent"
-                                             android:layout_height = "match_parent">
+<android.support.constraint.ConstraintLayout
+        xmlns:android = "http://schemas.android.com/apk/res/android"
+        xmlns:app = "http://schemas.android.com/apk/res-auto"
+        android:id = "@+id/selection_list_item"
+        android:layout_width = "match_parent"
+        android:layout_height = "wrap_content">
 
     <TextView
             android:id = "@+id/heading"
             android:layout_width = "352dp"
             android:layout_height = "wrap_content"
-            android:layout_marginTop = "0dp"
-            android:textIsSelectable = "true"
+            android:layout_marginTop = "16dp"
             app:layout_constraintHorizontal_bias = "0.125"
             app:layout_constraintLeft_toLeftOf = "parent"
             app:layout_constraintRight_toRightOf = "parent"
@@ -21,8 +22,8 @@
             android:layout_height = "wrap_content"
             android:layout_marginEnd = "8dp"
             android:layout_marginStart = "0dp"
-            android:layout_marginTop = "15dp"
-            android:textIsSelectable = "true"
+            android:layout_marginTop = "8dp"
+            app:layout_constraintHorizontal_bias = "0.375"
             app:layout_constraintLeft_toLeftOf = "parent"
             app:layout_constraintRight_toRightOf = "parent"
             app:layout_constraintTop_toBottomOf = "@+id/heading" />
@@ -34,29 +35,8 @@
             android:layout_marginEnd = "8dp"
             android:layout_marginStart = "0dp"
             android:layout_marginTop = "6dp"
-            android:textIsSelectable = "true"
             app:layout_constraintLeft_toLeftOf = "parent"
             app:layout_constraintRight_toRightOf = "parent"
             app:layout_constraintTop_toBottomOf = "@+id/additionalInfo1" />
-
-    <Button
-            android:id = "@+id/primary_button"
-            android:layout_width = "0dp"
-            android:layout_height = "wrap_content"
-            android:layout_marginEnd = "8dp"
-            android:layout_marginStart = "8dp"
-            android:layout_marginTop = "8dp"
-            app:layout_constraintLeft_toLeftOf = "parent"
-            app:layout_constraintRight_toLeftOf = "@+id/secondary_button"
-            app:layout_constraintTop_toBottomOf = "@+id/additionalInfo2" />
-
-    <Button
-            android:id = "@+id/secondary_button"
-            android:layout_width = "0dp"
-            android:layout_height = "wrap_content"
-            android:layout_marginEnd = "8dp"
-            android:layout_marginTop = "8dp"
-            app:layout_constraintRight_toRightOf = "parent"
-            app:layout_constraintTop_toBottomOf = "@+id/additionalInfo2" />
 
 </android.support.constraint.ConstraintLayout>

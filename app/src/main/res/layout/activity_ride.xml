@@ -109,7 +109,7 @@
             android:layout_marginRight = "8dp"
             android:layout_marginTop = "8dp"
             android:onClick = "StartRide"
-            android:text = "@string/start_riding"
+            android:text = "@string/start_riding_exact"
             app:layout_constraintLeft_toLeftOf = "parent"
             app:layout_constraintRight_toRightOf = "parent"
             app:layout_constraintTop_toBottomOf = "@+id/start_moving_manual_log" />
@@ -135,7 +135,7 @@
             android:layout_marginRight = "8dp"
             android:layout_marginTop = "8dp"
             android:onClick = "StopRide"
-            android:text = "@string/stop_riding"
+            android:text = "@string/stop_riding_exact"
             app:layout_constraintHorizontal_bias = "0.501"
             app:layout_constraintLeft_toLeftOf = "parent"
             app:layout_constraintRight_toRightOf = "parent"
@@ -149,7 +149,7 @@
             android:layout_marginRight = "8dp"
             android:layout_marginTop = "8dp"
             android:onClick = "PauseRide"
-            android:text = "@string/pause_riding"
+            android:text = "@string/pause_riding_exact"
             app:layout_constraintLeft_toLeftOf = "parent"
             app:layout_constraintRight_toRightOf = "parent"
             app:layout_constraintTop_toBottomOf = "@+id/StopRideButton" />

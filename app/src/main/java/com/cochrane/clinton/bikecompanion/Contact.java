@@ -62,7 +62,7 @@ class Contact implements Parcelable
         }
 
 
-    public String getPhoneNumber()
+    public String getNumber()
         {
             return mPhoneNumber;
         }

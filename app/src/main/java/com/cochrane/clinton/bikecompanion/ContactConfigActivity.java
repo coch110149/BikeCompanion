@@ -1,17 +1,17 @@
 package com.cochrane.clinton.bikecompanion;
 
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 
-public class ContactConfigActivity extends AppCompatActivity
+public class ContactConfigActivity extends Activity
 {
     final private DatabaseHandler mDb = new DatabaseHandler(this);
     private EditText mPhoneNumber;
@@ -33,16 +33,21 @@ public class ContactConfigActivity extends AppCompatActivity
                 mGroupId = bundle.getString("GroupId");
                 mContact = bundle.getParcelable("SelectedContactObject");
             }
-            if(mContact == null){mContact = new Contact();}
+            mName = (EditText) findViewById(R.id.contact_name);
+            mPhoneNumber = (EditText) findViewById(R.id.contact_phone);
+            if(mContact == null)
+            {
+                mContact = new Contact();
+            }else
+            {
+                mName.setText(mRes.getString(R.string.contact_name, mContact.getName()));
+                mPhoneNumber.setText(mRes.getString(R.string.phone_number, mContact.getNumber()));
+            }
             final Button saveContact = (Button) findViewById(R.id.save_contact);
             final Button manageGroups = (Button) findViewById(R.id.manage_groups);
             final Button deleteContact = (Button) findViewById(R.id.delete_contact);
             saveContact.setText(R.string.save_contact_exact);
             deleteContact.setText(R.string.delete_contact_exact);
-            mName = (EditText) findViewById(R.id.contact_name);
-            mPhoneNumber = (EditText) findViewById(R.id.contact_phone);
-            mName.setText(mRes.getString(R.string.contact_name, mContact.getName()));
-            mPhoneNumber.setText(mRes.getString(R.string.contact_name, mContact.getPhoneNumber()));
             deleteContact.setOnClickListener(new View.OnClickListener()
             {
                 @Override public void onClick(final View v)
@@ -102,7 +107,8 @@ public class ContactConfigActivity extends AppCompatActivity
                 mContact.setPhoneNumber(mPhoneNumber.getText().toString().trim());
                 mDb.addContact(mContact);
                 if(mGroupId != null){mContact.addToGroup(Integer.parseInt(mGroupId), this);}
-                finish();
+                startActivity(new Intent(ContactConfigActivity.this,
+                                         ContactManagementActivity.class));
             }
         }
 }

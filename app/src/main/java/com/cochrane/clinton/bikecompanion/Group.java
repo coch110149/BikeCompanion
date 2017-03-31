@@ -198,9 +198,10 @@ public class Group implements Parcelable
         }
 
 
-    String getHeading()
+    String getHeading(Resources mRes)
+
         {
-            return "Group Name: " + mName;
+            return mRes.getString(R.string.name, mName);
         }
 
 

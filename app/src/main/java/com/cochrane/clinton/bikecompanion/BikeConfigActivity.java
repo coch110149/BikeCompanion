@@ -1,11 +1,11 @@
 package com.cochrane.clinton.bikecompanion;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
@@ -13,7 +13,7 @@ import android.widget.EditText;
 import java.util.Locale;
 
 
-@SuppressWarnings ( "UnusedParameters" ) public class BikeConfigActivity extends AppCompatActivity
+@SuppressWarnings ( "UnusedParameters" ) public class BikeConfigActivity extends Activity
 {
     private EditText mBikeDescriptionEdit;
     private EditText mBikeDistance;
@@ -39,7 +39,7 @@ import java.util.Locale;
             mBikeModelEdit = (EditText) findViewById(R.id.bike_model_edit);
             mBikeDescriptionEdit = (EditText) findViewById(R.id.bike_description_edit);
             mBikeDistance = (EditText) findViewById(R.id.total_bike_distance_edit);
-            if(bundle != null){mBike = bundle.getParcelable("SelectedBikeObject");}
+            if(bundle != null){mBike = bundle.getParcelable("SelectedBike");}
             Log.d("BC-BikeConfig", "mBikeDescription");
             mBikeDescriptionEdit.setText(mBike.getDescription());
             mBikeModelEdit.setText(mBike.getModel());
@@ -54,17 +54,17 @@ import java.util.Locale;
         }
 
 
-    @Override protected void onPause()
-        {
-            mDb.close();
-            super.onPause();
-        }
-
-
     @Override protected void onResume()
         {
             mDb = new DatabaseHandler(this);
             super.onResume();
+        }
+
+
+    @Override protected void onPause()
+        {
+            mDb.close();
+            super.onPause();
         }
 
 
@@ -99,8 +99,7 @@ import java.util.Locale;
                     if(shouldSaveBike)
                     {
                         mDb.addBike(mBike);
-                        startActivity(
-                                new Intent(BikeConfigActivity.this, BikeGarageActivity.class));
+                        finish();
                     }
                 }
             }

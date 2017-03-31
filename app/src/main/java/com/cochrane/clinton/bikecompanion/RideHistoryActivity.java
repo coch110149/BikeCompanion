@@ -1,12 +1,12 @@
 package com.cochrane.clinton.bikecompanion;
 
+import android.app.Activity;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.widget.ListView;
 
 
-public class RideHistoryActivity extends AppCompatActivity
+public class RideHistoryActivity extends Activity
 {
     //// TODO: 25/03/2017 filtering if a bike Id is passed
     @Override

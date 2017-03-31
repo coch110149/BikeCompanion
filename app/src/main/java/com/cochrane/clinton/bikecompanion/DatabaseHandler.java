@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static java.lang.Boolean.getBoolean;
 
@@ -146,9 +145,9 @@ import static java.lang.Boolean.getBoolean;
         }
 
 
-    public List<Ride> getAllRides()
+    public ArrayList<Ride> getAllRides()
         {
-            final List<Ride> rideList = new ArrayList<>();
+            final ArrayList<Ride> rideArrayList = new ArrayList<>();
             final String selectQuery = "SELECT * FROM " + TABLE_RIDES;
             final SQLiteDatabase db = getReadableDatabase();
             final Cursor cursor = db.rawQuery(selectQuery, null);
@@ -165,12 +164,12 @@ import static java.lang.Boolean.getBoolean;
                                                cursor.getDouble(6),    //EleLoss
                                                cursor.getString(7),    //Duration
                                                cursor.getString(8));   //Date
-                    rideList.add(ride);
+                    rideArrayList.add(ride);
                 } while(cursor.moveToNext());
             }
             cursor.close();
             //db.close();
-            return rideList;
+            return rideArrayList;
         }
 
 
@@ -404,9 +403,9 @@ import static java.lang.Boolean.getBoolean;
         }
 
 
-    List<Group> getAllGroups(final Boolean _boolean)
+    ArrayList<Group> getAllGroups(final Boolean _boolean)
         {
-            final List<Group> groupList = new ArrayList<>();
+            final ArrayList<Group> groupList = new ArrayList<>();
             final String selectQuery = "SELECT * FROM " + TABLE_GROUPS +
                                        " WHERE " + KEY_GROUP_IS_ACTIVATED + "=" + "1";
             final SQLiteDatabase db = getReadableDatabase();
@@ -462,7 +461,7 @@ import static java.lang.Boolean.getBoolean;
                 final SQLiteDatabase db = getWritableDatabase();
                 final ContentValues values = new ContentValues();
                 values.put(KEY_CONTACT_NAME, contact.getName());
-                values.put(KEY_CONTACT_PHONE, contact.getPhoneNumber());
+                values.put(KEY_CONTACT_PHONE, contact.getNumber());
                 db.insert(TABLE_CONTACT, null, values);
                 //db.close();
             }else
@@ -500,15 +499,15 @@ import static java.lang.Boolean.getBoolean;
             final ContentValues values = new ContentValues();
             values.put(KEY_CONTACT_ID, contact.getId());
             values.put(KEY_CONTACT_NAME, contact.getName());
-            values.put(KEY_CONTACT_PHONE, contact.getPhoneNumber());
+            values.put(KEY_CONTACT_PHONE, contact.getNumber());
             db.update(TABLE_CONTACT, values, KEY_CONTACT_ID + " =?",
                       new String[]{String.valueOf(contact.getId())});
         }
 
 
-    public List<Contact> getAllContacts()
+    public ArrayList<Contact> getAllContacts()
         {
-            final List<Contact> contactList = new ArrayList<>();
+            final ArrayList<Contact> contactArrayList = new ArrayList<>();
             final String selectQuery = "SELECT * FROM " + TABLE_CONTACT;
             final SQLiteDatabase db = getReadableDatabase();
             final Cursor cursor = db.rawQuery(selectQuery, null);
@@ -519,12 +518,12 @@ import static java.lang.Boolean.getBoolean;
                     final Contact contact = new Contact(cursor.getInt(0),        //id
                                                         cursor.getString(1),    //name
                                                         cursor.getString(2));  //phoneNumber
-                    contactList.add(contact);
+                    contactArrayList.add(contact);
                 } while(cursor.moveToNext());
             }
             cursor.close();
             //db.close();
-            return contactList;
+            return contactArrayList;
         }
 
 
@@ -600,7 +599,7 @@ import static java.lang.Boolean.getBoolean;
         }
 
 
-    List<Contact> getAllContactsInGroup(final int groupID)
+    ArrayList<Contact> getAllContactsInGroup(final int groupID)
         {
             final String selectQuery = "SELECT " + TABLE_CONTACT + "." + KEY_CONTACT_ID + ", " +
                                        TABLE_CONTACT + "." + KEY_CONTACT_NAME + ", "
@@ -610,7 +609,7 @@ import static java.lang.Boolean.getBoolean;
                                        + FOREIGN_KEY_GROUP_ID + " AND " + RELATION_CONTACT_GROUP
                                        + "." + FOREIGN_KEY_CONTACT_ID + "=" + TABLE_CONTACT + "."
                                        + KEY_CONTACT_ID;
-            final List<Contact> contactList = new ArrayList<>();
+            final ArrayList<Contact> contactArrayList = new ArrayList<>();
             final SQLiteDatabase db = getReadableDatabase();
             final Cursor cursor = db.rawQuery(selectQuery, null);
             if(cursor.moveToFirst())
@@ -620,12 +619,12 @@ import static java.lang.Boolean.getBoolean;
                     final Contact contact = new Contact(cursor.getInt(0),        //id
                                                         cursor.getString(1),    //name
                                                         cursor.getString(2));  //phoneNumber
-                    contactList.add(contact);
+                    contactArrayList.add(contact);
                 } while(cursor.moveToNext());
             }
             cursor.close();
             //db.close();
-            return contactList;
+            return contactArrayList;
         }
 
 
@@ -641,14 +640,13 @@ import static java.lang.Boolean.getBoolean;
 
     ArrayList<?> getObjects(final String typeOfRequest)
         {
-            return "Bike".equals(typeOfRequest) ? (java.util.ArrayList<?>) getAllBikes() :
-                   (java.util.ArrayList<?>) getAllGroups();
+            return "Bike".equals(typeOfRequest) ? getAllBikes() : getAllGroups();
         }
 
 
-    List<Bike> getAllBikes()
+    ArrayList<Bike> getAllBikes()
         {
-            final List<Bike> bikeList = new ArrayList<>();
+            final ArrayList<Bike> bikeArrayList = new ArrayList<>();
             final String selectQuery = "SELECT * FROM " + TABLE_BIKES;
             final SQLiteDatabase db = getReadableDatabase();
             final Cursor cursor = db.rawQuery(selectQuery, null);
@@ -665,18 +663,18 @@ import static java.lang.Boolean.getBoolean;
                     bike.setDescription(cursor.getString(5));
                     bike.setDistance(Double.parseDouble(cursor.getString(6)));
                     bike.setLastRideDate(cursor.getString(7));
-                    bikeList.add(bike);
+                    bikeArrayList.add(bike);
                 } while(cursor.moveToNext());
             }
             cursor.close();
             //db.close();
-            return bikeList;
+            return bikeArrayList;
         }
 
 
-    List<Group> getAllGroups()
+    ArrayList<Group> getAllGroups()
         {
-            final List<Group> groupList = new ArrayList<>();
+            final ArrayList<Group> groupArrayList = new ArrayList<>();
             final String selectQuery = "SELECT * FROM " + TABLE_GROUPS;
             final SQLiteDatabase db = getReadableDatabase();
             final Cursor cursor = db.rawQuery(selectQuery, null);
@@ -701,12 +699,12 @@ import static java.lang.Boolean.getBoolean;
                                                   cursor.getInt(4),     //stopPeriodicDelay
                                                   pauseControl,        //pause
                                                   group_is_activated);//activated
-                    groupList.add(group);
+                    groupArrayList.add(group);
                 } while(cursor.moveToNext());
             }
             cursor.close();
             //db.close();
-            return groupList;
+            return groupArrayList;
         }
 
 

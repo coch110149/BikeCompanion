@@ -1,18 +1,18 @@
 package com.cochrane.clinton.bikecompanion;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.TextView;
 
 import static com.cochrane.clinton.bikecompanion.MainActivity.PICK_RIDING_BIKE;
 
 
-@SuppressWarnings ( "LawOfDemeter" ) public class RideSummaryActivity extends AppCompatActivity
+@SuppressWarnings ( "LawOfDemeter" ) public class RideSummaryActivity extends Activity
 {
     private final DatabaseHandler db = new DatabaseHandler(this);
     private android.widget.TextView bikeNameTextView;
@@ -49,6 +49,43 @@ import static com.cochrane.clinton.bikecompanion.MainActivity.PICK_RIDING_BIKE;
             maxSpeedText.setText(res.getString(R.string.max_speed, ride.getMaxSpeed()));
             elevLossText.setText(res.getString(R.string.elevation_loss, ride.getElevationLoss()));
             elevGainText.setText(res.getString(R.string.elevation_gain, ride.getElevationGain()));
+        }
+
+
+    @Override protected void onResume()
+        {
+            if(ride.getBikeId() != -1)
+            {
+                final Bike bike = db.getBike(ride.getBikeId());
+                bikeNameTextView.setText(bike.getName());
+            }
+            super.onResume();
+        }
+
+
+    @Override protected void onActivityResult(final int requestCode, final int resultCode,
+                                              final Intent data)
+        {
+            if(requestCode == PICK_RIDING_BIKE)
+            {
+                if(resultCode == RESULT_OK)
+                {
+                    final Bike oldBike = db.getBike(ride.getBikeId());
+                    oldBike.setDistance(oldBike.getDistance() - ride.getDistance());
+                    oldBike.setLastRideDate("");
+                    db.updateBike(oldBike);
+                    ride.setBikeId(Integer.parseInt(data.getData().toString()));
+                    final Bike newBike = db.getBike(ride.getBikeId());
+                    newBike.setDistance(newBike.getDistance() + ride.getDistance());
+                    newBike.setLastRideDate(ride.getRideDate());
+                    db.updateBike(newBike);
+                }else
+                {
+                    android.widget.Toast
+                            .makeText(this, "result not okay", android.widget.Toast.LENGTH_SHORT)
+                            .show();
+                }
+            }
         }
 
 
@@ -94,43 +131,6 @@ import static com.cochrane.clinton.bikecompanion.MainActivity.PICK_RIDING_BIKE;
                     });
             final AlertDialog deleteRideDialog = deleteRideDialogBuilder.create();
             deleteRideDialog.show();
-        }
-
-
-    @Override protected void onActivityResult(final int requestCode, final int resultCode,
-                                              final Intent data)
-        {
-            if(requestCode == PICK_RIDING_BIKE)
-            {
-                if(resultCode == RESULT_OK)
-                {
-                    final Bike oldBike = db.getBike(ride.getBikeId());
-                    oldBike.setDistance(oldBike.getDistance() - ride.getDistance());
-                    oldBike.setLastRideDate("");
-                    db.updateBike(oldBike);
-                    ride.setBikeId(Integer.parseInt(data.getData().toString()));
-                    final Bike newBike = db.getBike(ride.getBikeId());
-                    newBike.setDistance(newBike.getDistance() + ride.getDistance());
-                    newBike.setLastRideDate(ride.getRideDate());
-                    db.updateBike(newBike);
-                }else
-                {
-                    android.widget.Toast
-                            .makeText(this, "result not okay", android.widget.Toast.LENGTH_SHORT)
-                            .show();
-                }
-            }
-        }
-
-
-    @Override protected void onResume()
-        {
-            if(ride.getBikeId() != -1)
-            {
-                final Bike bike = db.getBike(ride.getBikeId());
-                bikeNameTextView.setText(bike.getName());
-            }
-            super.onResume();
         }
 }
 

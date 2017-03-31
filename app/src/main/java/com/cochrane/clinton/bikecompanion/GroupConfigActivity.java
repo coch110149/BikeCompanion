@@ -1,11 +1,11 @@
 package com.cochrane.clinton.bikecompanion;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,7 +15,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 
-public class GroupConfigActivity extends AppCompatActivity
+public class GroupConfigActivity extends Activity
 {
     private static final Pattern MIN = Pattern.compile(" min", Pattern.LITERAL);
     final private DatabaseHandler mDb = new DatabaseHandler(this);
@@ -39,7 +39,7 @@ public class GroupConfigActivity extends AppCompatActivity
             final Bundle bundle = getIntent().getExtras();
             if(bundle != null)
             {
-                mGroup = bundle.getParcelable("SelectedGroupObject");
+                mGroup = bundle.getParcelable("SelectedGroup");
             }
             assert mGroup != null;
             final Button manageGroupButton = (Button) findViewById(R.id.manage_group_contacts);
@@ -125,8 +125,7 @@ public class GroupConfigActivity extends AppCompatActivity
                 public void onClick(final DialogInterface dialog, final int which)
                     {
                         mDb.deleteGroup(mGroup);
-                        startActivity(new Intent(GroupConfigActivity.this,
-                                                 GroupManagementActivity.class));
+                        finish();
                     }
             });
             //noinspection AnonymousInnerClassMayBeStatic
@@ -155,8 +154,8 @@ public class GroupConfigActivity extends AppCompatActivity
                 {
                     mGroup.setName(mGroupNameEdit.getText().toString().trim());
                     mDb.addGroup(mGroup);
-                    startActivity(new Intent(GroupConfigActivity.this,
-                                             GroupManagementActivity.class));
+                    finish();
+
                 }
             }
         }

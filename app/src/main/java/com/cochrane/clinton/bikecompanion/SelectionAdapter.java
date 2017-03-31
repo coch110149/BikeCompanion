@@ -1,167 +1,167 @@
 package com.cochrane.clinton.bikecompanion;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
+import android.net.Uri;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
+import static com.cochrane.clinton.bikecompanion.R.id.additionalInfo1;
+import static com.cochrane.clinton.bikecompanion.R.id.additionalInfo2;
+import static com.cochrane.clinton.bikecompanion.R.id.heading;
 
-class SelectionAdapter extends ArrayAdapter
+
+class SelectionAdapter extends RecyclerView.Adapter<SelectionAdapter.ObjectHolder>
 {
-    private Context mContext = getContext();
-    private Resources mRes = mContext.getResources();
-    private TextView heading;
-    private TextView additionalInfo1;
-    private TextView additionalInfo2;
-    private View listItemView;
-    private String mExtraId;
-    private Button primaryButton;
+    private final OnItemClickListener mListener;
+    private ArrayList<?> mObjects;
+    private Activity mContext;
+    private Contact mContact;
 
 
-    SelectionAdapter(final Activity context, final ArrayList<?> objects)
+    public SelectionAdapter(ArrayList<?> _objects, Activity _context, OnItemClickListener _listener)
         {
-            //noinspection unchecked
-            super(context, 0, objects);
-            mContext = context;
-            mRes = mContext.getResources();
+            mObjects = _objects;
+            mContext = _context;
+            mListener = _listener;
         }
 
 
-    SelectionAdapter(final Activity context, final ArrayList<?> objects, final String _extraId)
+    public void addContact(Contact _contact)
         {
-            //noinspection unchecked
-            super(context, 0, objects);
-            mExtraId = _extraId;
-            mContext = context;
-            mRes = mContext.getResources();
+            mContact = _contact;
         }
 
 
-    @NonNull
-    @Override
-    public View getView(final int position, @Nullable final View convertView,
-                        @NonNull final ViewGroup parent)
+    @Override public SelectionAdapter.ObjectHolder onCreateViewHolder(ViewGroup parent,
+                                                                      int viewType)
         {
-            listItemView = convertView;
-            if(listItemView == null)
+            View inflatedView = LayoutInflater.from(parent.getContext()).inflate(
+                    R.layout.selection_chooser_list_item, parent, false);
+            return new ObjectHolder(inflatedView);
+        }
+
+
+    @Override public void onBindViewHolder(SelectionAdapter.ObjectHolder holder, int position)
+        {
+            Object object = mObjects.get(position);
+            holder.bindObject(object, mContext, mListener, mContact);
+        }
+
+
+    @Override public int getItemCount()
+        {
+            return mObjects.size();
+        }
+
+
+    public interface OnItemClickListener
+    {
+        void onItemClick(Group item);
+    }
+
+
+
+    public static class ObjectHolder extends RecyclerView.ViewHolder implements
+            View.OnClickListener
+    {
+        private TextView mHeading;
+        private TextView mAdditionalInfo1;
+        private TextView mAdditionalInfo2;
+        private Group mGroup;
+        private Activity mActivity;
+        private Bike mBike;
+        private Contact mContact;
+        private OnItemClickListener mListener;
+
+
+        public ObjectHolder(View _view)
             {
-                final LayoutInflater layoutInflater = LayoutInflater.from(getContext());
-                listItemView =
-                        layoutInflater.inflate(R.layout.selection_chooser_list_item, parent, false);
+                super(_view);
+                mHeading = (TextView) _view.findViewById(heading);
+                mAdditionalInfo1 = (TextView) _view.findViewById(additionalInfo1);
+                mAdditionalInfo2 = (TextView) _view.findViewById(additionalInfo2);
+                _view.setOnClickListener(this);
             }
-            heading = (TextView) listItemView.findViewById(R.id.heading);
-            primaryButton = (Button) listItemView.findViewById(R.id.primary_button);
-            final Button secondButton = (Button) listItemView.findViewById(R.id.secondary_button);
-            additionalInfo1 = (TextView) listItemView.findViewById(R.id.additionalInfo1);
-            additionalInfo2 = (TextView) listItemView.findViewById(R.id.additionalInfo2);
-            secondButton.setVisibility(View.GONE);
-            primaryButton.setVisibility(View.GONE);
-            try
+
+
+        public void bindObject(Object _o, Activity _Activity, final OnItemClickListener
+                                                                      _listener, Contact _contact)
             {
-                final Bike currentBike = (Bike) getItem(position);
-                BikeAdapter(currentBike);
-            }catch(final ClassCastException e)
-            {
+                Resources resources = itemView.getContext().getResources();
+                mActivity = _Activity;
+                mListener = _listener;
+                mContact = _contact;
                 try
                 {
-                    final Group currentGroup = (Group) getItem(position);
-                    GroupAdapter(currentGroup);
-                }catch(final ClassCastException _e)
-                {
-                    final Contact currentContact = (Contact) getItem(position);
-                    contactAdapter(currentContact);
-                }
-            }
-            return listItemView;
-        }
-
-
-    private void BikeAdapter(final Bike currentBike)
-        {
-            if(currentBike != null)
-            {
-                heading.setText(currentBike.getHeading());
-                additionalInfo1.setText(
-                        mRes.getString(R.string.bike_distance, currentBike.getDistance()));
-                additionalInfo2.setText(currentBike.getAdditionalInfo2());
-            }
-        }
-
-
-    private void GroupAdapter(final Group currentGroup)
-        {
-            if(currentGroup != null)
-            {
-                if(currentGroup.isSelected())
-                {
-                    listItemView.setBackgroundColor(ContextCompat.getColor(
-                            mContext, R.color.bright_teal));
-                }else
-                {
-                    listItemView.setBackgroundColor(0);
-                }
-                heading.setText(currentGroup.getName());
-                additionalInfo1.setText(currentGroup.getPeriodicDelay(mRes));
-                additionalInfo2.setText(currentGroup.getStopPeriodicDelay(mRes));
-            }
-        }
-
-
-    private void contactAdapter(final Contact currentContact)
-        {
-            if(currentContact != null)
-            {
-                if(mExtraId != null)
-                {
-                    final int groupId = Integer.parseInt(mExtraId);
-                    primaryButton.setVisibility(View.VISIBLE);
-                    if(currentContact.in(groupId, getContext()))
+                    mGroup = (Group) _o;
+                    mHeading.setText(mGroup.getHeading(resources));
+                    mAdditionalInfo1.setText(mGroup.getPeriodicDelay(resources));
+                    mAdditionalInfo2.setText(mGroup.getStopPeriodicDelay(resources));
+                    View mHeadingParent = (View) mHeading.getParent();
+                    if(mContact != null)
                     {
-                        primaryButton.setText(R.string.remove_from_group_exact);
-                        primaryButton.setOnClickListener(new View.OnClickListener()
+                        if(mContact.in(mGroup.getId(), itemView.getContext()))
                         {
-                            @Override public void onClick(final View v)
-                                {
-                                    currentContact.removeFromGroup(groupId, getContext());
-                                }
-                        });
+                            mHeadingParent.setBackgroundColor(0xFF00FF00);
+                        }
                     }else
                     {
-                        primaryButton.setText(R.string.add_to_group_exact);
-                        primaryButton.setOnClickListener(new View.OnClickListener()
+                        if(mGroup.isSelected())
                         {
-                            @Override public void onClick(final View v)
-                                {
-                                    currentContact.addToGroup(groupId, getContext());
-                                }
-                        });
+                            mHeadingParent.setBackgroundColor(0xFF00FF00);
+                        }
                     }
-                }else
+                }catch(final ClassCastException _e)
                 {
-                    primaryButton.setText(R.string.manage_group_associations_exact);
-                    primaryButton.setOnClickListener(new View.OnClickListener()
-                    {
-                        @Override public void onClick(final View v)
-                            {
-                                final Intent intent =
-                                        new Intent(mContext, SelectionActivity.class);
-                                intent.putExtra("TypeOfRequest", "Group_Contact");
-                                mContext.startActivity(intent);
-                            }
-                    });
+                    mBike = (Bike) _o;
+                    mHeading.setText(mBike.getHeading(resources));
+                    mAdditionalInfo1.setText(mBike.getAdditionalInfo1(resources));
+                    mAdditionalInfo2.setText(mBike.getAdditionalInfo2(resources));
                 }
             }
-        }
+
+
+        @Override public void onClick(View v)
+            {
+                if(mBike != null)
+                {
+                    final Intent intent = new Intent();
+                    intent.setData(Uri.parse(Integer.toString(mBike.getId())));
+                    mActivity.setResult(Activity.RESULT_OK, intent);
+                    mActivity.finish();
+                }else
+                {
+                    mListener.onItemClick(mGroup);
+                    View mHeadingParent = (View) mHeading.getParent();
+                    if(mContact != null)
+                    {
+                        if(mContact.in(mGroup.getId(), itemView.getContext()))
+                        {
+                            mHeadingParent.setBackgroundColor(0xFF00FF00);
+                        }else
+                        {
+                            mHeadingParent.setBackgroundColor(0);
+                        }
+                    }else
+                    {
+                        if(mGroup.isSelected())
+                        {
+                            mHeadingParent.setBackgroundColor(0xFF00FF00);
+                        }else
+                        {
+                            mHeadingParent.setBackgroundColor(0);
+                        }
+                    }
+                }
+            }
+    }
 }
+
 

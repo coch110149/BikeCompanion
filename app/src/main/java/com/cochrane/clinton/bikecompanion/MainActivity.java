@@ -14,7 +14,6 @@ import java.util.ArrayList;
 @SuppressWarnings ( "UnusedParameters" ) public class MainActivity extends Activity
 {
     static final int PICK_RIDING_BIKE = 1;
-    private static final int SELECTED_RIDING_GROUPS = 2;
     private TextView groupsActivatedText;
     private TextView bikeDistanceText;
     private Button addNewGroupButton;
@@ -153,11 +152,11 @@ import java.util.ArrayList;
                             final Intent intent =
                                     new Intent(MainActivity.this, SelectionActivity.class);
                             intent.putExtra("TypeOfRequest", "Group");
-                            startActivityForResult(intent, SELECTED_RIDING_GROUPS);
+                            startActivity(intent);
                         }
                 });
                 String activatedGroupNames = "No Groups Selected";
-                final ArrayList<Group> groups = (ArrayList<Group>) mDb.getAllGroups();
+                final ArrayList<Group> groups = mDb.getAllGroups(true);
                 if((groups != null) && !groups.isEmpty())
                 {
                     activatedGroupNames = " ";

@@ -53,7 +53,7 @@ public class RBMService extends Service
             if(!("").equals(message))
             {
                 final SmsManager smsManager = SmsManager.getDefault();
-                smsManager.sendTextMessage(_contact.getPhoneNumber(), null, message, null, null);
+                smsManager.sendTextMessage(_contact.getNumber(), null, message, null, null);
                 Toast.makeText(getApplicationContext(), "Message Sent", Toast.LENGTH_LONG).show();
                 /**
                  * drift error = accuracy + (speed*time)

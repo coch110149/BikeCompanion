@@ -1,5 +1,6 @@
 package com.cochrane.clinton.bikecompanion;
 
+import android.content.res.Resources;
 import android.os.Parcel;
 import android.os.Parcelable;
 
@@ -27,6 +28,7 @@ public class Bike implements Parcelable
     private String mDescription;
     private Double mDistance;
     private String mLastRideDate;
+
 
     public Bike()
         {
@@ -194,21 +196,25 @@ public class Bike implements Parcelable
         }
 
 
-    String getHeading()
+    String getHeading(Resources mRes)
         {
-            return mName + " " + mYear + " " + mModel + " " + mMake;
+            return mRes.getString(R.string.name, mName + " " + mYear + " " + mModel + " " + mMake);
         }
 
 
-    String getAdditionalInfo1()
+    String getAdditionalInfo1(Resources mRes)
         {
-            return "Total Distance: " + mDistance;
+            return mRes.getString(R.string.bike_distance, mDistance);
         }
 
 
-    String getAdditionalInfo2()
+    String getAdditionalInfo2(Resources mRes)
         {
-            return "Last Ride Date: " + mLastRideDate;
+            if(mLastRideDate == null)
+            {
+                mLastRideDate = "";
+            }
+            return mRes.getString(R.string.ride_date, mLastRideDate);
         }
 }
 

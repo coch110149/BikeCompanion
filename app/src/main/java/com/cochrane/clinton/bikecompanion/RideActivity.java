@@ -1,6 +1,7 @@
 package com.cochrane.clinton.bikecompanion;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -17,7 +18,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -34,7 +34,7 @@ import com.google.android.gms.location.LocationServices;
 import java.util.Date;
 
 
-@SuppressWarnings ( "UnusedParameters" ) public class RideActivity extends AppCompatActivity
+@SuppressWarnings ( "UnusedParameters" ) public class RideActivity extends Activity
         implements GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
                            LocationListener
 {
@@ -90,6 +90,44 @@ import java.util.Date;
     private Button start_moving_manual_log_debugging_button_that_will_be_deleted;
 
 
+    @Override protected void onCreate(final Bundle savedInstanceState)
+        {
+            final Intent intent = getIntent();
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_ride);
+            ride.setBikeId(intent.getIntExtra("SelectableBikeID", -1));
+            mSpeedText = (TextView) findViewById(R.id.Speed_Information);
+            mStopRideButton = (Button) findViewById(R.id.StopRideButton);
+            mStartRideButton = (Button) findViewById(R.id.StartRideButton);
+            mPauseRideButton = (Button) findViewById(R.id.PauseRideButton);
+            mDuration = (Chronometer) findViewById(R.id.Duration_Information);
+            mMaxSpeedText = (TextView) findViewById(R.id.MaxSpeed_Information);
+            mDistanceText = (TextView) findViewById(R.id.Distance_Information);
+            mAvgSpeedText = (TextView) findViewById(R.id.AvgSpeed_Information);
+            mElevationText = (TextView) findViewById(R.id.Elevation_Information);
+            mElevationLossText = (TextView) findViewById(R.id.ElevationLoss_Information);
+            mElevationGainText = (TextView) findViewById(R.id.ElevationGain_Information);
+            mStopRideButton.setVisibility(View.GONE);
+            mStartRideButton.setVisibility(View.GONE);
+            mPauseRideButton.setVisibility(View.GONE);
+            mRes = getResources();
+            start_moving_manual_log_debugging_button_that_will_be_deleted =
+                    (Button) findViewById(R.id.start_moving_manual_log);
+            start_moving_manual_log_debugging_button_that_will_be_deleted.setVisibility(View.GONE);
+        }
+
+
+    @Override protected void onStart()
+        {
+            super.onStart();
+            buildGoogleApiClient();
+            if(mGoogleApiClient != null)
+            {
+                mGoogleApiClient.connect();
+            }
+        }
+
+
     @Override protected void onResume()
         {
             super.onResume();
@@ -98,6 +136,13 @@ import java.util.Date;
                 final Intent intent = new Intent(this, RBMService.class);
                 bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
             }
+        }
+
+
+    @SuppressWarnings ( "EmptyMethod" )
+    @Override protected void onStop()
+        {
+            super.onStop();
         }
 
 
@@ -146,44 +191,6 @@ import java.util.Date;
         }
 
 
-    @Override protected void onCreate(final Bundle savedInstanceState)
-        {
-            final Intent intent = getIntent();
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_ride);
-            ride.setBikeId(intent.getIntExtra("SelectableBikeID", -1));
-            mSpeedText = (TextView) findViewById(R.id.Speed_Information);
-            mStopRideButton = (Button) findViewById(R.id.StopRideButton);
-            mStartRideButton = (Button) findViewById(R.id.StartRideButton);
-            mPauseRideButton = (Button) findViewById(R.id.PauseRideButton);
-            mDuration = (Chronometer) findViewById(R.id.Duration_Information);
-            mMaxSpeedText = (TextView) findViewById(R.id.MaxSpeed_Information);
-            mDistanceText = (TextView) findViewById(R.id.Distance_Information);
-            mAvgSpeedText = (TextView) findViewById(R.id.AvgSpeed_Information);
-            mElevationText = (TextView) findViewById(R.id.Elevation_Information);
-            mElevationLossText = (TextView) findViewById(R.id.ElevationLoss_Information);
-            mElevationGainText = (TextView) findViewById(R.id.ElevationGain_Information);
-            mStopRideButton.setVisibility(View.GONE);
-            mStartRideButton.setVisibility(View.GONE);
-            mPauseRideButton.setVisibility(View.GONE);
-            mRes = getResources();
-            start_moving_manual_log_debugging_button_that_will_be_deleted =
-                    (Button) findViewById(R.id.start_moving_manual_log);
-            start_moving_manual_log_debugging_button_that_will_be_deleted.setVisibility(View.GONE);
-        }
-
-
-    @Override protected void onStart()
-        {
-            super.onStart();
-            buildGoogleApiClient();
-            if(mGoogleApiClient != null)
-            {
-                mGoogleApiClient.connect();
-            }
-        }
-
-
     private synchronized void buildGoogleApiClient()
         {
             mGoogleApiClient = new GoogleApiClient.Builder(this)
@@ -200,13 +207,6 @@ import java.util.Date;
                                        .setInterval(UPDATE_INTERVAL_IN_MS)
                                        .setFastestInterval(FASTEST_UPDATE_INTERVAL_IN_MS)
                                        .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        }
-
-
-    @SuppressWarnings ( "EmptyMethod" )
-    @Override protected void onStop()
-        {
-            super.onStop();
         }
 
 
